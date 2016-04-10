@@ -131,7 +131,7 @@ def professor(request):
             turma = Turma(
                 nome=request.POST['nome'],
                 descricao=request.POST['descricao'],
-                professor=professor,
+                professor=professor
             )
             turma.save()
         elif ('post_atividade' in request.POST):

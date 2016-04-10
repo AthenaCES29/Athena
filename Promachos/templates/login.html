@@ -14,8 +14,9 @@
 
 <body>
   <div class="container">
-    <div align="center"><img src="/static/img/logo.jpg" width="10%" height="10%" /></div>
+    <div align="center"><img src="/static/img/logo.png" width="50%" height="50%" /></div>
     <form class="form-signin" action="/login/" method="post"> {% csrf_token %}
+      <h1 align="center">Bem-vindo</h1>
       <h2 class="form-signin-heading" align="center">Login</h2>
       <label for="username" class="sr-only">Usuário</label>
       <input type="username" name="username" id="username" class="form-control" placeholder="Nome de usuário" autofocus>

@@ -1,4 +1,5 @@
-import os
+# -*- coding: utf-8 -*-
+import os,sys
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -28,11 +29,11 @@ class Aluno(models.Model):
     nome = models.CharField(max_length=50, help_text="Nome do Aluno")
     user = models.ForeignKey(
         User,
-        help_text="Usuario de login relacionado ao Aluno",
+        help_text="Usuário de login relacionado ao Aluno",
     )
 
     def __str__(self):
-        return '%s' % (self.nome)
+        return '%s' % (self.nome.encode('utf-8'))
 
 
 class Professor(models.Model):
@@ -40,11 +41,11 @@ class Professor(models.Model):
     nome = models.CharField(max_length=50, help_text="Nome do Professor")
     user = models.ForeignKey(
         User,
-        help_text="Usuario de login relacionado ao Professor",
+        help_text="Usuário de login relacionado ao Professor",
     )
 
     def __str__(self):
-        return '%s' % (self.nome)
+        return '%s' % (self.nome.encode('utf-8'))
 
 
 class Turma(models.Model):
@@ -59,7 +60,7 @@ class Turma(models.Model):
     )
 
     def __str__(self):
-        return '%s %s' % (self.nome, self.professor.nome)
+        return '%s %s' % (self.nome.encode('utf-8'), self.professor.nome.encode('utf-8'))
 
 
 class Atividade(models.Model):
@@ -88,7 +89,7 @@ class Atividade(models.Model):
     )
 
     def __str__(self):
-        return '%s %s' % (self.nome, self.turma.nome)
+        return '%s %s' % (self.nome.encode('utf-8'), self.turma.nome.encode('utf-8'))
 
     def nome_roteiro(self):
         return os.path.basename(self.arquivo_roteiro.name)
@@ -114,13 +115,13 @@ class Submissao(models.Model):
     RESULTADOS = (
         ('AC', 'Aceito'),
         ('TLE', 'Tempo Limite Excedido'),
-        ('RTE', 'Erro em tempo de execucao'),
-        ('CE', 'Erro de compilacao'),
+        ('RTE', 'Erro em tempo de execução'),
+        ('CE', 'Erro de compilação'),
         ('WA', 'Resposta Errada'),
     )
     data_envio = models.DateField(
         auto_now=True,
-        help_text='Data de submissao do codigo',
+        help_text='Data de submissão do código',
     )
     arquivo_codigo = models.FileField(upload_to=submissao_path)
     resultado = models.CharField(
@@ -129,13 +130,13 @@ class Submissao(models.Model):
         help_text='Resultado da submissao do aluno',
     )
     nota = models.PositiveSmallIntegerField(
-        help_text='Nota para submissao do aluno'
+        help_text='Nota para submissão do aluno'
     )
     atividade = models.ForeignKey(
         Atividade,
-        help_text="Atividade relacionada a submissao"
+        help_text="Atividade relacionada a submissão"
     )
-    aluno = models.ForeignKey(Aluno, help_text="Aluno que enviou a submissao")
+    aluno = models.ForeignKey(Aluno, help_text="Aluno que enviou a submissão")
 
     def nome_codigo(self):
         return os.path.basename(self.arquivo_codigo.name)
@@ -144,16 +145,16 @@ class Submissao(models.Model):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_codigo.name))
 
     def __str__(self):
-        return '%s %s' % (self.atividade.nome, self.aluno.nome)
+        return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
 
 
 class RelAlunoAtividade(models.Model):
 
     foiEntregue = models.BooleanField(
-        help_text='Se o aluno ja mandou alguma submissao para a atividade'
+        help_text='Se o aluno já mandou alguma submissão para a atividade'
     )
     aluno = models.ForeignKey(Aluno, help_text="Aluno inscrito na atividade")
     atividade = models.ForeignKey(Atividade, help_text="Atividade do aluno")
 
     def __str__(self):
-        return '%s %s' % (self.atividade.nome, self.aluno.nome)
+        return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))

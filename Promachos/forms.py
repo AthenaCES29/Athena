@@ -3,7 +3,6 @@ from django import forms
 from django.forms import ModelForm
 from Athena.models import Turma, Atividade
 
-
 class UploadFileForm(forms.Form):
 
     file = forms.FileField()

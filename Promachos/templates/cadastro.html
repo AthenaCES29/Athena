@@ -15,7 +15,7 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
-      <h2 class="form-signin-heading" align="center">Cadastro</h2>
+      <h2 class="form-signin-heading" align="center">Cadastro de Aluno/Professor</h2>
       <form class="form-signin" action="/cadastro/" method="post"> {% csrf_token %}
 	<div align="center" style="padding-top: 15px;">
                 <label for="{{ form.fullname.label }}" class="sr-only"></label>
@@ -27,7 +27,7 @@
 		<font color="red">{{ form.username.errors.as_text }}</font><br><br>
 
 		<label for="{{ form.email.label }}" class="sr-only"></label>
-        	<input type="username" name="email" id="email" class="form-control" value="{{ form.email.value|default_if_none:"" }}" placeholder="Email" autofocus>
+        	<input type="username" name="email" id="email" class="form-control" value="{{ form.email.value|default_if_none:"" }}" placeholder="Email (@ita.br ou @aluno.ita.br)" autofocus>
 		<font color="red">{{ form.email.errors.as_text }}</font><br><br>
 
 		<label for="{{ form.password1.label }}" class="sr-only"></label>
