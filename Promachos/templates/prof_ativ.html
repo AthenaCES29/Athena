@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="all">
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> 
   <script src="/static/js/lista_notas.js"></script>
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -68,7 +68,7 @@
       <img src="/static/img/ita_logo.jpg" style="height: 50px;">
     </div>
     <div class="col-xs-6" style="text-align: right;">
-      <p style="line-height: 40px;"><a href="/professor/" class="btn btn-default" role="button">Voltar para workspace</a> | <a href="/logout/" class="btn btn-danger" role="button">logout</a></p>
+      <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
     </div>
   </div>
   <div class="row content">
@@ -132,7 +132,9 @@
           </tbody>
         </table>
       </section>
-    </div>
+      <p><button class="btn btn-success btn-lg btn-block"><span class="glyphicon glyphicon-save"></span> Download de todas submissões</button></p>
+      <p><button class="btn btn-success btn-lg btn-block"><span class="glyphicon glyphicon-save"></span> Download de tabela de notas</button></p>
+     </div>
   </div>
 </div>
 </body>

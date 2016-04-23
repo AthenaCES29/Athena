@@ -3,7 +3,7 @@
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.contrib import auth
-from django.core.context_processors import csrf
+from django.template.context_processors import csrf
 from Cerberus.forms import UserRegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response
