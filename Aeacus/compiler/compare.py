@@ -73,6 +73,3 @@ def mover(entrada, saida, codigo):
     else:
         return "saidas iguais"
 
-
-# falta fazer
-# enviar resultados para a pagina criada

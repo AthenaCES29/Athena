@@ -15,6 +15,12 @@ def atividade_path(instance, filename):
         name=filename,
     )
 
+def turma_path(instance, filename):
+    return 'atividades/{prof}/{turma}/{name}'.format(
+        prof=instance.professor.id,
+        turma=instance.id,
+        name=filename,
+    )
 
 def submissao_path(instance, filename):
     return 'codigos/{0}/{1}/{2}'.format(
@@ -59,6 +65,9 @@ class Turma(models.Model):
         blank=True,
     )
 
+    def path(self, name):
+        return turma_path(self, name)
+
     def __str__(self):
         return '%s %s' % (self.nome.encode('utf-8'), self.professor.nome.encode('utf-8'))
 
@@ -67,6 +76,9 @@ class Atividade(models.Model):
 
     def estaFechada(self):
         return self.data_limite < timezone.now().date()
+
+    def path(self, name):
+        return atividade_path(self, name)
 
     nome = models.CharField(max_length=50)
     descricao = models.CharField(

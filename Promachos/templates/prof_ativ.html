@@ -1,141 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="all">
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> 
-  <script src="/static/js/lista_notas.js"></script>
-  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <script>
-  $(document).ready(function() {
-      $('input').filter('.date_picker').datepicker({dateFormat: 'yy-mm-dd'});
-  });
-  </script>
-  <style type="text/css">
-    * {
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+      $(document).ready(function() {
+          $('input').filter('.date_picker').datepicker({dateFormat: 'yy-mm-dd'});
+      });
+    </script>
+    <style type="text/css">
+      * {
       margin: 0;
       padding: 0;
-    }
-
-    .content {
+      }
+      .content {
       padding-top: 20px;
-    }
-
-    h2, h3, h4, h5 {
+      }
+      h2, h3, h4, h5 {
       text-align: center;
-    }
-
-    .tabela {
+      }
+      .tabela {
       width: 100%;
       padding-top: 25px;
       padding-bottom: 25px;
-    }
-
-    table {
+      }
+      table {
       width: 100%;
-    }
-
-    th, tr {
+      }
+      th, tr {
       border-bottom: 1px solid #ddd;
-    }
-
-    td, th {
+      }
+      td, th {
       padding: 5px;
       text-align: center;
-    }
-
-    footer {
+      }
+      footer {
       text-align: right;
-    }
-  </style>
-  <script>
-        $(document).ready(function(){
-            $("#edit_ativ").click(function(){
-                $("div.editar_atividade").show();
-            });
-        });
+      }
+    </style>
+    <script>
+      $(document).ready(function(){
+          $("#edit_ativ").click(function(){
+              $("div.editar_atividade").show();
+          });
+      });
     </script>
-</head>
-
-<body>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-6">
-      <img src="/static/img/ita_logo.jpg" style="height: 50px;">
-    </div>
-    <div class="col-xs-6" style="text-align: right;">
-      <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
-    </div>
-  </div>
-  <div class="row content">
-    <div class="col-xs-12 col-sm-3">
-      <div class="thumbnail">
-        <div class="caption">
-          <a href="#" id="edit_ativ" class="btn btn-lg btn-block btn-default" role="button">Editar atividade</a>
-          <div class="editar_atividade" style="display: none;">
-            <br>
-              <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="post_edit_atividade" value="True">
-                <input type="hidden" name="id_atividade" value={{atividade.id}}>
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-6">
+          <img src="/static/img/ita_logo.jpg" style="height: 50px;">
+        </div>
+        <div class="col-xs-6" style="text-align: right;">
+          <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
+        </div>
+      </div>
+      <div class="row content">
+        <div class="col-xs-12 col-sm-4">
+          <div class="thumbnail">
+            <div class="caption">
+              <a href="#" id="edit_ativ" class="btn btn-lg btn-block btn-default" role="button">Editar atividade</a>
+              <div class="editar_atividade" style="display: none;">
+                <br>
+                <form method="POST" enctype="multipart/form-data">
+                  <input type="hidden" name="post_edit_atividade" value="True">
+                  <input type="hidden" name="id_atividade" value={{atividade.id}}>
+                  {% csrf_token %}
+                  {% for field in form %}
+                  <div class="form-group">
                     <label for="{{field.id}}">{{field.label}}:</label>
                     {{field}}
-                </div>
-                {% endfor %}
-                <p><button class="btn btn-lg btn-success btn-block" type="submit">Concluir</button></p>
-              </form>
-            <br>
-            <form method="post" enctype="multiplart/form-data">
-              <input type="hidden" name="post_del_ativ" value="True">
-              {% csrf_token %}
-              <p><button class="btn btn-lg btn-block btn-danger" type="submit" href="/professor">Deletar atividade</button></p>
-            </form>
-            <br>
+                  </div>
+                  {% endfor %}
+                  <p><button class="btn btn-lg btn-success btn-block" type="submit">Concluir</button></p>
+                </form>
+                <br>
+                <form method="POST" enctype="multiplart/form-data">
+                  <input type="hidden" name="post_del_ativ" value="True">
+                  {% csrf_token %}
+                  <p><button class="btn btn-lg btn-block btn-danger" type="submit" href="/professor">Deletar atividade</button></p>
+                </form>
+                <br>
+              </div>
+            </div>
           </div>
+        </div>
+        <div class="col-sm-offset-1 col-xs-12 col-sm-4">
+          <h2>{{atividade.nome}}</h2>
+          <h3>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}}</h3>
+          {% if atividade.estaFechada %}
+          <h4>Status: fechada (em {{atividade.data_limite}})</h4>
+          {% else %}
+          <h5>Status: aberta (até {{atividade.data_limite}})</h5>
+          {% endif %}
+          <section class="tabela">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Enviado</th>
+                  <th>Status</th>
+                  <th>Nota</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for nome, data, resultado, code_url, nota in status_aluno %}
+                <tr>
+                  <td><a href="{{code_url}}" target="_blank">{{nome}}</a></td>
+                  <td>{{data}}</td>
+                  <td>{{resultado}}</td>
+                  <td>{{nota}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </section>
+          <p><button class="btn btn-success btn-lg btn-block"><span class="glyphicon glyphicon-save"></span> Download de todas submissões</button></p>
+          <form method="POST" enctype="multiplart/form-data">
+            <input type="hidden" name="post_down_notas" value="True">
+            {% csrf_token %}
+            <p><button class="btn btn-success btn-lg btn-block"><span class="glyphicon glyphicon-save"></span> Download de tabela de notas</button></p>
+          </form>
         </div>
       </div>
     </div>
-    <div class="col-sm-offset-1 col-xs-12 col-sm-4">
-      <h2>{{atividade.nome}}</h2>
-      <h3>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}}</h3>
-            {% if atividade.estaFechada %}
-      <h4>Status: fechada (em {{atividade.data_limite}})</h4>
-            {% else %}
-      <h5>Status: aberta (até {{atividade.data_limite}})</h5>
-            {% endif %}
-
-      <section class="tabela">
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Enviado</th>
-              <th>Status</th>
-              <th>Nota</th>
-            </tr>
-          </thead>
-          <tbody>
-              {% for nome, data, resultado, code_url, nota in status_aluno %}
-              <tr>
-                <td><a href="{{code_url}}" target="_blank">{{nome}}</a></td>
-                <td>{{data}}</td>
-                <td>{{resultado}}</td>
-                <td>{{nota}}</td>
-              </tr>
-              {% endfor %}
-          </tbody>
-        </table>
-      </section>
-      <p><button class="btn btn-success btn-lg btn-block"><span class="glyphicon glyphicon-save"></span> Download de todas submissões</button></p>
-      <p><button class="btn btn-success btn-lg btn-block"><span class="glyphicon glyphicon-save"></span> Download de tabela de notas</button></p>
-     </div>
-  </div>
-</div>
-</body>
+  </body>
 </html>

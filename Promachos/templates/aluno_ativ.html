@@ -86,10 +86,13 @@
         <div class="tab-content">
           <div role="tabpanel" class="tab-pane fade in active" id="workspace">
             <div align="center">
-              <p>
-              <h2>{{ atividade.nome }}</h2>
-              </p>
-              <p><b>Descrição: </b>{{ atividade.descricao }}</p>
+			  <p><h2> {{ atividade.nome }} </h2></p>
+              <p><h4>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}} </h4></p>
+              {% if atividade.estaFechada %}
+              <h4>Status: fechada (em {{atividade.data_limite}})</h4>
+              {% else %}
+              <h5>Status: aberta (até {{atividade.data_limite}})</h5>
+              {% endif %}
             </div>
             <div class="row">
               <div class="col-xs-12 col-sm-4">
@@ -98,6 +101,7 @@
                     <div class="form-group">
                       <h4><b>Submissão:</b></h4>
                       <hr>
+                      <p><b>Descrição: </b>{{ atividade.descricao }}</p>
                       <p><b>Atividade:</b> <a href="{{ atividade.arquivo_roteiro.url }}" target="_blank">{{ atividade.nome_roteiro }}</a></p>
                     </div>
                     {% if prazo_valido %}

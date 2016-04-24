@@ -4,19 +4,24 @@
       <div class="thumbnail">
         <div class="caption">
           <h3 align="center">Atividades</h3>
-            <br>
-                      {% for atividade in atividades %}
-              <form method="GET" enctype="multipart/form-data">
-                <input type="hidden" name="load_atividade" value="True">
-                <input type="hidden" name="id_ativ" value={{atividade.id}}>
-                <p>{{atividade.data_limite}} - <a href="../prof_ativ/{{atividade.id}}/" type="submit"> {{atividade.nome}} </a></p>
-              </form>
-                      {% endfor %}
-            <br>
+          <br>
+          {% for atividade in atividades %}
+          <form method="GET" enctype="multipart/form-data">
+            <input type="hidden" name="load_atividade" value="True">
+            <input type="hidden" name="id_ativ" value={{atividade.id}}>
+            <p>{{atividade.data_limite}} - <a href="../prof_ativ/{{atividade.id}}/" type="submit"> {{atividade.nome}} </a></p>
+          </form>
+          {% endfor %}
+          <br>
+          <form method="POST" enctype="multiplart/form-data">
+            <input type="hidden" name="post_down_all_notas" value="True">
+            <input type="hidden" name="id_turma" value={{turma.id}}>
+            {% csrf_token %}
+            <p><button class="btn btn-success btn-lg btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Download das notas</button></p>
+          </form>
         </div>
       </div>
     </div>
-
     <div class="col-xs-12 col-md-3">
       <div class="thumbnail">
         <div class="caption">
@@ -26,19 +31,18 @@
             <input type="hidden" name="post_atividade" value="True">
             <input type="hidden" name="id_turma" value={{turma.id}}>
             {% csrf_token %}
-			{% for field in form %}
-			<div class="form-group">
-				<label for="{{field.id}}">{{field.label}}:</label>
-				{{field}}
-                        </div>
-			{% endfor %}
+            {% for field in form %}
+            <div class="form-group">
+              <label for="{{field.id}}">{{field.label}}:</label>
+              {{field}}
+            </div>
+            {% endfor %}
             <p><button class="btn btn-lg btn-success btn-block" type="submit">Criar</button></p>
           </form>
           <br>
         </div>
       </div>
     </div>
-
     <div class="col-xs-12 col-md-3">
       <div class="thumbnail">
         <div class="caption">
@@ -49,10 +53,11 @@
             <input type="hidden" name="post_deletar" value="True">
             <input type="hidden" name="id_turma" value={{turma.id}}>
             {% csrf_token %}
-            <input class="btn btn-default" type="submit" value="Deletar">
+            <input class="btn btn-lg btn-block btn-danger" type="submit" value="Deletar">
           </form>
         </div>
       </div>
     </div>
-  </div> <!-- end of row -->
+  </div>
+  <!-- end of row -->
 </div>

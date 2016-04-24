@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from django.contrib import auth
 from django.template.context_processors import csrf
@@ -171,6 +171,47 @@ def professor(request):
             atividades.delete()
             turma.delete()
 
+        elif ('post_down_all_notas' in request.POST):
+
+            turma = Turma.objects.get(id=request.POST['id_turma'])
+            atividades = Atividade.objects.filter(
+                turma=turma,
+            )
+
+            notas_path = "arquivos/" + turma.path("notas_curso.csv")
+            notas = open(notas_path, "w")
+
+            notas.write(turma.nome + " - " + turma.professor.nome + "\n")
+
+            i = 0
+            notas.write("Nome")
+            for atividade in atividades:
+                i = i + 1
+                notas.write(";Nota" + str(i))
+            notas.write(";Media")
+
+            for aluno in turma.alunos.all():
+                media = 0
+                notas.write("\n" + aluno.nome + ";")
+                for atividade in atividades:
+                    submissao = Submissao.objects.filter(
+                        atividade=atividade, aluno=aluno
+                    )
+                    if submissao:
+                        submissao = submissao[0]
+                        notas.write(str(submissao.nota) + ";")
+                        media = media + submissao.nota
+                    else:
+                        notas.write("-;")
+                notas.write(str(media/i))
+            notas.close()
+            arquivo = open(notas_path, "r")
+
+            response = HttpResponse(arquivo)
+            response['Content-Disposition'] = 'attachment; filename=notas_curso.csv'
+
+            return response
+
     turmas = Turma.objects.filter(professor=professor)
     panes = []
     for turma in turmas:
@@ -207,6 +248,7 @@ def prof_ativ(request, id_ativ):
     if not atividade:
         return HttpResponseRedirect('/professor')
 
+
     atividade = atividade[0]
 
     if request.method == 'POST':
@@ -228,7 +270,7 @@ def prof_ativ(request, id_ativ):
         if('post_del_ativ' in request.POST):
             submissoes = Submissao.objects.filter(
                 atividade=atividade,
-            )
+                )
 
             for submissao in submissoes:
                 submissao.remove_file()
@@ -241,10 +283,42 @@ def prof_ativ(request, id_ativ):
 
             return HttpResponseRedirect('/professor')
 
+        if('post_down_notas' in request.POST):
+
+            notas_path = "arquivos/" + atividade.path("notas.csv")
+            notas = open(notas_path, "w")
+            notas.write(atividade.nome + "\n")
+            notas.write("Nome;Enviado;Status;Nota\n")
+            for aluno in atividade.turma.alunos.all():
+                submissao = Submissao.objects.filter(
+                    atividade=atividade, aluno=aluno
+                )
+
+                notas.write(aluno.nome + ";")
+                if submissao:
+                    submissao = submissao[0]
+                    notas.write(submissao.data_envio.strftime('%d/%m') + ";")
+                    notas.write(submissao.resultado + ";")
+                    notas.write(str(submissao.nota) + ";")
+
+                else:
+                    notas.write("-;-;-;")
+
+                notas.write("\n")
+            notas.close()
+            arquivo = open(notas_path, "r")
+
+            response = HttpResponse(arquivo)
+            response['Content-Disposition'] = 'attachment; filename=notas.csv'
+
+            return response
+
     status_aluno = []
 
     for aluno in atividade.turma.alunos.all():
-        submissao = Submissao.objects.filter(atividade=atividade, aluno=aluno)
+        submissao = Submissao.objects.filter(
+            atividade=atividade, aluno=aluno
+            )
         if submissao:
             submissao = submissao[0]
 
@@ -257,6 +331,7 @@ def prof_ativ(request, id_ativ):
                     submissao.nota,
                 )
             )
+
         else:
             status_aluno.append(
                 (aluno.nome, "Não enviado", "-")
@@ -459,7 +534,6 @@ def aluno_ativ(request, ativ_id):
         context_instance=RequestContext(request),
     )
 
-
 def aluno_turmas(request):
 
     aluno = checar_login_aluno(request)
@@ -494,3 +568,9 @@ def aluno_turmas(request):
         },
         context_instance=RequestContext(request),
     )
+
+def perfil(request):
+    return render_to_response(
+        'perfil.html',
+        context_instance=RequestContext(request),
+    )	
