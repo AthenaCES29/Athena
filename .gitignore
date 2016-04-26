@@ -58,10 +58,4 @@ target/
 *.swp
 *~
 *.swo
-password.txt
 
-# arquivos txt, objetos, codigos, e programas
-*.txt
-*.cpp
-*.o
-*.out
