@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from django.contrib import auth
@@ -17,6 +18,7 @@ from Athena.models import RelAlunoAtividade
 from Athena.utils import checar_login_professor, checar_login_aluno
 from pprint import pprint
 from itertools import izip_longest
+
 import re
 
 
@@ -179,6 +181,8 @@ def professor(request):
             )
 
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
+            if not Atividade.isFile(notas_path):
+                return HttpResponseRedirect('/professor')
             notas = open(notas_path, "w")
 
             notas.write(turma.nome + " - " + turma.professor.nome + "\n")
@@ -285,10 +289,15 @@ def prof_ativ(request, id_ativ):
 
         if('post_down_notas' in request.POST):
 
+            # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
+            if not Atividade.isFile(notas_path):
+                return HttpResponseRedirect('/professor')
             notas = open(notas_path, "w")
             notas.write(atividade.nome + "\n")
             notas.write("Nome;Enviado;Status;Nota\n")
+
+            # write aluno's notes
             for aluno in atividade.turma.alunos.all():
                 submissao = Submissao.objects.filter(
                     atividade=atividade, aluno=aluno
@@ -306,12 +315,25 @@ def prof_ativ(request, id_ativ):
 
                 notas.write("\n")
             notas.close()
-            arquivo = open(notas_path, "r")
 
+            # send the file as http response
+            arquivo = open(notas_path, "r")
             response = HttpResponse(arquivo)
             response['Content-Disposition'] = 'attachment; filename=notas.csv'
 
             return response
+
+        if ('post_down_submissoes' in request.POST):
+
+            # generate the file
+            zipFile = atividade.zipSubmissoes()
+
+            # send the file as http response
+            arquivo = open(atividade.zip_path(), "r")
+            response = HttpResponse(arquivo)
+            response['Content-Disposition'] = 'attachment; filename='+atividade.nome+'.zip'
+            return response
+
 
     status_aluno = []
 

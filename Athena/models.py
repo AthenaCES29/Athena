@@ -3,8 +3,8 @@ import os,sys
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
 from Athena import settings
+import zipfile
 
 
 def atividade_path(instance, filename):
@@ -23,12 +23,17 @@ def turma_path(instance, filename):
     )
 
 def submissao_path(instance, filename):
-    return 'codigos/{0}/{1}/{2}'.format(
-        instance.aluno.id,
-        instance.atividade.id,
-        filename,
+    return 'codigos/{aluno}/{atividade}/{name}'.format(
+        aluno=instance.aluno.id,
+        atividade=instance.atividade.id,
+        name=filename,
     )
 
+def zip_path(instance):
+    return 'arquivos/codigos/{name}.zip'.format(
+        atividade=instance.id,
+        name = instance.nome
+    )
 
 class Aluno(models.Model):
 
@@ -80,6 +85,23 @@ class Atividade(models.Model):
     def path(self, name):
         return atividade_path(self, name)
 
+    def zipSubmissoes(self):
+        arqZip = zipfile.ZipFile(self.zip_path(), 'w')
+        for aluno in self.turma.alunos.all():
+            submissoes = Submissao.objects.filter(
+                atividade=self, aluno=aluno
+            )
+            submissao = submissoes[0]
+            old_path = 'arquivos/' + submissao_path(submissao, os.path.basename(submissao.arquivo_codigo.name))
+            new_path = 'arquivos/' + self.nome + '_' + aluno.nome + '.c'
+            os.rename(old_path, new_path)
+            if (Atividade.isFile(new_path)):
+                arqZip.write(new_path)
+            os.rename(new_path, old_path)
+        
+        arqZip.close()
+        return arqZip
+
     nome = models.CharField(max_length=50)
     descricao = models.CharField(
         max_length=1000,
@@ -111,6 +133,13 @@ class Atividade(models.Model):
 
     def nome_saida(self):
         return os.path.basename(self.arquivo_saida.name)
+
+    def zip_path(self):
+        return zip_path(self)
+
+    @staticmethod
+    def isFile(filename):
+        return os.path.isfile(filename)
 
     def remove_roteiro(self, *args, **kwargs):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_roteiro.name))
