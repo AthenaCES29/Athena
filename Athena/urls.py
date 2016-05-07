@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^aluno/aluno_turmas/$', views.aluno_turmas),
     url(r'^prof_ativ/(?P<id_ativ>[0-9]+)/$', views.prof_ativ),
     url(r'^aluno/aluno_ativ/(?P<ativ_id>[0-9]+)/$', views.aluno_ativ),
+    url(r'^mobile/$', views.login_mobile),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
