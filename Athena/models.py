@@ -50,8 +50,8 @@ class Aluno(models.Model):
         data = { }
         data['nome'] = self.nome
         data['username'] = self.user.get_username()
-        data['full_name'] = self.user.get_full_name()
         data['email'] = self.user.email
+        data['class'] = type(self).__name__
         return data
 
 
@@ -65,6 +65,14 @@ class Professor(models.Model):
 
     def __str__(self):
         return '%s' % (self.nome.encode('utf-8'))
+
+    def json_data(self):
+        data = { }
+        data['nome'] = self.nome
+        data['username'] = self.user.get_username()
+        data['email'] = self.user.email
+        data['class'] = type(self).__name__
+        return data
 
 
 class Turma(models.Model):
