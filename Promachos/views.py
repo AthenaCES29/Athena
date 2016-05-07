@@ -19,7 +19,6 @@ from Athena.models import Submissao
 from Athena.models import RelAlunoAtividade
 from Athena.utils import checar_login_professor, checar_login_aluno
 from pprint import pprint
-from itertools import izip_longest
 
 import re
 
@@ -47,8 +46,8 @@ def login(request):
                 r'(.*)@aluno.ita.br$', user.email, re.M | re.I)
 
             if matchObjAluno:
-                return HttpResponseRedirect('/aluno')
-            return HttpResponseRedirect('/professor')
+                return HttpResponseRedirect('/aluno/')
+            return HttpResponseRedirect('/professor/')
 
         else:
             return render_to_response(
@@ -111,12 +110,12 @@ def home(request):
         return render(request, 'teste_juiz.html', {'form': form})
 
     else:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect('/login')
+    return HttpResponseRedirect('/login/')
 
 
 def professor(request):
@@ -124,7 +123,7 @@ def professor(request):
     professor = checar_login_professor(request)
 
     if not professor:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     professor = professor[0]
 
@@ -184,7 +183,7 @@ def professor(request):
 
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
             if not Atividade.isFile(notas_path):
-                return HttpResponseRedirect('/professor')
+                return HttpResponseRedirect('/professor/')
             notas = open(notas_path, "w")
 
             notas.write(turma.nome + " - " + turma.professor.nome + "\n")
@@ -248,11 +247,11 @@ def prof_ativ(request, id_ativ):
     professor = checar_login_professor(request)
 
     if not professor:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     atividade = Atividade.objects.filter(id=id_ativ)
     if not atividade:
-        return HttpResponseRedirect('/professor')
+        return HttpResponseRedirect('/professor/')
 
 
     atividade = atividade[0]
@@ -287,14 +286,14 @@ def prof_ativ(request, id_ativ):
             atividade.remove_saida()
             atividade.delete()
 
-            return HttpResponseRedirect('/professor')
+            return HttpResponseRedirect('/professor/')
 
         if('post_down_notas' in request.POST):
 
             # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
             if not Atividade.isFile(notas_path):
-                return HttpResponseRedirect('/professor')
+                return HttpResponseRedirect('/professor/')
             notas = open(notas_path, "w")
             notas.write(atividade.nome + "\n")
             notas.write("Nome;Enviado;Status;Nota\n")
@@ -377,7 +376,7 @@ def aluno(request):
     aluno = checar_login_aluno(request)
 
     if not aluno:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     aluno = aluno[0]
 
@@ -445,13 +444,13 @@ def aluno_ativ(request, ativ_id):
     aluno = checar_login_aluno(request)
 
     if not aluno:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     aluno = aluno[0]
 
     atividade = Atividade.objects.filter(id=ativ_id)
     if not atividade:
-        return HttpResponseRedirect('/aluno')
+        return HttpResponseRedirect('/aluno/')
     atividade = atividade[0]
     resultado = ""
 
@@ -563,7 +562,7 @@ def aluno_turmas(request):
     aluno = checar_login_aluno(request)
 
     if not aluno:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     aluno = aluno[0]
 
@@ -598,29 +597,3 @@ def perfil(request):
         'perfil.html',
         context_instance=RequestContext(request),
     )	
-
-def login_mobile(request):
-
-    if request.method == 'GET':
-        username = request.GET.get('username', '')
-        password = request.GET.get('password', '')
-        user = auth.authenticate(username=username, password=password)
-        
-
-        if user is None:
-            return JsonResponse({'valido': False})
-
-        else:
-            aluno = Aluno.objects.filter(user=user).first()
-            professor = Professor.objects.filter(user=user).first()
-            if aluno is not None:
-                aluno_json = { }
-                aluno_json['valido'] = user.is_authenticated()
-                aluno_json = dict(aluno_json.items() + aluno.json_data().items())
-                return JsonResponse(aluno_json)
-            
-            elif professor is not None:
-                professor_json = { }
-                professor_json['valido'] = user.is_authenticated()
-                professor_json = dict(professor_json.items() + professor.json_data().items())
-                return JsonResponse(professor_json)

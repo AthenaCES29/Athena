@@ -111,7 +111,7 @@ class Atividade(models.Model):
             old_path = 'arquivos/' + submissao_path(submissao, os.path.basename(submissao.arquivo_codigo.name))
             new_path = 'arquivos/' + self.nome + '_' + aluno.nome + '.c'
             os.rename(old_path, new_path)
-            if (Atividade.isFile(new_path)):
+            if (os.path.isfile(new_path)):
                 arqZip.write(new_path)
             os.rename(new_path, old_path)
         
@@ -152,10 +152,6 @@ class Atividade(models.Model):
 
     def zip_path(self):
         return zip_path(self)
-
-    @staticmethod
-    def isFile(filename):
-        return os.path.isfile(filename)
 
     def remove_roteiro(self, *args, **kwargs):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_roteiro.name))

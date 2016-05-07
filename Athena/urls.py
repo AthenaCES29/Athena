@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from Promachos import views as views
+from Promachos import APImobile as mobile
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -17,5 +18,5 @@ urlpatterns = [
     url(r'^aluno/aluno_turmas/$', views.aluno_turmas),
     url(r'^prof_ativ/(?P<id_ativ>[0-9]+)/$', views.prof_ativ),
     url(r'^aluno/aluno_ativ/(?P<ativ_id>[0-9]+)/$', views.aluno_ativ),
-    url(r'^mobile/$', views.login_mobile),
+    url(r'^Mlogin/$', mobile.login),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
