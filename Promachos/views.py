@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.contrib import auth
 from django.template.context_processors import csrf
@@ -11,6 +11,7 @@ from django.shortcuts import render, render_to_response
 from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm
 from .forms import AtividadeEditForm
 from Aeacus import compare
+from Athena.models import Aluno
 from Athena.models import Turma
 from Athena.models import Atividade
 from Athena.models import Submissao
@@ -596,3 +597,21 @@ def perfil(request):
         'perfil.html',
         context_instance=RequestContext(request),
     )	
+
+def login_mobile(request):
+
+    if request.method == 'GET':
+        username = request.GET.get('username', '')
+        password = request.GET.get('password', '')
+        user = auth.authenticate(username=username, password=password)
+        
+
+        if user is None:
+            return JsonResponse({'valido': False})
+
+        else:
+            aluno = Aluno.objects.filter(user=user).first()
+            aluno_json = { }
+            aluno_json['valido'] = user.is_authenticated()
+            aluno_json = dict(aluno_json.items() + aluno.json_data().items())
+            return JsonResponse(aluno_json)
