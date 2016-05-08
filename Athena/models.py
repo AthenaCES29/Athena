@@ -37,6 +37,7 @@ def zip_path(instance):
 
 class Aluno(models.Model):
 
+    Id = models.CharField(max_length=50, help_text="Id do Aluno")
     nome = models.CharField(max_length=50, help_text="Nome do Aluno")
     user = models.ForeignKey(
         User,
@@ -57,6 +58,7 @@ class Aluno(models.Model):
 
 class Professor(models.Model):
 
+    Id = models.CharField(max_length=50, help_text="Id do Professor")
     nome = models.CharField(max_length=50, help_text="Nome do Professor")
     user = models.ForeignKey(
         User,
@@ -77,6 +79,7 @@ class Professor(models.Model):
 
 class Turma(models.Model):
 
+    Id = models.CharField(max_length=50, help_text="Id da Turma")
     nome = models.CharField(max_length=50)
     descricao = models.CharField(max_length=2000)
     professor = models.ForeignKey(Professor, help_text="Professor da Turma")
@@ -118,6 +121,7 @@ class Atividade(models.Model):
         arqZip.close()
         return arqZip
 
+    Id = models.CharField(max_length=50, help_text="Id da Submissao")
     nome = models.CharField(max_length=50)
     descricao = models.CharField(
         max_length=1000,
