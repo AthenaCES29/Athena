@@ -152,42 +152,18 @@ def professor(request):
 
         elif ('post_down_all_notas' in request.POST):
 
+            # model for notes
             turma = Turma.objects.get(id=request.POST['id_turma'])
             atividades = Atividade.objects.filter(
                 turma=turma,
             )
 
+            # generate .csv file
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
-            if not Atividade.isFile(notas_path):
-                return HttpResponseRedirect('/professor/')
-            notas = open(notas_path, "w")
+            notas = Atividade.notasTurma(turma)
 
-            notas.write(turma.nome + " - " + turma.professor.nome + "\n")
-
-            i = 0
-            notas.write("Nome")
-            for atividade in atividades:
-                i = i + 1
-                notas.write(";Nota" + str(i))
-            notas.write(";Media")
-
-            for aluno in turma.alunos.all():
-                media = 0
-                notas.write("\n" + aluno.nome + ";")
-                for atividade in atividades:
-                    submissao = Submissao.objects.filter(
-                        atividade=atividade, aluno=aluno
-                    )
-                    if submissao:
-                        submissao = submissao[0]
-                        notas.write(str(submissao.nota) + ";")
-                        media = media + submissao.nota
-                    else:
-                        notas.write("-;")
-                notas.write(str(media/i))
-            notas.close()
+            # send the file as http response
             arquivo = open(notas_path, "r")
-
             response = HttpResponse(arquivo)
             response['Content-Disposition'] = 'attachment; filename=notas_curso.csv'
 
@@ -268,30 +244,7 @@ def prof_ativ(request, id_ativ):
 
             # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
-            if not Atividade.isFile(notas_path):
-                return HttpResponseRedirect('/professor/')
-            notas = open(notas_path, "w")
-            notas.write(atividade.nome + "\n")
-            notas.write("Nome;Enviado;Status;Nota\n")
-
-            # write aluno's notes
-            for aluno in atividade.turma.alunos.all():
-                submissao = Submissao.objects.filter(
-                    atividade=atividade, aluno=aluno
-                )
-
-                notas.write(aluno.nome + ";")
-                if submissao:
-                    submissao = submissao[0]
-                    notas.write(submissao.data_envio.strftime('%d/%m') + ";")
-                    notas.write(submissao.resultado + ";")
-                    notas.write(str(submissao.nota) + ";")
-
-                else:
-                    notas.write("-;-;-;")
-
-                notas.write("\n")
-            notas.close()
+            notas = atividade.notasAtividade()
 
             # send the file as http response
             arquivo = open(notas_path, "r")
