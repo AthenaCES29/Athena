@@ -62,6 +62,7 @@ target/
 # arquivos txt, objetos, codigos, e programas
 *.txt
 *.cpp
-.c
+*.c
+*.zip
 *.o
 *.out
