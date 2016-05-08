@@ -274,5 +274,24 @@ class RelAlunoAtividade(models.Model):
     aluno = models.ForeignKey(Aluno, help_text="Aluno inscrito na atividade")
     atividade = models.ForeignKey(Atividade, help_text="Atividade do aluno")
 
+    def aluno_json_data(self):
+        data = { }
+        data['entrega'] =  self.foiEntregue
+        data['nome'] = self.atividade.nome
+        data['turma'] = self.atividade.turma.nome
+        data['prazo'] = self.atividade.data_limite
+        if self.foiEntregue:
+            submissao = Submissao.objects.filter(
+                atividade=self.atividade, aluno=self.aluno
+            ).first()
+            data['nota'] = submissao.nota
+            data['envio'] = submissao.data_envio
+        return data
+
+    def prof_json_data(self):
+        data = { }
+
+        return data
+
     def __str__(self):
         return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))

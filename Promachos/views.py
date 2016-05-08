@@ -130,9 +130,7 @@ def professor(request):
         elif ('post_deletar' in request.POST):
             turma = Turma.objects.get(id=request.POST['id_turma'])
 
-            atividades = Atividade.objects.filter(
-                turma=turma,
-            )
+            atividades = Atividade.objects.filter(turma=turma)
 
             for atividade in atividades:
                 submissoes = Submissao.objects.filter(
@@ -154,9 +152,7 @@ def professor(request):
 
             # model for notes
             turma = Turma.objects.get(id=request.POST['id_turma'])
-            atividades = Atividade.objects.filter(
-                turma=turma,
-            )
+            atividades = Atividade.objects.filter(turma=turma)
 
             # generate .csv file
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
