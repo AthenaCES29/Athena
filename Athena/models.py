@@ -104,6 +104,67 @@ class Atividade(models.Model):
     def path(self, name):
         return atividade_path(self, name)
 
+    @staticmethod
+    def notasTurma(turma):
+        atividades = Atividade.objects.filter(
+            turma=turma,
+        )
+
+        notas_path = "arquivos/" + turma.path("notas_curso.csv")
+        notas = open(notas_path, "w")
+
+        notas.write(turma.nome + " - " + turma.professor.nome + "\n")
+
+        i = 0
+        notas.write("Nome")
+        for atividade in atividades:
+            i = i + 1
+            notas.write(";Nota" + str(i))
+        notas.write(";Media")
+
+        for aluno in turma.alunos.all():
+            media = 0
+            notas.write("\n" + aluno.nome + ";")
+            for atividade in atividades:
+                submissao = Submissao.objects.filter(
+                    atividade=atividade, aluno=aluno
+                )
+                if submissao:
+                    submissao = submissao[0]
+                    notas.write(str(submissao.nota) + ";")
+                    media = media + submissao.nota
+                else:
+                    notas.write("-;")
+            notas.write(str(media/i))
+        notas.close()
+        return notas
+
+    def notasAtividade(self):
+        notas_path = "arquivos/" + self.path("notas.csv")
+        notas = open(notas_path, "w")
+        notas.write(self.nome + "\n")
+        notas.write("Nome;Enviado;Status;Nota\n")
+
+        # write aluno's notes
+        for aluno in self.turma.alunos.all():
+            submissao = Submissao.objects.filter(
+                atividade=self, aluno=aluno
+            )
+
+            notas.write(aluno.nome + ";")
+            if submissao:
+                submissao = submissao[0]
+                notas.write(submissao.data_envio.strftime('%d/%m') + ";")
+                notas.write(submissao.resultado + ";")
+                notas.write(str(submissao.nota) + ";")
+
+            else:
+                notas.write("-;-;-;")
+
+            notas.write("\n")
+        notas.close()
+        return notas
+
     def zipSubmissoes(self):
         arqZip = zipfile.ZipFile(self.zip_path(), 'w')
         for aluno in self.turma.alunos.all():
