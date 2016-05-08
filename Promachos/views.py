@@ -9,6 +9,7 @@ from django.shortcuts import render, render_to_response
 from django.template.context_processors import csrf
 from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm, AtividadeEditForm
 from Cerberus.forms import UserRegistrationForm, TurmaRegistration, AtividadeRegistration
+from Cerberus.utils import notasTurma, notasAtividade, zipSubmissoes
 from Athena.models import Aluno, Professor, Turma, Atividade, Submissao, RelAlunoAtividade
 from Athena.utils import checar_login_professor, checar_login_aluno
 from Aeacus import compare
@@ -127,6 +128,14 @@ def professor(request):
             turma = TurmaRegistration(request)
         elif ('post_atividade' in request.POST):
             atividade = AtividadeRegistration(request)
+            turma = Turma.objects.get(id=request.POST['id_turma'])
+            for aluno in turma.alunos.all():
+                relAlunoAtividade = RelAlunoAtividade(
+                    foiEntregue=False,
+                    aluno=aluno,
+                    atividade=atividade,
+                )
+                relAlunoAtividade.save()
         elif ('post_deletar' in request.POST):
             turma = Turma.objects.get(id=request.POST['id_turma'])
 
@@ -156,7 +165,7 @@ def professor(request):
 
             # generate .csv file
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
-            notas = Atividade.notasTurma(turma)
+            notas = notasTurma(turma)
 
             # send the file as http response
             arquivo = open(notas_path, "r")
@@ -240,7 +249,7 @@ def prof_ativ(request, id_ativ):
 
             # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
-            notas = atividade.notasAtividade()
+            notas = notasAtividade(atividade)
 
             # send the file as http response
             arquivo = open(notas_path, "r")
@@ -252,7 +261,7 @@ def prof_ativ(request, id_ativ):
         if ('post_down_submissoes' in request.POST):
 
             # generate the file
-            zipFile = atividade.zipSubmissoes()
+            zipFile = zipSubmissoes(atividade)
 
             # send the file as http response
             arquivo = open(atividade.zip_path(), "r")
