@@ -2,7 +2,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from Athena.models import Professor, Aluno
+from Athena.models import Professor, Aluno, Atividade, Turma
+from Athena.utils import checar_login_professor, checar_login_aluno
+import uuid
 import re
 
 
@@ -114,13 +116,44 @@ class UserRegistrationForm(UserCreationForm):
             )
             if matchObjProf:
                 professor = Professor(
+                    Id = uuid.uuid4(),
                     user=usuario,
                     nome=self.cleaned_data['fullname']
                 )
                 professor.save()
             else:
                 aluno = Aluno(
+                    Id = uuid.uuid4(),
                     user=usuario,
                     nome=self.cleaned_data['fullname'],
                 )
                 aluno.save()
+
+
+def TurmaRegistration(request):
+    professor = checar_login_professor(request).first()
+    turma = Turma(
+        Id = uuid.uuid4(),
+        nome=request.POST['nome'],
+        descricao=request.POST['descricao'],
+        professor=professor
+    )
+    turma.save()
+    return turma
+
+def AtividadeRegistration(request):
+    turma = Turma.objects.get(id=request.POST['id_turma'])
+    turma_id = turma.id
+    prefixo = str(turma_id) + '-'
+    atividade = Atividade(
+        Id = uuid.uuid4(),
+        nome=request.POST[prefixo + 'nome'],
+        descricao=request.POST[prefixo + 'descricao'],
+        data_limite=request.POST[prefixo + 'data_limite'],
+        arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+        arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+        arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
+        turma=turma,
+    )
+    atividade.save()
+    return atividade

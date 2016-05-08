@@ -4,28 +4,18 @@ import os
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.contrib import auth
-from django.template.context_processors import csrf
-from Cerberus.forms import UserRegistrationForm
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response
-from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm
-from .forms import AtividadeEditForm
-from Aeacus import compare
-from Athena.models import Aluno
-from Athena.models import Professor
-from Athena.models import Turma
-from Athena.models import Atividade
-from Athena.models import Submissao
-from Athena.models import RelAlunoAtividade
+from django.template.context_processors import csrf
+from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm, AtividadeEditForm
+from Cerberus.forms import UserRegistrationForm, TurmaRegistration, AtividadeRegistration
+from Athena.models import Aluno, Professor, Turma, Atividade, Submissao, RelAlunoAtividade
 from Athena.utils import checar_login_professor, checar_login_aluno
+from Aeacus import compare
 from pprint import pprint
 
 import re
 
-################################################################
-################################################################
-################################################################
-################################################################
 def login(request):
 
     professor = checar_login_professor(request)
@@ -134,26 +124,9 @@ def professor(request):
     if request.method == 'POST':
         pprint(request.POST)
         if('post_turma' in request.POST):
-            turma = Turma(
-                nome=request.POST['nome'],
-                descricao=request.POST['descricao'],
-                professor=professor
-            )
-            turma.save()
+            turma = TurmaRegistration(request)
         elif ('post_atividade' in request.POST):
-            turma = Turma.objects.get(id=request.POST['id_turma'])
-            turma_id = turma.id
-            prefixo = str(turma_id) + '-'
-            atividade = Atividade(
-                nome=request.POST[prefixo + 'nome'],
-                descricao=request.POST[prefixo + 'descricao'],
-                data_limite=request.POST[prefixo + 'data_limite'],
-                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
-                arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
-                arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
-                turma=turma,
-            )
-            atividade.save()
+            atividade = AtividadeRegistration(request)
         elif ('post_deletar' in request.POST):
             turma = Turma.objects.get(id=request.POST['id_turma'])
 
