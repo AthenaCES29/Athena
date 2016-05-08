@@ -59,3 +59,9 @@ target/
 *~
 *.swo
 
+# arquivos txt, objetos, codigos, e programas
+*.txt
+*.cpp
+.c
+*.o
+*.out
