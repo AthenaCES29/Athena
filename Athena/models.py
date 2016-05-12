@@ -104,6 +104,23 @@ class Atividade(models.Model):
     def path(self, name):
         return atividade_path(self, name)
 
+    def countSubmissoes(self):
+        counterSubmissoes = 0
+        for relAlunoAtividade in RelAlunoAtividade.objects.filter(atividade=self):
+            if relAlunoAtividade.foiEntregue:
+                counterSubmissoes = counterSubmissoes + 1
+        return counterSubmissoes
+
+    def prof_json_data(self):
+        data = { }
+        data['id'] = self.Id
+        data['nome'] = self.nome
+        data['professor'] = self.turma.professor.nome
+        data['prazo'] = self.data_limite
+        data['submissoes'] = self.countSubmissoes()
+
+        return data
+
     Id = models.CharField(max_length=50, help_text="Id da Submissao")
     nome = models.CharField(max_length=50)
     descricao = models.CharField(
@@ -215,11 +232,6 @@ class RelAlunoAtividade(models.Model):
             ).first()
             data['nota'] = submissao.nota
             data['envio'] = submissao.data_envio
-        return data
-
-    def prof_json_data(self):
-        data = { }
-
         return data
 
     def __str__(self):
