@@ -56,7 +56,7 @@ def atividades(request):
             atividades_buf = [] 
 
             for relAlunoAtividade in RelAlunoAtividade.objects.filter(aluno=aluno):
-                atividades_buf.append(dict(atividades_json.items() + relAlunoAtividade.aluno_json_data().items()))
+                atividades_buf.append(dict(relAlunoAtividade.aluno_json_data().items()))
             
             atividades_json['valido'] = True
             atividades_json['atividades'] = atividades_buf
@@ -65,7 +65,24 @@ def atividades(request):
         elif professor is not None:
 
             atividades_json = { }
-            
+
+            turmas_buf = []
+            turmas = Turma.objects.filter(professor=professor)
+            for turma in turmas:
+                turma_info = {}
+                turma_info['id'] = turma.Id
+                turma_info['nome'] = turma.nome
+
+                atividades_buf = []
+                atividades = Atividade.objects.filter(turma=turma)
+                for atividade in atividades:
+                    atividades_buf.append(dict(atividade.prof_json_data().items()))
+
+                turma_info['atividades'] = atividades_buf
+                turmas_buf.append(dict(turma_info.items()))
+
+            atividades_json['valido'] = True
+            atividades_json['turmas'] = turmas_buf
             return JsonResponse(atividades_json)
 
     return JsonResponse({'valido': False})
