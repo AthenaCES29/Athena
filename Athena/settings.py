@@ -50,7 +50,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'Athena.middleware.AutoLogout',
 )
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+AUTO_LOGOUT_DELAY = 1
 
 ROOT_URLCONF = 'Athena.urls'
 
@@ -112,13 +116,9 @@ else:
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'arquivos')
@@ -131,3 +131,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
 )
+
+# Session expire
+# SESSION_COOKIE_AGE = 30
