@@ -58,6 +58,7 @@ def login(request):
 
     try:
 	    if request.session['advise'] == 'true':
+		request.session['advise'] = 'false'
 		return render_to_response(
 		        'login.html',
 		        {

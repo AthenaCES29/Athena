@@ -56,7 +56,7 @@ def atividades(request):
             atividades_buf = [] 
 
             for relAlunoAtividade in RelAlunoAtividade.objects.filter(aluno=aluno):
-                atividades_buf.append(dict(relAlunoAtividade.aluno_json_data().items()))
+                atividades_buf.append(relAlunoAtividade.aluno_json_data())
             
             atividades_json['valido'] = True
             atividades_json['atividades'] = atividades_buf
@@ -90,4 +90,34 @@ def atividades(request):
 
 def notas(request):
 
-    return JsonResponse({'valido': False})
+	if request.method == 'GET':
+	
+		# Get aluno in db
+		userId = request.GET.get('id', '')
+		aluno = Aluno.objects.filter(Id=userId).first()        
+		
+		if aluno is not None:
+			ret_json = {}
+			
+			# Iterate over submissoes
+			submissoes = Submissao.objects.filter(aluno = aluno)
+			for submissao in submissoes:
+				ret_json['NOTA-'+submissao.atividade.nome] = submissao.nota
+				ret_json['PRAZO-'+submissao.atividade.nome] = submissao.atividade.data_limite
+				
+			return JsonResponse(ret_json)	
+
+	return JsonResponse({'valido': False})
+
+
+
+
+
+
+
+
+
+
+
+
+
