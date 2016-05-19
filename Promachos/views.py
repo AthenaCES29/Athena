@@ -14,6 +14,7 @@ from Athena.models import Aluno, Professor, Turma, Atividade, Submissao, RelAlun
 from Athena.utils import checar_login_professor, checar_login_aluno
 from Aeacus import compare
 from pprint import pprint
+from datetime import datetime
 from itertools import izip_longest
 
 import re
@@ -24,8 +25,10 @@ def login(request):
     aluno = checar_login_aluno(request)
 
     if professor:
+	request.session['last_touch'] = datetime.now()
         return HttpResponseRedirect('/professor')
     if aluno:
+	request.session['last_touch'] = datetime.now()
         return HttpResponseRedirect('/aluno')
 
     if request.method == 'POST':
@@ -53,6 +56,20 @@ def login(request):
                 },
                 context_instance=RequestContext(request),
             )
+
+    try:
+	    if request.session['advise'] == 'true':
+		return render_to_response(
+		        'login.html',
+		        {
+		            "invalid_message": "Sessao expirada",
+		            "success_message": ""
+		        },
+		        context_instance=RequestContext(request),
+		    )
+    except KeyError:
+      pass
+
 
     return render_to_response('login.html',
                               {"invalid_message": ""},
