@@ -14,6 +14,7 @@ from Athena.models import Aluno, Professor, Turma, Atividade, Submissao, RelAlun
 from Athena.utils import checar_login_professor, checar_login_aluno
 from Aeacus import compare
 from pprint import pprint
+from itertools import izip_longest
 
 import re
 
@@ -510,6 +511,14 @@ def aluno_turmas(request):
             turma = Turma.objects.get(id=request.POST['post_entrar'])
             aluno.turma_set.add(turma)
             aluno.save()
+            atividades = Atividade.objects.filter(turma=turma)
+            for atividade in atividades:
+                relAlunoAtividade = RelAlunoAtividade(
+                    foiEntregue=False,
+                    aluno=aluno,
+                    atividade=atividade,
+                )
+                relAlunoAtividade.save()
 
     turmas_registradas = aluno.turma_set.all()
     todas_turmas = Turma.objects.all()
