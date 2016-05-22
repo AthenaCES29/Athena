@@ -80,8 +80,8 @@ def zipSubmissoes(atividade):
         )
         if submissoes:
             submissao = submissoes.first()
-            old_path = 'arquivos/' + submissao_path(submissao,
-                                                    os.path.basename(submissao.arquivo_codigo.name))
+            codigo = os.path.basename(submissao.arquivo_codigo.name)
+            old_path = 'arquivos/' + submissao_path(submissao, codigo)
             new_path = 'arquivos/' + atividade.nome + '_' + aluno.nome \
                 + '.c'
             os.rename(old_path, new_path)
