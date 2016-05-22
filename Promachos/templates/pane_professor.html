@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="/static/css/bootstrap-tagsinput.css" />
+<script src="/static/js/bootstrap-tagsinput.min.js"></script>
+</style>
 <div role="tabpanel" class="tab-pane fade" id={{turma.id}}>
   <div class="row content">
     <div class="col-xs-12 col-md-3">
@@ -37,6 +40,11 @@
               {{field}}
             </div>
             {% endfor %}
+            <div class="form-group">
+                <div align="left"><label>Restrições</label></div>
+                <input type="text" name="restricoes" class="form-control"
+                        value="goto" data-role="tagsinput" id="restricoes"/>
+            </div>
             <p><button class="btn btn-lg btn-success btn-block" type="submit">Criar</button></p>
           </form>
           <br>

@@ -126,6 +126,9 @@ class Atividade(models.Model):
     descricao = models.CharField(
         max_length=1000,
     )
+    restricoes = models.CharField(
+        max_length=1000,
+    )
     arquivo_roteiro = models.FileField(upload_to=atividade_path)
     arquivo_entrada = models.FileField(upload_to=atividade_path)
     arquivo_saida = models.FileField(upload_to=atividade_path)
