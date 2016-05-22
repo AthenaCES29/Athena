@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from Athena.models import Professor, Aluno, Atividade, Turma
-from Athena.utils import checar_login_professor, checar_login_aluno
+from Athena.utils import checar_login_professor
 import uuid
 import re
 
@@ -30,7 +30,8 @@ class UserRegistrationForm(UserCreationForm):
         max_length=30,
         regex=r'^[\w.@+-]+$',
         help_text=(
-            "<br>No máximo 30 caracteres. Letras, dígitos e @/./+/-/_ apenas."),
+            "<br>No máximo 30 caracteres. Letras, dígitos e @/./+/-/_ apenas."
+        ),
         error_messages={
             'invalid': (travis1 + travis2),
             'required': ("Este campo é obrigatório."),

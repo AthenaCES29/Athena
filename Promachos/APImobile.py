@@ -25,16 +25,20 @@ def login(request):
                 aluno_json = {}
                 aluno_json['id'] = aluno.Id
                 aluno_json['valido'] = user.is_authenticated()
-                aluno_json = dict(aluno_json.items()
-                                  + aluno.json_data().items())
+                aluno_json = dict(
+                    aluno_json.items() +
+                    aluno.json_data().items()
+                )
                 return JsonResponse(aluno_json)
             elif professor is not None:
 
                 professor_json = {}
                 professor_json['id'] = professor.Id
                 professor_json['valido'] = user.is_authenticated()
-                professor_json = dict(professor_json.items()
-                                      + professor.json_data().items())
+                professor_json = dict(
+                    professor_json.items() +
+                    professor.json_data().items()
+                )
                 return JsonResponse(professor_json)
 
     return JsonResponse({'valido': False})

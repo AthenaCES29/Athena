@@ -99,7 +99,9 @@ class Turma(models.Model):
 
     def __str__(self):
         return '%s %s' % (
-            self.nome.encode('utf-8'), self.professor.nome.encode('utf-8'))
+            self.nome.encode('utf-8'),
+            self.professor.nome.encode('utf-8')
+        )
 
 
 class Atividade(models.Model):
@@ -169,10 +171,16 @@ class Atividade(models.Model):
         return zip_path(self)
 
     def remove_roteiro(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_roteiro.name))
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_roteiro.name))
 
     def remove_entrada(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_entrada.name))
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_entrada.name))
 
     def remove_saida(self, *args, **kwargs):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida.name))
@@ -204,17 +212,24 @@ class Submissao(models.Model):
         Atividade,
         help_text="Atividade relacionada a submissão"
     )
-    aluno = models.ForeignKey(Aluno, help_text="Aluno que enviou a submissão")
+    aluno = models.ForeignKey(
+        Aluno,
+        help_text="Aluno que enviou a submissão")
 
     def nome_codigo(self):
         return os.path.basename(self.arquivo_codigo.name)
 
     def remove_file(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_codigo.name))
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_codigo.name))
 
     def __str__(self):
         return '%s %s' % (
-            self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
+            self.atividade.nome.encode('utf-8'),
+            self.aluno.nome.encode('utf-8')
+        )
 
 
 class RelAlunoAtividade(models.Model):
@@ -248,4 +263,6 @@ class RelAlunoAtividade(models.Model):
 
     def __str__(self):
         return '%s %s' % (
-            self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
+            self.atividade.nome.encode('utf-8'),
+            self.aluno.nome.encode('utf-8')
+        )

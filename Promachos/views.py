@@ -23,6 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.template.context_processors import csrf
+from django.utils import timezone
 
 from .forms import AtividadeCreationForm, AtividadeEditForm, \
     TurmaCreationForm, UploadFileForm
@@ -192,7 +193,7 @@ def professor(request):
 
             # generate .csv file
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
-            notas = notasTurma(turma)
+            notasTurma(turma)
 
             # send the file as http response
             arquivo = open(notas_path, "r")
@@ -276,7 +277,7 @@ def prof_ativ(request, id_ativ):
 
             # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
-            notas = notasAtividade(atividade)
+            notasAtividade(atividade)
 
             # send the file as http response
             arquivo = open(notas_path, "r")
@@ -288,7 +289,7 @@ def prof_ativ(request, id_ativ):
         if ('post_down_submissoes' in request.POST):
 
             # generate the file
-            zipFile = zipSubmissoes(atividade)
+            zipSubmissoes(atividade)
 
             # send the file as http response
             arquivo = open(atividade.zip_path(), "r")

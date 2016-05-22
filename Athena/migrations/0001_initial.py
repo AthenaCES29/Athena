@@ -28,9 +28,10 @@ class Migration(migrations.Migration):
                 ('nome', models.CharField(
                     help_text=b'Nome do Aluno', max_length=50)),
                 ('user',
-                 models.ForeignKey(help_text=b'Usuario de login relacionado ao Aluno',
-                                   on_delete=django.db.models.deletion.CASCADE,
-                                   to=settings.AUTH_USER_MODEL)),
+                 models.ForeignKey(
+                     help_text=b'Usuario de login relacionado ao Aluno',
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -63,9 +64,10 @@ class Migration(migrations.Migration):
                 ('nome', models.CharField(
                     help_text=b'Nome do Professor', max_length=50)),
                 ('user',
-                 models.ForeignKey(help_text=b'Usuario de login relacionado ao Professor',
-                                   on_delete=django.db.models.deletion.CASCADE,
-                                   to=settings.AUTH_USER_MODEL)),
+                 models.ForeignKey(
+                     help_text=b'Usuario de login relacionado ao Professor',
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -77,7 +79,8 @@ class Migration(migrations.Migration):
                                   serialize=False,
                                   verbose_name='ID')),
                 ('foiEntregue', models.BooleanField(
-                    help_text=b'Se o aluno ja mandou alguma submissao para a atividade')),
+                    help_text=b'Se o aluno ja mandou alguma submissao" + \
+                     para a atividade')),
                 ('aluno',
                  models.ForeignKey(help_text=b'Aluno inscrito na atividade',
                                    on_delete=django.db.models.deletion.CASCADE,
@@ -121,9 +124,10 @@ class Migration(migrations.Migration):
                                    on_delete=django.db.models.deletion.CASCADE,
                                    to='Athena.Aluno')),
                 ('atividade',
-                 models.ForeignKey(help_text=b'Atividade relacionada a submissao',
-                                   on_delete=django.db.models.deletion.CASCADE,
-                                   to='Athena.Atividade')),
+                 models.ForeignKey(
+                     help_text=b'Atividade relacionada a submissao',
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to='Athena.Atividade')),
             ],
         ),
         migrations.CreateModel(
@@ -151,7 +155,8 @@ class Migration(migrations.Migration):
             name='alunos',
             field=models.ManyToManyField(
                 blank=True,
-                help_text=b'Relacao do aluno com a atividade,\n            guarda se aluno submeteu atividade',
+                help_text=b'Relacao do aluno com a atividade,\n" + \
+                            guarda se aluno submeteu atividade',
                 through='Athena.RelAlunoAtividade',
                 to='Athena.Aluno'),
         ),

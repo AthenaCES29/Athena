@@ -58,7 +58,8 @@ class Migration(migrations.Migration):
             model_name='relalunoatividade',
             name='foiEntregue',
             field=models.BooleanField(
-                help_text=b'Se o aluno j\xc3\xa1 mandou alguma submiss\xc3\xa3o para a atividade'),
+                help_text=b'Se o aluno j\xc3\xa1 mandou" + \
+                 alguma submiss\xc3\xa3o para a atividade'),
         ),
         migrations.AlterField(
             model_name='submissao',
