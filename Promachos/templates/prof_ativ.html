@@ -103,9 +103,9 @@
           <h2>{{atividade.nome}}</h2>
           <h3>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}}</h3>
           {% if atividade.estaFechada %}
-          <h4>Status: fechada (em {{atividade.data_limite}})</h4>
+          <h4 style="color:red">Status: fechada (em {{atividade.data_limite}})</h4>
           {% else %}
-          <h5>Status: aberta (até {{atividade.data_limite}})</h5>
+          <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h5>
           {% endif %}
           <section class="tabela">
             <table>
