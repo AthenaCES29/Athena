@@ -197,7 +197,8 @@ def professor(request):
             # send the file as http response
             arquivo = open(notas_path, "r")
             response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename=notas_curso.csv'
+            response[
+                'Content-Disposition'] = 'attachment; filename=notas_curso.csv'
 
             return response
 
@@ -292,7 +293,8 @@ def prof_ativ(request, id_ativ):
             # send the file as http response
             arquivo = open(atividade.zip_path(), "r")
             response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename=' + atividade.nome + '.zip'
+            response['Content-Disposition'] = 'attachment; filename=' + \
+                atividade.nome + '.zip'
             return response
 
     status_aluno = []
@@ -451,7 +453,7 @@ def aluno_ativ(request, ativ_id):
             pprint(lista_saida)
             num_diffs = nums[0]
             pprint(lines_gabarito)
-            nota = (((lines_gabarito - num_diffs)*100.0)/lines_gabarito)
+            nota = (((lines_gabarito - num_diffs) * 100.0) / lines_gabarito)
             nota = int(nota)
         elif status == "AC":
             nota = 100

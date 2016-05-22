@@ -20,12 +20,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='atividade',
             name='Id',
-            field=models.CharField(help_text=b'Id da Submissao', max_length=50),
+            field=models.CharField(
+                help_text=b'Id da Submissao',
+                max_length=50),
         ),
         migrations.AlterField(
             model_name='professor',
             name='Id',
-            field=models.CharField(help_text=b'Id do Professor', max_length=50),
+            field=models.CharField(
+                help_text=b'Id do Professor',
+                max_length=50),
         ),
         migrations.AlterField(
             model_name='turma',

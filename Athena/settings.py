@@ -84,12 +84,12 @@ WSGI_APPLICATION = 'Athena.wsgi.application'
 if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE':   'django.db.backends.postgresql_psycopg2',
-            'NAME':     'testdb',
-            'USER':     'postgres',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'testdb',
+            'USER': 'postgres',
             'PASSWORD': '',
-            'HOST':     'localhost',
-            'PORT':     '',
+            'HOST': 'localhost',
+            'PORT': '',
         }
     }
 else:

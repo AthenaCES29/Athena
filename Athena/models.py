@@ -98,7 +98,8 @@ class Turma(models.Model):
         return turma_path(self, name)
 
     def __str__(self):
-        return '%s %s' % (self.nome.encode('utf-8'), self.professor.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.nome.encode('utf-8'), self.professor.nome.encode('utf-8'))
 
 
 class Atividade(models.Model):
@@ -111,7 +112,8 @@ class Atividade(models.Model):
 
     def countSubmissoes(self):
         counterSubmissoes = 0
-        for relAlunoAtividade in RelAlunoAtividade.objects.filter(atividade=self):
+        for relAlunoAtividade in RelAlunoAtividade.objects.filter(
+                atividade=self):
             if relAlunoAtividade.foiEntregue:
                 counterSubmissoes = counterSubmissoes + 1
         return counterSubmissoes
@@ -151,7 +153,8 @@ class Atividade(models.Model):
     )
 
     def __str__(self):
-        return '%s %s' % (self.nome.encode('utf-8'), self.turma.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.nome.encode('utf-8'), self.turma.nome.encode('utf-8'))
 
     def nome_roteiro(self):
         return os.path.basename(self.arquivo_roteiro.name)
@@ -210,7 +213,8 @@ class Submissao(models.Model):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_codigo.name))
 
     def __str__(self):
-        return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
 
 
 class RelAlunoAtividade(models.Model):
@@ -243,4 +247,5 @@ class RelAlunoAtividade(models.Model):
         return data
 
     def __str__(self):
-        return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))

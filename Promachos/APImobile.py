@@ -54,7 +54,8 @@ def atividades(request):
             atividades_json = {}
             atividades_buf = []
 
-            for relAlunoAtividade in RelAlunoAtividade.objects.filter(aluno=aluno):
+            for relAlunoAtividade in RelAlunoAtividade.objects.filter(
+                    aluno=aluno):
                 atividades_buf.append(relAlunoAtividade.aluno_json_data())
 
             atividades_json['valido'] = True
@@ -149,7 +150,8 @@ def calendario(request):
                     submissao.atividade.data_limite
                 calendarioAtividade_buf.append(submissao_json)
 
-            for relAlunoAtividade in RelAlunoAtividade.objects.filter(aluno=aluno):
+            for relAlunoAtividade in RelAlunoAtividade.objects.filter(
+                    aluno=aluno):
                 if not relAlunoAtividade.foiEntregue:
                     atividade_json = {}
                     atividade_json['submetida'] = False
