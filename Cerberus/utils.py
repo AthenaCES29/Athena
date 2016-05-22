@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import os,sys
-from django.db import models
+import os
 from Athena.models import submissao_path
-from Athena.models import Aluno, Atividade, Turma, Professor, Submissao
+from Athena.models import Atividade, Submissao
 import zipfile
 
 
@@ -80,6 +79,6 @@ def zipSubmissoes(atividade):
             if (os.path.isfile(new_path)):
                 arqZip.write(new_path)
             os.rename(new_path, old_path)
-    
+
     arqZip.close()
     return arqZip
