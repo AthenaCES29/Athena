@@ -1,21 +1,31 @@
+
 # -*- coding: utf-8 -*-
+
+import re
+
+from datetime import datetime
+
+from itertools import izip_longest
+
+from pprint import pprint
+
+from Aeacus import compare
+
+from Athena.models import Atividade, RelAlunoAtividade, Submissao, Turma
+from Athena.utils import checar_login_aluno, checar_login_professor
+
+from Cerberus.forms import AtividadeRegistration, TurmaRegistration, \
+    UserRegistrationForm
+from Cerberus.utils import notasAtividade, notasTurma, zipSubmissoes
 
 from django.contrib import auth
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.template.context_processors import csrf
-from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm, AtividadeEditForm
-from Cerberus.forms import UserRegistrationForm, TurmaRegistration, AtividadeRegistration
-from Cerberus.utils import notasTurma, notasAtividade, zipSubmissoes
-from Athena.models import Aluno, Professor, Turma, Atividade, Submissao, RelAlunoAtividade
-from Athena.utils import checar_login_professor, checar_login_aluno
-from Aeacus import compare
-from pprint import pprint
-from datetime import datetime
-from itertools import izip_longest
 
-import re
+from .forms import AtividadeCreationForm, AtividadeEditForm, \
+    TurmaCreationForm, UploadFileForm
 
 
 def login(request):

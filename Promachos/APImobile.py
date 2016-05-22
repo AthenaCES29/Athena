@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from django.http import JsonResponse
-from django.contrib import auth
-from Athena.models import Aluno, Professor, Turma, Atividade, \
+from Athena.models import Aluno, Atividade, Professor, Turma, \
     Submissao, RelAlunoAtividade
+
+from django.contrib import auth
+from django.http import JsonResponse
 
 
 def login(request):
@@ -33,7 +34,7 @@ def login(request):
                 professor_json['id'] = professor.Id
                 professor_json['valido'] = user.is_authenticated()
                 professor_json = dict(professor_json.items()
-                        + professor.json_data().items())
+                                      + professor.json_data().items())
                 return JsonResponse(professor_json)
 
     return JsonResponse({'valido': False})
@@ -53,8 +54,7 @@ def atividades(request):
             atividades_json = {}
             atividades_buf = []
 
-            for relAlunoAtividade in \
-                RelAlunoAtividade.objects.filter(aluno=aluno):
+            for relAlunoAtividade in RelAlunoAtividade.objects.filter(aluno=aluno):
                 atividades_buf.append(relAlunoAtividade.aluno_json_data())
 
             atividades_json['valido'] = True
@@ -74,7 +74,8 @@ def atividades(request):
                 atividades_buf = []
                 atividades = Atividade.objects.filter(turma=turma)
                 for atividade in atividades:
-                    atividades_buf.append(dict(atividade.prof_json_data().items()))
+                    atividades_buf.append(
+                        dict(atividade.prof_json_data().items()))
 
                 turma_info['atividades'] = atividades_buf
                 turmas_buf.append(dict(turma_info.items()))
@@ -99,7 +100,7 @@ def notas(request):
         notas_json = {}
         notas_buf = []
 
-            # Iterate over submissoes
+        # Iterate over submissoes
 
         submissoes = Submissao.objects.filter(aluno=aluno)
         for submissao in submissoes:
@@ -148,8 +149,7 @@ def calendario(request):
                     submissao.atividade.data_limite
                 calendarioAtividade_buf.append(submissao_json)
 
-            for relAlunoAtividade in \
-                RelAlunoAtividade.objects.filter(aluno=aluno):
+            for relAlunoAtividade in RelAlunoAtividade.objects.filter(aluno=aluno):
                 if not relAlunoAtividade.foiEntregue:
                     atividade_json = {}
                     atividade_json['submetida'] = False
@@ -168,7 +168,3 @@ def calendario(request):
             return JsonResponse(calendario_json)
 
     return JsonResponse({'valido': False})
-
-
-
-            
