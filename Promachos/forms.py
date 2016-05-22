@@ -3,12 +3,14 @@ from django import forms
 from django.forms import ModelForm
 from Athena.models import Turma, Atividade
 
+
 class UploadFileForm(forms.Form):
 
     file = forms.FileField()
 
 
 class TurmaCreationForm(ModelForm):
+
     class Meta:
         model = Turma
         fields = ['nome', 'descricao']
@@ -32,6 +34,7 @@ class TurmaCreationForm(ModelForm):
 
 
 class AtividadeCreationForm(ModelForm):
+
     class Meta:
         model = Atividade
         fields = [
@@ -73,6 +76,7 @@ class AtividadeCreationForm(ModelForm):
 
 
 class AtividadeEditForm(ModelForm):
+
     class Meta:
         model = Atividade
         fields = [

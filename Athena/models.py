@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import os,sys
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
+import os
+
 from Athena import settings
-import zipfile
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.utils import timezone
 
 
 def atividade_path(instance, filename):
@@ -15,12 +16,14 @@ def atividade_path(instance, filename):
         name=filename,
     )
 
+
 def turma_path(instance, filename):
     return 'atividades/{prof}/{turma}/{name}'.format(
         prof=instance.professor.id,
         turma=instance.id,
         name=filename,
     )
+
 
 def submissao_path(instance, filename):
     return 'codigos/{aluno}/{atividade}/{name}'.format(
@@ -29,11 +32,13 @@ def submissao_path(instance, filename):
         name=filename,
     )
 
+
 def zip_path(instance):
     return 'arquivos/codigos/{name}.zip'.format(
         atividade=instance.id,
-        name = instance.nome
+        name=instance.nome
     )
+
 
 class Aluno(models.Model):
 
@@ -48,7 +53,7 @@ class Aluno(models.Model):
         return '%s' % (self.nome.encode('utf-8'))
 
     def json_data(self):
-        data = { }
+        data = {}
         data['nome'] = self.nome
         data['username'] = self.user.get_username()
         data['email'] = self.user.email
@@ -69,7 +74,7 @@ class Professor(models.Model):
         return '%s' % (self.nome.encode('utf-8'))
 
     def json_data(self):
-        data = { }
+        data = {}
         data['nome'] = self.nome
         data['username'] = self.user.get_username()
         data['email'] = self.user.email
@@ -93,7 +98,10 @@ class Turma(models.Model):
         return turma_path(self, name)
 
     def __str__(self):
-        return '%s %s' % (self.nome.encode('utf-8'), self.professor.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.nome.encode('utf-8'),
+            self.professor.nome.encode('utf-8')
+        )
 
 
 class Atividade(models.Model):
@@ -106,13 +114,14 @@ class Atividade(models.Model):
 
     def countSubmissoes(self):
         counterSubmissoes = 0
-        for relAlunoAtividade in RelAlunoAtividade.objects.filter(atividade=self):
+        for relAlunoAtividade in RelAlunoAtividade.objects.filter(
+                atividade=self):
             if relAlunoAtividade.foiEntregue:
                 counterSubmissoes = counterSubmissoes + 1
         return counterSubmissoes
 
     def prof_json_data(self):
-        data = { }
+        data = {}
         data['id'] = self.Id
         data['nome'] = self.nome
         data['professor'] = self.turma.professor.nome
@@ -146,7 +155,8 @@ class Atividade(models.Model):
     )
 
     def __str__(self):
-        return '%s %s' % (self.nome.encode('utf-8'), self.turma.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.nome.encode('utf-8'), self.turma.nome.encode('utf-8'))
 
     def nome_roteiro(self):
         return os.path.basename(self.arquivo_roteiro.name)
@@ -161,10 +171,16 @@ class Atividade(models.Model):
         return zip_path(self)
 
     def remove_roteiro(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_roteiro.name))
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_roteiro.name))
 
     def remove_entrada(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_entrada.name))
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_entrada.name))
 
     def remove_saida(self, *args, **kwargs):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida.name))
@@ -196,16 +212,24 @@ class Submissao(models.Model):
         Atividade,
         help_text="Atividade relacionada a submissão"
     )
-    aluno = models.ForeignKey(Aluno, help_text="Aluno que enviou a submissão")
+    aluno = models.ForeignKey(
+        Aluno,
+        help_text="Aluno que enviou a submissão")
 
     def nome_codigo(self):
         return os.path.basename(self.arquivo_codigo.name)
 
     def remove_file(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_codigo.name))
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_codigo.name))
 
     def __str__(self):
-        return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.atividade.nome.encode('utf-8'),
+            self.aluno.nome.encode('utf-8')
+        )
 
 
 class RelAlunoAtividade(models.Model):
@@ -217,8 +241,8 @@ class RelAlunoAtividade(models.Model):
     atividade = models.ForeignKey(Atividade, help_text="Atividade do aluno")
 
     def aluno_json_data(self):
-        data = { }
-        data['entrega'] =  self.foiEntregue
+        data = {}
+        data['entrega'] = self.foiEntregue
         data['id'] = self.atividade.Id
         data['nome'] = self.atividade.nome
         data['turma'] = self.atividade.turma.nome
@@ -238,4 +262,7 @@ class RelAlunoAtividade(models.Model):
         return data
 
     def __str__(self):
-        return '%s %s' % (self.atividade.nome.encode('utf-8'), self.aluno.nome.encode('utf-8'))
+        return '%s %s' % (
+            self.atividade.nome.encode('utf-8'),
+            self.aluno.nome.encode('utf-8')
+        )

@@ -41,41 +41,71 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='aluno',
             name='user',
-            field=models.ForeignKey(help_text=b'Usu\xc3\xa1rio de login relacionado ao Aluno', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                help_text=b'Usu\xc3\xa1rio de login relacionado ao Aluno',
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='professor',
             name='user',
-            field=models.ForeignKey(help_text=b'Usu\xc3\xa1rio de login relacionado ao Professor', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                help_text=b'Usu\xc3\xa1rio de login relacionado ao Professor',
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='relalunoatividade',
             name='foiEntregue',
-            field=models.BooleanField(help_text=b'Se o aluno j\xc3\xa1 mandou alguma submiss\xc3\xa3o para a atividade'),
+            field=models.BooleanField(
+                help_text=b'Se o aluno j\xc3\xa1 mandou" + \
+                 alguma submiss\xc3\xa3o para a atividade'),
         ),
         migrations.AlterField(
             model_name='submissao',
             name='aluno',
-            field=models.ForeignKey(help_text=b'Aluno que enviou a submiss\xc3\xa3o', on_delete=django.db.models.deletion.CASCADE, to='Athena.Aluno'),
+            field=models.ForeignKey(
+                help_text=b'Aluno que enviou a submiss\xc3\xa3o',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='Athena.Aluno'),
         ),
         migrations.AlterField(
             model_name='submissao',
             name='atividade',
-            field=models.ForeignKey(help_text=b'Atividade relacionada a submiss\xc3\xa3o', on_delete=django.db.models.deletion.CASCADE, to='Athena.Atividade'),
+            field=models.ForeignKey(
+                help_text=b'Atividade relacionada a submiss\xc3\xa3o',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='Athena.Atividade'),
         ),
         migrations.AlterField(
             model_name='submissao',
             name='data_envio',
-            field=models.DateField(auto_now=True, help_text=b'Data de submiss\xc3\xa3o do c\xc3\xb3digo'),
+            field=models.DateField(
+                auto_now=True,
+                help_text=b'Data de submiss\xc3\xa3o do c\xc3\xb3digo'),
         ),
         migrations.AlterField(
             model_name='submissao',
             name='nota',
-            field=models.PositiveSmallIntegerField(help_text=b'Nota para submiss\xc3\xa3o do aluno'),
+            field=models.PositiveSmallIntegerField(
+                help_text=b'Nota para submiss\xc3\xa3o do aluno'),
         ),
         migrations.AlterField(
             model_name='submissao',
             name='resultado',
-            field=models.CharField(choices=[(b'AC', b'Aceito'), (b'TLE', b'Tempo Limite Excedido'), (b'RTE', b'Erro em tempo de execu\xc3\xa7\xc3\xa3o'), (b'CE', b'Erro de compila\xc3\xa7\xc3\xa3o'), (b'WA', b'Resposta Errada')], help_text=b'Resultado da submissao do aluno', max_length=3),
+            field=models.CharField(
+                choices=[
+                    (b'AC',
+                     b'Aceito'),
+                    (b'TLE',
+                     b'Tempo Limite Excedido'),
+                    (b'RTE',
+                     b'Erro em tempo de execu\xc3\xa7\xc3\xa3o'),
+                    (b'CE',
+                     b'Erro de compila\xc3\xa7\xc3\xa3o'),
+                    (b'WA',
+                     b'Resposta Errada')],
+                help_text=b'Resultado da submissao do aluno',
+                max_length=3),
         ),
     ]

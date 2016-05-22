@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from Athena.models import Professor, Aluno, Atividade, Turma
-from Athena.utils import checar_login_professor, checar_login_aluno
+from Athena.utils import checar_login_professor
 import uuid
 import re
+
 
 class UserRegistrationForm(UserCreationForm):
     travis1 = "Esse valor deve conter apenas letras"
@@ -18,7 +20,7 @@ class UserRegistrationForm(UserCreationForm):
     fullname = forms.CharField(
         label=("Nome completo"),
         max_length=50,
-        error_messages = {
+        error_messages={
             'required': ("Este campo é obrigatório."),
             'unique': ("Um usuário já possui um cadastro com esse nome."),
         }
@@ -28,9 +30,10 @@ class UserRegistrationForm(UserCreationForm):
         label=("Usuário"),
         max_length=30,
         regex=r'^[\w.@+-]+$',
-        help_text =
-        ("<br>No máximo 30 caracteres. Letras, dígitos e @/./+/-/_ apenas."),
-        error_messages = {
+        help_text=(
+            "<br>No máximo 30 caracteres. Letras, dígitos e @/./+/-/_ apenas."
+        ),
+        error_messages={
             'invalid': (travis1 + travis2),
             'required': ("Este campo é obrigatório."),
             'unique': ("Um usuário já possui um cadastro com esse nome."),
@@ -40,7 +43,7 @@ class UserRegistrationForm(UserCreationForm):
     password1 = forms.CharField(
         label=("Senha"),
         widget=forms.PasswordInput,
-        error_messages = {
+        error_messages={
             'required': ("Este campo é obrigatório."),
         }
     )
@@ -48,8 +51,8 @@ class UserRegistrationForm(UserCreationForm):
     password2 = forms.CharField(
         label=("Confirme a sua senha"),
         widget=forms.PasswordInput,
-        help_text = ("<br>Insira a mesma senha para verificação."),
-        error_messages = {
+        help_text=("<br>Insira a mesma senha para verificação."),
+        error_messages={
             'required': ("Este campo é obrigatório."),
         }
     )
@@ -66,6 +69,7 @@ class UserRegistrationForm(UserCreationForm):
     )
 
     def clean_email(self):
+
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
 
@@ -115,14 +119,14 @@ class UserRegistrationForm(UserCreationForm):
             )
             if matchObjProf:
                 professor = Professor(
-                    Id = uuid.uuid4(),
+                    Id=uuid.uuid4(),
                     user=usuario,
                     nome=self.cleaned_data['fullname']
                 )
                 professor.save()
             else:
                 aluno = Aluno(
-                    Id = uuid.uuid4(),
+                    Id=uuid.uuid4(),
                     user=usuario,
                     nome=self.cleaned_data['fullname'],
                 )
@@ -132,7 +136,7 @@ class UserRegistrationForm(UserCreationForm):
 def TurmaRegistration(request):
     professor = checar_login_professor(request).first()
     turma = Turma(
-        Id = uuid.uuid4(),
+        Id=uuid.uuid4(),
         nome=request.POST['nome'],
         descricao=request.POST['descricao'],
         professor=professor
@@ -140,12 +144,13 @@ def TurmaRegistration(request):
     turma.save()
     return turma
 
+
 def AtividadeRegistration(request):
     turma = Turma.objects.get(id=request.POST['id_turma'])
     turma_id = turma.id
     prefixo = str(turma_id) + '-'
     atividade = Atividade(
-        Id = uuid.uuid4(),
+        Id=uuid.uuid4(),
         nome=request.POST[prefixo + 'nome'],
         descricao=request.POST[prefixo + 'descricao'],
         data_limite=request.POST[prefixo + 'data_limite'],

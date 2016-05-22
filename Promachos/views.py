@@ -1,23 +1,32 @@
 # -*- coding: utf-8 -*-
 
-import os
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from django.utils import timezone
-from django.contrib import auth
-from django.template import RequestContext
-from django.shortcuts import render, render_to_response
-from django.template.context_processors import csrf
-from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm, AtividadeEditForm
-from Cerberus.forms import UserRegistrationForm, TurmaRegistration, AtividadeRegistration
-from Cerberus.utils import notasTurma, notasAtividade, zipSubmissoes
-from Athena.models import Aluno, Professor, Turma, Atividade, Submissao, RelAlunoAtividade
-from Athena.utils import checar_login_professor, checar_login_aluno
-from Aeacus import compare
-from pprint import pprint
+import re
+
 from datetime import datetime
+
 from itertools import izip_longest
 
-import re
+from pprint import pprint
+
+from Aeacus import compare
+
+from Athena.models import Atividade, RelAlunoAtividade, Submissao, Turma
+from Athena.utils import checar_login_aluno, checar_login_professor
+
+from Cerberus.forms import AtividadeRegistration, TurmaRegistration, \
+    UserRegistrationForm
+from Cerberus.utils import notasAtividade, notasTurma, zipSubmissoes
+
+from django.contrib import auth
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
+from django.template.context_processors import csrf
+from django.utils import timezone
+
+from .forms import AtividadeCreationForm, AtividadeEditForm, \
+    TurmaCreationForm, UploadFileForm
+
 
 def login(request):
 
@@ -25,10 +34,10 @@ def login(request):
     aluno = checar_login_aluno(request)
 
     if professor:
-	request.session['last_touch'] = datetime.now()
+        request.session['last_touch'] = datetime.now()
         return HttpResponseRedirect('/professor')
     if aluno:
-	request.session['last_touch'] = datetime.now()
+        request.session['last_touch'] = datetime.now()
         return HttpResponseRedirect('/aluno')
 
     if request.method == 'POST':
@@ -58,19 +67,18 @@ def login(request):
             )
 
     try:
-	    if request.session['advise'] == 'true':
-		request.session['advise'] = 'false'
-		return render_to_response(
-		        'login.html',
-		        {
-		            "invalid_message": "Sessao expirada",
-		            "success_message": ""
-		        },
-		        context_instance=RequestContext(request),
-		    )
+        if request.session['advise'] == 'true':
+            request.session['advise'] = 'false'
+            return render_to_response(
+                'login.html',
+                {
+                    "invalid_message": "Sessao expirada",
+                    "success_message": ""
+                },
+                context_instance=RequestContext(request),
+            )
     except KeyError:
-      pass
-
+        pass
 
     return render_to_response('login.html',
                               {"invalid_message": ""},
@@ -184,12 +192,13 @@ def professor(request):
 
             # generate .csv file
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
-            notas = notasTurma(turma)
+            notasTurma(turma)
 
             # send the file as http response
             arquivo = open(notas_path, "r")
             response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename=notas_curso.csv'
+            response[
+                'Content-Disposition'] = 'attachment; filename=notas_curso.csv'
 
             return response
 
@@ -229,7 +238,6 @@ def prof_ativ(request, id_ativ):
     if not atividade:
         return HttpResponseRedirect('/professor/')
 
-
     atividade = atividade[0]
 
     if request.method == 'POST':
@@ -251,7 +259,7 @@ def prof_ativ(request, id_ativ):
         if('post_del_ativ' in request.POST):
             submissoes = Submissao.objects.filter(
                 atividade=atividade,
-                )
+            )
 
             for submissao in submissoes:
                 submissao.remove_file()
@@ -268,7 +276,7 @@ def prof_ativ(request, id_ativ):
 
             # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
-            notas = notasAtividade(atividade)
+            notasAtividade(atividade)
 
             # send the file as http response
             arquivo = open(notas_path, "r")
@@ -280,21 +288,21 @@ def prof_ativ(request, id_ativ):
         if ('post_down_submissoes' in request.POST):
 
             # generate the file
-            zipFile = zipSubmissoes(atividade)
+            zipSubmissoes(atividade)
 
             # send the file as http response
             arquivo = open(atividade.zip_path(), "r")
             response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename='+atividade.nome+'.zip'
+            response['Content-Disposition'] = 'attachment; filename=' + \
+                atividade.nome + '.zip'
             return response
-
 
     status_aluno = []
 
     for aluno in atividade.turma.alunos.all():
         submissao = Submissao.objects.filter(
             atividade=atividade, aluno=aluno
-            )
+        )
         if submissao:
             submissao = submissao[0]
 
@@ -355,7 +363,7 @@ def aluno(request):
                          atividade.nome)
                     )
             if submissao:
-                submissao = submissao[len(submissao)-1]
+                submissao = submissao[len(submissao) - 1]
 
             tuple_ativ_subm.append([atividade, submissao])
 
@@ -445,7 +453,7 @@ def aluno_ativ(request, ativ_id):
             pprint(lista_saida)
             num_diffs = nums[0]
             pprint(lines_gabarito)
-            nota = (((lines_gabarito - num_diffs)*100.0)/lines_gabarito)
+            nota = (((lines_gabarito - num_diffs) * 100.0) / lines_gabarito)
             nota = int(nota)
         elif status == "AC":
             nota = 100
@@ -510,6 +518,7 @@ def aluno_ativ(request, ativ_id):
         context_instance=RequestContext(request),
     )
 
+
 def aluno_turmas(request):
 
     aluno = checar_login_aluno(request)
@@ -553,8 +562,9 @@ def aluno_turmas(request):
         context_instance=RequestContext(request),
     )
 
+
 def perfil(request):
     return render_to_response(
         'perfil.html',
         context_instance=RequestContext(request),
-    )	
+    )
