@@ -53,6 +53,8 @@
     </script>
   </head>
   <body>
+    <link rel="stylesheet" href="/static/css/bootstrap-tagsinput.css" />
+    <script src="/static/js/bootstrap-tagsinput.min.js"></script>
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-6">
@@ -79,6 +81,11 @@
                     {{field}}
                   </div>
                   {% endfor %}
+                  <div class="form-group">
+                    <div align="left"><label>Restrições</label></div>
+                    <input type="text" name="restricoes" class="form-control"
+                            value={{atividade.restricoes}} data-role="tagsinput" id="restricoes"/>
+                  </div>
                   <p><button class="btn btn-lg btn-success btn-block" type="submit">Concluir</button></p>
                 </form>
                 <br>

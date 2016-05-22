@@ -7,7 +7,6 @@ from Athena.utils import checar_login_professor, checar_login_aluno
 import uuid
 import re
 
-
 class UserRegistrationForm(UserCreationForm):
     travis1 = "Esse valor deve conter apenas letras"
     travis2 = ", números e os caracteres @/./+/-/_."
@@ -153,6 +152,7 @@ def AtividadeRegistration(request):
         arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
         arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
         arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
+        restricoes=request.POST['restricoes'],
         turma=turma,
     )
     atividade.save()
