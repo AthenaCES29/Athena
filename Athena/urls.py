@@ -24,6 +24,7 @@ MobileUrlpatterns = [
     url(r'^Mlogin/$', mobile.login),
     url(r'^Matividades/$', mobile.atividades),
     url(r'^Mnotas/$', mobile.notas),
+    url(r'^Mcalendario/$', mobile.calendario),
 ]
 
 urlpatterns = WebUrlpatterns + MobileUrlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
