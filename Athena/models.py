@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import os,sys
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
+import os
+
 from Athena import settings
-import zipfile
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.utils import timezone
 
 
 def atividade_path(instance, filename):
@@ -15,12 +16,14 @@ def atividade_path(instance, filename):
         name=filename,
     )
 
+
 def turma_path(instance, filename):
     return 'atividades/{prof}/{turma}/{name}'.format(
         prof=instance.professor.id,
         turma=instance.id,
         name=filename,
     )
+
 
 def submissao_path(instance, filename):
     return 'codigos/{aluno}/{atividade}/{name}'.format(
@@ -29,11 +32,13 @@ def submissao_path(instance, filename):
         name=filename,
     )
 
+
 def zip_path(instance):
     return 'arquivos/codigos/{name}.zip'.format(
         atividade=instance.id,
-        name = instance.nome
+        name=instance.nome
     )
+
 
 class Aluno(models.Model):
 
@@ -48,7 +53,7 @@ class Aluno(models.Model):
         return '%s' % (self.nome.encode('utf-8'))
 
     def json_data(self):
-        data = { }
+        data = {}
         data['nome'] = self.nome
         data['username'] = self.user.get_username()
         data['email'] = self.user.email
@@ -69,7 +74,7 @@ class Professor(models.Model):
         return '%s' % (self.nome.encode('utf-8'))
 
     def json_data(self):
-        data = { }
+        data = {}
         data['nome'] = self.nome
         data['username'] = self.user.get_username()
         data['email'] = self.user.email
@@ -112,7 +117,7 @@ class Atividade(models.Model):
         return counterSubmissoes
 
     def prof_json_data(self):
-        data = { }
+        data = {}
         data['id'] = self.Id
         data['nome'] = self.nome
         data['professor'] = self.turma.professor.nome
@@ -217,8 +222,8 @@ class RelAlunoAtividade(models.Model):
     atividade = models.ForeignKey(Atividade, help_text="Atividade do aluno")
 
     def aluno_json_data(self):
-        data = { }
-        data['entrega'] =  self.foiEntregue
+        data = {}
+        data['entrega'] = self.foiEntregue
         data['id'] = self.atividade.Id
         data['nome'] = self.atividade.nome
         data['turma'] = self.atividade.turma.nome

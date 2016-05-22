@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-from Athena.models import submissao_path
-from Athena.models import Atividade, Submissao
 import zipfile
+
+from Athena.models import Atividade, Submissao
+from Athena.models import submissao_path
 
 
 def notasTurma(turma):
@@ -26,8 +27,10 @@ def notasTurma(turma):
         media = 0
         notas.write('\n' + aluno.nome + ';')
         for atividade in atividades:
-            submissao = Submissao.objects.filter(atividade=atividade,
-                    aluno=aluno)
+            submissao = Submissao.objects.filter(
+                atividade=atividade,
+                aluno=aluno
+            )
             if submissao:
                 submissao = submissao[0]
                 notas.write(str(submissao.nota) + ';')
@@ -48,8 +51,10 @@ def notasAtividade(atividade):
     # write aluno's notes
 
     for aluno in atividade.turma.alunos.all():
-        submissao = Submissao.objects.filter(atividade=atividade,
-                aluno=aluno)
+        submissao = Submissao.objects.filter(
+            atividade=atividade,
+            aluno=aluno
+        )
 
         notas.write(aluno.nome + ';')
         if submissao:
@@ -69,12 +74,14 @@ def notasAtividade(atividade):
 def zipSubmissoes(atividade):
     arqZip = zipfile.ZipFile(atividade.zip_path(), 'w')
     for aluno in atividade.turma.alunos.all():
-        submissoes = Submissao.objects.filter(atividade=atividade,
-                aluno=aluno)
+        submissoes = Submissao.objects.filter(
+            atividade=atividade,
+            aluno=aluno
+        )
         if submissoes:
             submissao = submissoes.first()
             old_path = 'arquivos/' + submissao_path(submissao,
-                    os.path.basename(submissao.arquivo_codigo.name))
+                        os.path.basename(submissao.arquivo_codigo.name))
             new_path = 'arquivos/' + atividade.nome + '_' + aluno.nome \
                 + '.c'
             os.rename(old_path, new_path)
@@ -84,7 +91,3 @@ def zipSubmissoes(atividade):
 
     arqZip.close()
     return arqZip
-
-
-
-            
