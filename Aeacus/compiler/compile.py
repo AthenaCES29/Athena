@@ -1,5 +1,6 @@
 import subprocess
 import os
+from pprint import pprint
 
 
 def _unzip(file):
@@ -54,7 +55,7 @@ def _move_file_to_code_root(folder_path, file_path):
         process.wait()
 
 
-def compile_cpp(abs_path_to_folder):
+def _code_files(abs_path_to_folder):
     _descompactar(abs_path_to_folder)
     os.chdir(abs_path_to_folder)
     files = _find_sources(abs_path_to_folder).split('\n')
@@ -63,6 +64,18 @@ def compile_cpp(abs_path_to_folder):
     for file_path in files:
         _move_file_to_code_root(abs_path_to_folder, file_path)
     files = _find_sources(abs_path_to_folder).split('\n')
+
+    codefiles = []
+    for file in files:
+        if '.c' in file:
+            codefiles.append(file)
+
+    return codefiles
+
+
+def compile_cpp(abs_path_to_folder):
+
+    files = _code_files(abs_path_to_folder)
     command = "g++ "
     for file in files:
         command += os.path.basename(file) + " "
@@ -77,3 +90,29 @@ def compile_cpp(abs_path_to_folder):
     process.wait()
     out, err = process.communicate()
     return out, err
+
+
+def _crop_abs_path(abs_path_to_folder):
+    file = abs_path_to_folder
+    index = file.rfind("/") + 1
+    return file[index:]
+
+
+def violations(abs_path_to_folder, restricoes):
+
+    violations = []
+    files = _code_files(abs_path_to_folder)
+
+    for file in files:
+        codigo = open(file)
+        fileName = "File: " + _crop_abs_path(file) + " - "
+        for num, line in enumerate(codigo, 1):
+            pprint(line)
+            for restricao in restricoes:
+                if restricao in line:
+                    linha = "Linha " + str(num) + " : "
+                    violations.append(
+                        fileName + linha + restricao
+                    )
+
+    return violations
