@@ -436,7 +436,8 @@ def aluno_ativ(request, ativ_id):
 
         fonte = request.FILES['arquivo_codigo']
 
-        status, resultado = compare.mover(entrada, gabarito, fonte)
+        status, resultado = \
+            compare.mover(entrada, gabarito, fonte, atividade.restricoes)
         pprint(status)
         pprint(resultado)
         if status == "WA" or status == "AC":

@@ -194,6 +194,7 @@ class Submissao(models.Model):
         ('RTE', 'Erro em tempo de execução'),
         ('CE', 'Erro de compilação'),
         ('WA', 'Resposta Errada'),
+        ('INV', 'Código Inválido'),
     )
     data_envio = models.DateField(
         auto_now=True,

@@ -136,7 +136,7 @@
                     <div class="form-group">
                       <p><b>Última submissão:</b> <a href="{{ submissao.arquivo_codigo.url }}" target="_blank">{{ submissao.nome_codigo }}</a></p>
                       <p><b>Status:</b> {{status}}</p>
-                      <p><b>Nota:</b> {{ submissao.nota }}</p>
+                      <p><b >Nota:</b> {{ submissao.nota }}</p>
                       <p><b>Data limite:</b> {{ atividade.data_limite }}</p>
                       <p><b>Último envio:</b> {{ submissao.data_envio }}</p>
                     </div>
@@ -147,8 +147,9 @@
                 <div class="thumbnail thumbnail_work">
                   <div class="caption">
                     <div class="form-group">
-                      <h4 align="center"><b>Erros:</b> {{ compilation_error|safe }}</h4>
+                      <h4 align="center"><b>Erros:</b></h4>
                       <hr>
+                      <p style="color:red"> {{ compilation_error|safe }} </p>
                       <!-- TABELA COMECA AQUI!!! -->
                       <table class="table">
                         <tr>
