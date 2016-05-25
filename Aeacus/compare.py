@@ -88,11 +88,10 @@ def mover(entrada, resposta, codigo):
     num_diffs, err = _execute('diff -b saida.txt resposta.txt | grep -c "^>"')
     num_diffs.replace("\n", "")
     num_diffs = int(num_diffs)
+    cabecalho = str(num_diffs) + "\n"
     pprint(num_diffs)
 
     if num_diffs != 0:
-        pprint(num_diffs)
-        cabecalho = str(num_diffs) + "\n"
         return ("WA", cabecalho + outdiff)
     else:
-        return ("AC", "saidas iguais")
+        return ("AC", cabecalho + outdiff)

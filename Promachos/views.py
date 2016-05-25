@@ -438,8 +438,8 @@ def aluno_ativ(request, ativ_id):
 
         status, resultado = compare.mover(entrada, gabarito, fonte)
         pprint(status)
-        nota = 0
-        if status == "WA":
+        pprint(resultado)
+        if status == "WA" or status == "AC":
             nums = []
             for s in resultado.split():
                 if s.isdigit():
@@ -450,15 +450,17 @@ def aluno_ativ(request, ativ_id):
             gabarito = gabarito.split('\n')
             for linha in izip_longest(resultado, gabarito):
                 lista_saida.append(linha)
+            if (len(nums) > 0):
+                num_diffs = nums[0]
+            else:
+                num_diffs = 0
             pprint(lista_saida)
-            num_diffs = nums[0]
             pprint(lines_gabarito)
             nota = (((lines_gabarito - num_diffs) * 100.0) / lines_gabarito)
             nota = int(nota)
-        elif status == "AC":
-            nota = 100
-        elif status == "CE" or status == "RTE":
+        else:
             rte_ce_error = resultado
+            nota = 0
 
         submissoes = Submissao.objects.filter(
             aluno=aluno,
