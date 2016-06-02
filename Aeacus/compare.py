@@ -79,7 +79,8 @@ def mover(entrada, resposta, codigo, restricoes):
         for violation in violations:
             strViolation = strViolation + violation + "\n"
         return ("INV", (
-            "Error de codigo invalido!\n" + strViolation).replace("\n", "<br>")
+            "Error: codigo viola restricao!\n" +
+            strViolation).replace("\n", "<br>")
         )
 
     # mover programa.out de /compiler para /runner

@@ -108,8 +108,7 @@
 
                       <p><b>Teste público:</b> <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
 
-                      <p><b>Restrições: </b>
-                        <input type="text" value={{atividade.restricoes}} data-role="tagsinput"/>
+                      <p><b>Restrições: </b>{{atividade.restricoes}}</p>
                       </p>
                     </div>
                     {% if prazo_valido %}

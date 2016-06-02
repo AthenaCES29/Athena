@@ -95,35 +95,68 @@ def atividades(request):
 def notas(request):
 
     if request.method == 'GET':
-
         # Get aluno in db
 
         userId = request.GET.get('id', '')
         aluno = Aluno.objects.filter(Id=userId).first()
+        professor = Professor.objects.filter(Id=userId).first()
 
-    if aluno is not None:
-        notas_json = {}
-        notas_buf = []
+        if aluno is not None:
+            notas_json = {}
+            notas_buf = []
 
-        # Iterate over submissoes
+            # Iterate over submissoes
+            submissoes = Submissao.objects.filter(aluno=aluno)
+            for submissao in submissoes:
+                nota_json = {}
+                nota_json['fechada'] = submissao.atividade.estaFechada()
+                nota_json['turma'] = submissao.atividade.turma.nome
+                nota_json['atividade'] = submissao.atividade.nome
+                nota_json['nota'] = submissao.nota
+                nota_json['resultado'] = submissao.resultado
+                nota_json['data_envio'] = submissao.data_envio
+                nota_json['prazo'] = submissao.atividade.data_limite
+                notas_buf.append(nota_json)
 
-        submissoes = Submissao.objects.filter(aluno=aluno)
-        for submissao in submissoes:
-            nota_json = {}
-            nota_json['fechada'] = submissao.atividade.estaFechada()
-            nota_json['turma'] = submissao.atividade.turma.nome
-            nota_json['atividade'] = submissao.atividade.nome
-            nota_json['nota'] = submissao.nota
-            nota_json['resultado'] = submissao.resultado
-            nota_json['data_envio'] = submissao.data_envio
-            nota_json['prazo'] = submissao.atividade.data_limite
-            notas_buf.append(nota_json)
+            notas_json['valido'] = True
+            notas_json['notas'] = notas_buf
+            return JsonResponse(notas_json)
 
-        notas_json['valido'] = True
-        notas_json['notas'] = notas_buf
-        return JsonResponse(notas_json)
+        if professor is not None:
+            ret_json = {}
 
-    return JsonResponse({'valido': False})
+            # Pegar turmas
+            turmas = Turma.objects.filter(professor=professor)
+
+            ret_json['turmas'] = []
+            for turma in turmas:
+
+                # Salvar lista de turmas
+                ret_json['turmas'].append(turma.nome)
+
+                # Pegar atividades da turma
+                atividades = Atividade.objects.filter(turma=turma)
+
+                ret_json[turma.nome] = []
+                for atividade in atividades:
+
+                    # Salvar lista de atividades
+                    ret_json[turma.nome].append(atividade.nome)
+
+                    # Pegar submissoes
+                    submissoes = Submissao.objects.filter(atividade=atividade)
+
+                    ret_json[turma.nome + '_' + atividade.nome] = []
+                    for submissao in submissoes:
+
+                        # Salvar lista com as notas de cada aluno
+                        ret_json[turma.nome + '_' + atividade.nome].append(
+                            submissao.aluno.nome + '_' + str(submissao.nota)
+                        )
+
+            return JsonResponse(ret_json)
+
+        return JsonResponse({'valido': False})
 
 
 def calendario(request):

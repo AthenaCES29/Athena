@@ -207,7 +207,6 @@ class Atividade(models.Model):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida2.name))
 
 
-
 class Submissao(models.Model):
 
     RESULTADOS = (
