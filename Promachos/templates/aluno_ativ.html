@@ -88,7 +88,7 @@
         <div class="tab-content">
           <div role="tabpanel" class="tab-pane fade in active" id="workspace">
             <div align="center">
-			  <p><h2> {{ atividade.nome }} </h2></p>
+        <p><h2> {{ atividade.nome }} </h2></p>
               <p><h4>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}} </h4></p>
               {% if atividade.estaFechada %}
               <h4 style="color:red">Status: fechada (em {{atividade.data_limite}})</h4>
@@ -105,6 +105,9 @@
                       <hr>
                       <p><b>Descrição: </b>{{ atividade.descricao }}</p>
                       <p><b>Atividade:</b> <a href="{{ atividade.arquivo_roteiro.url }}" target="_blank">{{ atividade.nome_roteiro }}</a></p>
+
+                      <p><b>Teste público:</b> <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
+
                       <p><b>Restrições: </b>
                         <input type="text" value={{atividade.restricoes}} data-role="tagsinput"/>
                       </p>
