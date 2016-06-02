@@ -98,6 +98,7 @@ def mover(entrada, resposta, codigo, restricoes):
 
     # diff das saidas
     outdiff, err = _execute("cat saida.txt")
+
     num_diffs, err = _execute('diff -b saida.txt resposta.txt | grep -c "^>"')
     num_diffs.replace("\n", "")
     num_diffs = int(num_diffs)
