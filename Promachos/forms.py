@@ -38,8 +38,10 @@ class AtividadeCreationForm(ModelForm):
     class Meta:
         model = Atividade
         fields = [
-            'nome', 'descricao', 'arquivo_roteiro', 'arquivo_entrada', 'arquivo_entrada2',
-            'arquivo_saida', 'arquivo_saida2', 'peso1', 'peso2', 'data_limite'
+            'nome', 'descricao', 'arquivo_roteiro',
+            'arquivo_entrada', 'arquivo_entrada2',
+            'arquivo_saida', 'arquivo_saida2',
+            'peso1', 'peso2', 'data_limite'
         ]
         labels = {
             'nome': u'Nome da atividade',
@@ -70,19 +72,19 @@ class AtividadeCreationForm(ModelForm):
                 'required': 'True',
             }),
             'arquivo_entrada2': forms.FileInput(attrs={
-                'required': 'True',
+                'required': 'False',
             }),
             'arquivo_saida': forms.FileInput(attrs={
                 'required': 'True',
             }),
-             'arquivo_saida2': forms.FileInput(attrs={
-                'required': 'True',
+            'arquivo_saida2': forms.FileInput(attrs={
+                'required': 'False',
             }),
             'peso1': forms.TextInput(attrs={
                 'required': 'True',
             }),
             'peso2': forms.TextInput(attrs={
-                'required': 'True',
+                'required': 'False',
             }),
             'data_limite': forms.TextInput(attrs={
                 'class': 'date_picker',
@@ -97,7 +99,8 @@ class AtividadeEditForm(ModelForm):
     class Meta:
         model = Atividade
         fields = [
-            'nome', 'descricao', 'arquivo_roteiro', 'arquivo_entrada','arquivo_entrada2',
+            'nome', 'descricao', 'arquivo_roteiro',
+            'arquivo_entrada', 'arquivo_entrada2',
             'arquivo_saida', 'arquivo_saida2', 'data_limite'
         ]
         labels = {

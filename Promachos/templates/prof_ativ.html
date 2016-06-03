@@ -85,6 +85,13 @@
                     <div align="left"><label>Restrições</label></div>
                     <input type="text" name="restricoes" class="form-control"
                             value={{atividade.restricoes}} data-role="tagsinput" id="restricoes"/>
+                            <script>
+                              $("#restricoes").tagsinput({
+                                maxChars: 36,
+                                trimValue: true,
+                                tagClass: 'label label-danger label-important'
+                              });
+                            </script>
                   </div>
                   <p><button class="btn btn-lg btn-success btn-block" type="submit">Concluir</button></p>
                 </form>
