@@ -24,7 +24,8 @@ from django.template import RequestContext
 from django.template.context_processors import csrf
 from django.utils import timezone
 
-from .forms import AtividadeCreationForm, AtividadeEditForm, TurmaCreationForm, UploadFileForm
+from .forms import AtividadeCreationForm, AtividadeEditForm, \
+    TurmaCreationForm, UploadFileForm
 
 
 def login(request):
@@ -183,7 +184,6 @@ def professor(request):
                 atividade.remove_entrada2()
                 atividade.remove_saida()
                 atividade.remove_saida2()
-
 
             atividades.delete()
             turma.delete()
@@ -497,13 +497,17 @@ def aluno_ativ(request, ativ_id):
             else:
                 num_diffs2 = 0
 
-            #arquivo privado obrigtorio
+            # arquivo privado obrigtorio
             if num_diffs > 0:
                 nota = 0
             else:
-                nota = (((lines_gabarito - num_diffs) * atividade.peso1) / lines_gabarito + \
-                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) / lines_gabarito2)
-            nota = nota*100/(atividade.peso1 + atividade.peso2)
+                nota = (
+                    ((lines_gabarito - num_diffs) * atividade.peso1) /
+                    lines_gabarito +
+                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
+                    lines_gabarito2
+                )
+            nota = nota * 100 / (atividade.peso1 + atividade.peso2)
             nota = int(nota)
 
         else:
