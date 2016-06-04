@@ -122,41 +122,42 @@ def notas(request):
             notas_json['notas'] = notas_buf
             return JsonResponse(notas_json)
 
-        if professor is not None:
-            ret_json = {}
-
+        elif professor is not None:
+            ret_json = {}           
+            
             # Pegar turmas
-            turmas = Turma.objects.filter(professor=professor)
-
-            ret_json['turmas'] = []
-            for turma in turmas:
-
+            turmas = Turma.objects.filter(professor = professor)            
+            ret_json = {}                     
+            for turma in turmas:                
+                
                 # Salvar lista de turmas
-                ret_json['turmas'].append(turma.nome)
-
-                # Pegar atividades da turma
-                atividades = Atividade.objects.filter(turma=turma)
-
-                ret_json[turma.nome] = []
+                ret_json[turma.nome] = {}
+                
+                # Pegar atividades da turma             
+                atividades = Atividade.objects.filter(turma = turma)                            
+                
                 for atividade in atividades:
+                    
+                    atividade_json = []                                                  
+                    
+                    # Pegar submissoes
+                    submissoes = Submissao.objects.filter(atividade = atividade)
+                    
+                    for submissao in submissoes:
+                        
+                        # Salvar lista com as notas de cada aluno
+                        submissao_json = {}
+                        submissao_json['aluno'] = submissao.aluno.nome
+                        submissao_json['nota'] = submissao.nota
+                        submissao_json['resultado'] = submissao.resultado
+                        atividade_json.append(submissao_json)
 
                     # Salvar lista de atividades
-                    ret_json[turma.nome].append(atividade.nome)
-
-                    # Pegar submissoes
-                    submissoes = Submissao.objects.filter(atividade=atividade)
-
-                    ret_json[turma.nome + '_' + atividade.nome] = []
-                    for submissao in submissoes:
-
-                        # Salvar lista com as notas de cada aluno
-                        ret_json[turma.nome + '_' + atividade.nome].append(
-                            submissao.aluno.nome + '_' + str(submissao.nota)
-                        )
-
+                    ret_json[turma.nome][atividade.nome] = atividade_json
+                        
             return JsonResponse(ret_json)
 
-        return JsonResponse({'valido': False})
+    return JsonResponse({'valido': False})
 
 
 def calendario(request):
