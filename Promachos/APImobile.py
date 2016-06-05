@@ -177,7 +177,7 @@ def calendario(request):
 
     if request.method == 'GET':
 
-        # Get aluno in db
+        # Get aluno in database
 
         userId = request.GET.get('id', '')
         aluno = Aluno.objects.filter(Id=userId).first()
