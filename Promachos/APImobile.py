@@ -181,6 +181,7 @@ def calendario(request):
 
         userId = request.GET.get('id', '')
         aluno = Aluno.objects.filter(Id=userId).first()
+        professor = Professor.objects.filter(Id=userId).first()
 
         if aluno is not None:
             calendario_json = {}
@@ -214,6 +215,26 @@ def calendario(request):
                         relAlunoAtividade.atividade.nome
                     atividade_json['prazo'] = \
                         relAlunoAtividade.atividade.data_limite
+                    calendarioAtividade_buf.append(atividade_json)
+
+            calendario_json['valido'] = True
+            calendario_json['datas'] = calendarioAtividade_buf
+            return JsonResponse(calendario_json)
+
+        if professor is not None:
+            calendario_json = {}
+            calendarioAtividade_buf = []
+
+            turmas = Turma.objects.filter(professor=professor)
+            for turma in turmas:
+                atividades = Atividade.objects.filter(turma=turma)
+                for atividade in atividades:
+                    atividade_json = {}
+                    atividade_json['fechada'] = atividade.estaFechada()
+                    atividade_json['turma'] = atividade.turma.nome
+                    atividade_json['atividade'] = atividade.nome
+                    atividade_json['prazo'] = atividade.data_limite
+                    atividade_json['submissoes'] = atividade.countSubmissoes()
                     calendarioAtividade_buf.append(atividade_json)
 
             calendario_json['valido'] = True
