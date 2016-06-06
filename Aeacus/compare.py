@@ -79,7 +79,8 @@ def mover(entrada, resposta, codigo, restricoes):
         for violation in violations:
             strViolation = strViolation + violation + "\n"
         return ("INV", (
-            "Error de codigo invalido!\n" + strViolation).replace("\n", "<br>")
+            "Error: codigo viola restricao!\n" +
+            strViolation).replace("\n", "<br>")
         )
 
     # mover programa.out de /compiler para /runner
@@ -98,6 +99,7 @@ def mover(entrada, resposta, codigo, restricoes):
 
     # diff das saidas
     outdiff, err = _execute("cat saida.txt")
+
     num_diffs, err = _execute('diff -b saida.txt resposta.txt | grep -c "^>"')
     num_diffs.replace("\n", "")
     num_diffs = int(num_diffs)

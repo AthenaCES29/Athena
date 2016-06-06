@@ -140,7 +140,13 @@ class Atividade(models.Model):
     )
     arquivo_roteiro = models.FileField(upload_to=atividade_path)
     arquivo_entrada = models.FileField(upload_to=atividade_path)
+    arquivo_entrada2 = models.FileField(upload_to=atividade_path)
     arquivo_saida = models.FileField(upload_to=atividade_path)
+    arquivo_saida2 = models.FileField(upload_to=atividade_path)
+
+    peso1 = models.IntegerField(default=1)
+    peso2 = models.IntegerField(default=1)
+
     data_limite = models.DateField()
     turma = models.ForeignKey(
         Turma,
@@ -164,8 +170,14 @@ class Atividade(models.Model):
     def nome_entrada(self):
         return os.path.basename(self.arquivo_entrada.name)
 
+    def nome_entrada2(self):
+        return os.path.basename(self.arquivo_entrada.name)
+
     def nome_saida(self):
         return os.path.basename(self.arquivo_saida.name)
+
+    def nome_saida2(self):
+        return os.path.basename(self.arquivo_saida2.name)
 
     def zip_path(self):
         return zip_path(self)
@@ -182,8 +194,17 @@ class Atividade(models.Model):
                 settings.MEDIA_ROOT,
                 self.arquivo_entrada.name))
 
+    def remove_entrada2(self, *args, **kwargs):
+        os.remove(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                self.arquivo_entrada2.name))
+
     def remove_saida(self, *args, **kwargs):
         os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida.name))
+
+    def remove_saida2(self, *args, **kwargs):
+        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida2.name))
 
 
 class Submissao(models.Model):

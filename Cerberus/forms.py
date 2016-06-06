@@ -156,7 +156,11 @@ def AtividadeRegistration(request):
         data_limite=request.POST[prefixo + 'data_limite'],
         arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
         arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+        arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
         arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
+        arquivo_saida2=request.FILES[prefixo + 'arquivo_saida2'],
+        peso1=request.POST[prefixo + 'peso1'],
+        peso2=request.POST[prefixo + 'peso2'],
         restricoes=request.POST['restricoes'],
         turma=turma,
     )
