@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
+from pprint import pprint
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -95,10 +96,11 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
-elif 'app' in os.environ:
+elif ".heroku" in os.environ:
     # Enable Heroku DATABASE
     DATABASES['default'] = dj_database_url.config()
 else:
+    pprint(os.environ)
     __location__ = os.path.realpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
