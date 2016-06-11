@@ -1,1 +1,1 @@
-web: gunicorn Athena.wsgi
+web: gunicorn Athena.wsgi --log-file -
