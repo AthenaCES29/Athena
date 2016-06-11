@@ -95,6 +95,9 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
+elif 'app' in os.environ:
+    # Enable Heroku DATABASE
+    DATABASES['default'] = dj_database_url.config()
 else:
     __location__ = os.path.realpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -115,8 +118,6 @@ else:
             'PORT': '5432',
         }
     }
-
-DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
