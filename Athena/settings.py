@@ -96,7 +96,7 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
-elif "PYTHONHOME" in os.environ:
+elif "/app/.heroku/python" in os.environ:
     # Enable Heroku DATABASE
     DATABASES['default'] = dj_database_url.config()
 else:
