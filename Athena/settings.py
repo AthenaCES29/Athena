@@ -97,10 +97,10 @@ if 'TRAVIS' in os.environ:
         }
     }
 elif "PYTHONHOME" in os.environ:
-    if os.environ["PYTHONHOME"] == "/app/.heroku/python":
-        # Enable Heroku DATABASE
-        DATABASES['default'] = dj_database_url.config()
+    # Enable Heroku DATABASE
+    DATABASES['default'] = dj_database_url.config()
 else:
+    pprint("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     pprint(os.environ)
     __location__ = os.path.realpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
