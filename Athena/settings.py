@@ -100,22 +100,6 @@ elif 'SOURCE_VERSION' in os.environ:
     __location__ = os.path.realpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-    with open(os.path.join(__location__, 'password.txt'), 'r') as f:
-        credentials = f.readline()
-
-    user, password = credentials.split(':')
-    password = password.rstrip()
-
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'postgres',
-            'USER': user,
-            'PASSWORD': password,
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
     pprint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     # Enable Heroku DATABASE
     DATABASES['default'] = dj_database_url.config()
