@@ -96,7 +96,7 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
-elif "SERVER_SOFTWARE" in os.environ:
+elif 'SERVER_SOFTWARE' in os.environ:
     # Enable Heroku DATABASE
     DATABASES['default'] = dj_database_url.config()
 else:
