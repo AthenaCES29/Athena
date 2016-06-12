@@ -96,9 +96,10 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
-elif ".heroku" in os.environ:
-    # Enable Heroku DATABASE
-    DATABASES['default'] = dj_database_url.config()
+elif "PYTHONHOME" in os.environ:
+    if os.environ["PYTHONHOME"] == "/app/.heroku/python":
+        # Enable Heroku DATABASE
+        DATABASES['default'] = dj_database_url.config()
 else:
     pprint(os.environ)
     __location__ = os.path.realpath(
