@@ -96,13 +96,6 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
-elif 'SOURCE_VERSION' in os.environ:
-    __location__ = os.path.realpath(
-        os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-    pprint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-    # Enable Heroku DATABASE
-    DATABASES['default'] = dj_database_url.config()
 else:
     pprint("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     pprint(os.environ)
@@ -125,6 +118,11 @@ else:
             'PORT': '5432',
         }
     }
+
+if 'SOURCE_VERSION' in os.environ or 'WEB_CONCURRENCY' in os.environ:
+    pprint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    # Enable Heroku DATABASE
+    DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
