@@ -3,7 +3,7 @@ import subprocess
 
 
 def _set_limits():
-    print("no resources")
+    pass
     # megabyte = 1000 * 1000
     # resource.setrlimit(resource.RLIMIT_CORE, (10*megabyte, 10*megabyte))
     # resource.setrlimit(resource.RLIMIT_CPU, (1, 1))
