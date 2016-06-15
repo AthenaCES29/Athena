@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+# from pprint import pprint
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -93,6 +94,8 @@ if 'TRAVIS' in os.environ:
         }
     }
 else:
+    # pprint("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    # pprint(os.environ)
     __location__ = os.path.realpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -112,6 +115,15 @@ else:
             'PORT': '5432',
         }
     }
+
+if 'SOURCE_VERSION' in os.environ or 'WEB_CONCURRENCY' in os.environ:
+    # pprint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    # Enable Heroku DATABASE
+
+    # Parse database configuration from $DATABASE_URL
+    import dj_database_url
+
+    DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

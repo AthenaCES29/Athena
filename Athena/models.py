@@ -183,28 +183,39 @@ class Atividade(models.Model):
         return zip_path(self)
 
     def remove_roteiro(self, *args, **kwargs):
-        os.remove(
-            os.path.join(
-                settings.MEDIA_ROOT,
-                self.arquivo_roteiro.name))
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_roteiro.name)
+        if os.path.exists(file):
+            os.remove(file)
 
     def remove_entrada(self, *args, **kwargs):
-        os.remove(
-            os.path.join(
-                settings.MEDIA_ROOT,
-                self.arquivo_entrada.name))
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_entrada.name)
+        if os.path.exists(file):
+            os.remove(file)
 
     def remove_entrada2(self, *args, **kwargs):
-        os.remove(
-            os.path.join(
-                settings.MEDIA_ROOT,
-                self.arquivo_entrada2.name))
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_entrada2.name)
+        if os.path.exists(file):
+            os.remove(file)
 
     def remove_saida(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida.name))
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_saida.name)
+        if os.path.exists(file):
+            os.remove(file)
 
     def remove_saida2(self, *args, **kwargs):
-        os.remove(os.path.join(settings.MEDIA_ROOT, self.arquivo_saida2.name))
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_saida2.name)
+        if os.path.exists(file):
+            os.remove(file)
 
 
 class Submissao(models.Model):
@@ -242,10 +253,11 @@ class Submissao(models.Model):
         return os.path.basename(self.arquivo_codigo.name)
 
     def remove_file(self, *args, **kwargs):
-        os.remove(
-            os.path.join(
-                settings.MEDIA_ROOT,
-                self.arquivo_codigo.name))
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_codigo.name)
+        if os.path.exists(file):
+            os.remove(file)
 
     def __str__(self):
         return '%s %s' % (
