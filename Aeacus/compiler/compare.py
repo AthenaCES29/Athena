@@ -72,4 +72,3 @@ def mover(entrada, saida, codigo):
         return out
     else:
         return "saidas iguais"
-

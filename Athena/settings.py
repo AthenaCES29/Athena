@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+# from pprint import pprint
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -50,7 +51,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'Athena.middleware.AutoLogout',
 )
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+AUTO_LOGOUT_DELAY = 60
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ROOT_URLCONF = 'Athena.urls'
 
@@ -79,15 +85,17 @@ WSGI_APPLICATION = 'Athena.wsgi.application'
 if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE':   'django.db.backends.postgresql_psycopg2',
-            'NAME':     'testdb',
-            'USER':     'postgres',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'testdb',
+            'USER': 'postgres',
             'PASSWORD': '',
-            'HOST':     'localhost',
-            'PORT':     '',
+            'HOST': 'localhost',
+            'PORT': '',
         }
     }
 else:
+    # pprint("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    # pprint(os.environ)
     __location__ = os.path.realpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -108,17 +116,22 @@ else:
         }
     }
 
+if 'SOURCE_VERSION' in os.environ or 'WEB_CONCURRENCY' in os.environ:
+    # pprint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    # Enable Heroku DATABASE
+
+    # Parse database configuration from $DATABASE_URL
+    import dj_database_url
+
+    DATABASES['default'] = dj_database_url.config()
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'arquivos')
@@ -127,7 +140,11 @@ MEDIA_URL = '/arquivos/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
 )
+
+# Session expire
+# SESSION_COOKIE_AGE = 30

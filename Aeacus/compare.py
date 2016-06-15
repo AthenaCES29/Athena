@@ -51,23 +51,37 @@ def _deletar_codigo_antigo():
     return _execute("rm * -fv")
 
 
-def mover(entrada, resposta, codigo):
+def mover(entrada, resposta, codigo, restricoes):
 
     out, err = _deletar_codigo_antigo()
     if not _is_blank(err):
-        return ("CE", "error ao deletar arquivos antigos:\n" + out)
+        return ("CE", (
+            "Error ao deletar arquivos antigos:\n" + out).replace("\n", "<br>")
+        )
 
     # prepara arquivo de codigo e compila
     os.chdir(DIRETORIO_DO_ARQUIVO)
     os.chdir("compiler/code")
     _bytes_to_text(codigo, 'codigo.cpp')
+    ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
 
-    out, err = compile.compile_cpp(
-        os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
-    )
+    out, err = compile.compile_cpp(ABS_PATH)
 
     if not _is_blank(err):
-        return ("CE", ("Error de compilacao!\n" + err).replace("\n", "<br>"))
+        return ("CE", (
+            "Error de compilacao!\n" + err).replace("\n", "<br>")
+        )
+
+    violations = compile.violations(ABS_PATH, restricoes.split(","))
+    pprint(violations)
+    if len(violations) > 0:
+        strViolation = ""
+        for violation in violations:
+            strViolation = strViolation + violation + "\n"
+        return ("INV", (
+            "Error: codigo viola restricao!\n" +
+            strViolation).replace("\n", "<br>")
+        )
 
     # mover programa.out de /compiler para /runner
     os.chdir(DIRETORIO_DO_ARQUIVO)
@@ -85,14 +99,14 @@ def mover(entrada, resposta, codigo):
 
     # diff das saidas
     outdiff, err = _execute("cat saida.txt")
+
     num_diffs, err = _execute('diff -b saida.txt resposta.txt | grep -c "^>"')
     num_diffs.replace("\n", "")
     num_diffs = int(num_diffs)
+    cabecalho = str(num_diffs) + "\n"
     pprint(num_diffs)
 
     if num_diffs != 0:
-        pprint(num_diffs)
-        cabecalho = str(num_diffs) + "\n"
         return ("WA", cabecalho + outdiff)
     else:
-        return ("AC", "saidas iguais")
+        return ("AC", cabecalho + outdiff)

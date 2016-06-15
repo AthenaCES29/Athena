@@ -1,36 +1,43 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect, HttpResponse
-from django.utils import timezone
-from django.contrib import auth
-from django.template.context_processors import csrf
-from Cerberus.forms import UserRegistrationForm
-from django.template import RequestContext
-from django.shortcuts import render, render_to_response
-from .forms import UploadFileForm, TurmaCreationForm, AtividadeCreationForm
-from .forms import AtividadeEditForm
-from Aeacus import compare
-from Athena.models import Turma
-from Athena.models import Atividade
-from Athena.models import Submissao
-from Athena.models import RelAlunoAtividade
-from Athena.utils import checar_login_professor, checar_login_aluno
-from pprint import pprint
-from itertools import izip_longest
 import re
 
-################################################################
-################################################################
-################################################################
-################################################################
+from datetime import datetime
+
+from itertools import izip_longest
+
+from pprint import pprint
+
+from Aeacus import compare
+
+from Athena.models import Atividade, RelAlunoAtividade, Submissao, Turma
+from Athena.utils import checar_login_aluno, checar_login_professor
+
+from Cerberus.forms import AtividadeRegistration, TurmaRegistration, \
+    UserRegistrationForm
+from Cerberus.utils import notasAtividade, notasTurma, zipSubmissoes
+
+from django.contrib import auth
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
+from django.template.context_processors import csrf
+from django.utils import timezone
+
+from .forms import AtividadeCreationForm, AtividadeEditForm, \
+    TurmaCreationForm, UploadFileForm
+
+
 def login(request):
 
     professor = checar_login_professor(request)
     aluno = checar_login_aluno(request)
 
     if professor:
+        request.session['last_touch'] = datetime.now()
         return HttpResponseRedirect('/professor')
     if aluno:
+        request.session['last_touch'] = datetime.now()
         return HttpResponseRedirect('/aluno')
 
     if request.method == 'POST':
@@ -46,8 +53,8 @@ def login(request):
                 r'(.*)@aluno.ita.br$', user.email, re.M | re.I)
 
             if matchObjAluno:
-                return HttpResponseRedirect('/aluno')
-            return HttpResponseRedirect('/professor')
+                return HttpResponseRedirect('/aluno/')
+            return HttpResponseRedirect('/professor/')
 
         else:
             return render_to_response(
@@ -58,6 +65,20 @@ def login(request):
                 },
                 context_instance=RequestContext(request),
             )
+
+    try:
+        if request.session['advise'] == 'true':
+            request.session['advise'] = 'false'
+            return render_to_response(
+                'login.html',
+                {
+                    "invalid_message": "Sessao expirada",
+                    "success_message": ""
+                },
+                context_instance=RequestContext(request),
+            )
+    except KeyError:
+        pass
 
     return render_to_response('login.html',
                               {"invalid_message": ""},
@@ -94,10 +115,12 @@ def home(request):
         form = UploadFileForm()
         if request.method == 'POST':
             entrada = request.FILES.getlist('file')[0]
-            saida = request.FILES.getlist('file')[1]
-            fonte = request.FILES.getlist('file')[2]
+            entrada2 = request.FILES.getlist('file')[1]
+            saida = request.FILES.getlist('file')[2]
+            saida2 = request.FILES.getlist('file')[3]
+            fonte = request.FILES.getlist('file')[4]
 
-            resultado = compare.mover(entrada, saida, fonte)
+            resultado = compare.mover(entrada, entrada2, saida, saida2, fonte)
 
             return render(
                 request, 'teste_juiz.html',
@@ -110,12 +133,12 @@ def home(request):
         return render(request, 'teste_juiz.html', {'form': form})
 
     else:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect('/login')
+    return HttpResponseRedirect('/login/')
 
 
 def professor(request):
@@ -123,7 +146,7 @@ def professor(request):
     professor = checar_login_professor(request)
 
     if not professor:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     professor = professor[0]
 
@@ -131,32 +154,21 @@ def professor(request):
     if request.method == 'POST':
         pprint(request.POST)
         if('post_turma' in request.POST):
-            turma = Turma(
-                nome=request.POST['nome'],
-                descricao=request.POST['descricao'],
-                professor=professor
-            )
-            turma.save()
+            turma = TurmaRegistration(request)
         elif ('post_atividade' in request.POST):
+            atividade = AtividadeRegistration(request)
             turma = Turma.objects.get(id=request.POST['id_turma'])
-            turma_id = turma.id
-            prefixo = str(turma_id) + '-'
-            atividade = Atividade(
-                nome=request.POST[prefixo + 'nome'],
-                descricao=request.POST[prefixo + 'descricao'],
-                data_limite=request.POST[prefixo + 'data_limite'],
-                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
-                arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
-                arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
-                turma=turma,
-            )
-            atividade.save()
+            for aluno in turma.alunos.all():
+                relAlunoAtividade = RelAlunoAtividade(
+                    foiEntregue=False,
+                    aluno=aluno,
+                    atividade=atividade,
+                )
+                relAlunoAtividade.save()
         elif ('post_deletar' in request.POST):
             turma = Turma.objects.get(id=request.POST['id_turma'])
 
-            atividades = Atividade.objects.filter(
-                turma=turma,
-            )
+            atividades = Atividade.objects.filter(turma=turma)
 
             for atividade in atividades:
                 submissoes = Submissao.objects.filter(
@@ -169,49 +181,28 @@ def professor(request):
 
                 atividade.remove_roteiro()
                 atividade.remove_entrada()
+                atividade.remove_entrada2()
                 atividade.remove_saida()
+                atividade.remove_saida2()
 
             atividades.delete()
             turma.delete()
 
         elif ('post_down_all_notas' in request.POST):
 
+            # model for notes
             turma = Turma.objects.get(id=request.POST['id_turma'])
-            atividades = Atividade.objects.filter(
-                turma=turma,
-            )
+            atividades = Atividade.objects.filter(turma=turma)
 
+            # generate .csv file
             notas_path = "arquivos/" + turma.path("notas_curso.csv")
-            notas = open(notas_path, "w")
+            notasTurma(turma)
 
-            notas.write(turma.nome + " - " + turma.professor.nome + "\n")
-
-            i = 0
-            notas.write("Nome")
-            for atividade in atividades:
-                i = i + 1
-                notas.write(";Nota" + str(i))
-            notas.write(";Media")
-
-            for aluno in turma.alunos.all():
-                media = 0
-                notas.write("\n" + aluno.nome + ";")
-                for atividade in atividades:
-                    submissao = Submissao.objects.filter(
-                        atividade=atividade, aluno=aluno
-                    )
-                    if submissao:
-                        submissao = submissao[0]
-                        notas.write(str(submissao.nota) + ";")
-                        media = media + submissao.nota
-                    else:
-                        notas.write("-;")
-                notas.write(str(media/i))
-            notas.close()
+            # send the file as http response
             arquivo = open(notas_path, "r")
-
             response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename=notas_curso.csv'
+            response[
+                'Content-Disposition'] = 'attachment; filename=notas_curso.csv'
 
             return response
 
@@ -245,12 +236,11 @@ def prof_ativ(request, id_ativ):
     professor = checar_login_professor(request)
 
     if not professor:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     atividade = Atividade.objects.filter(id=id_ativ)
     if not atividade:
-        return HttpResponseRedirect('/professor')
-
+        return HttpResponseRedirect('/professor/')
 
     atividade = atividade[0]
 
@@ -260,20 +250,28 @@ def prof_ativ(request, id_ativ):
             atividade.nome = request.POST['nome']
             atividade.descricao = request.POST['descricao']
             atividade.data_limite = request.POST['data_limite']
+            atividade.peso1 = request.POST['peso1']
+            atividade.peso2 = request.POST['peso2']
             files = request.FILES
+            for file in files:
+                print file
             if 'arquivo_roteiro' in files:
                 atividade.arquivo_roteiro = files['arquivo_roteiro']
             if 'arquivo_entrada' in files:
                 atividade.arquivo_entrada = files['arquivo_entrada']
+            if 'arquivo_entrada2' in files:
+                atividade.arquivo_entrada2 = files['arquivo_entrada2']
             if 'arquivo_saida' in files:
                 atividade.arquivo_saida = files['arquivo_saida']
+            if 'arquivo_saida2' in files:
+                atividade.arquivo_saida2 = files['arquivo_saida2']
             atividade.save()
             atividade = Atividade.objects.get(id=id_ativ)
 
         if('post_del_ativ' in request.POST):
             submissoes = Submissao.objects.filter(
                 atividade=atividade,
-                )
+            )
 
             for submissao in submissoes:
                 submissao.remove_file()
@@ -281,39 +279,36 @@ def prof_ativ(request, id_ativ):
 
             atividade.remove_roteiro()
             atividade.remove_entrada()
+            atividade.remove_entrada2()
             atividade.remove_saida()
+            atividade.remove_saida2()
             atividade.delete()
 
-            return HttpResponseRedirect('/professor')
+            return HttpResponseRedirect('/professor/')
 
         if('post_down_notas' in request.POST):
 
+            # generate .csv file
             notas_path = "arquivos/" + atividade.path("notas.csv")
-            notas = open(notas_path, "w")
-            notas.write(atividade.nome + "\n")
-            notas.write("Nome;Enviado;Status;Nota\n")
-            for aluno in atividade.turma.alunos.all():
-                submissao = Submissao.objects.filter(
-                    atividade=atividade, aluno=aluno
-                )
+            notasAtividade(atividade)
 
-                notas.write(aluno.nome + ";")
-                if submissao:
-                    submissao = submissao[0]
-                    notas.write(submissao.data_envio.strftime('%d/%m') + ";")
-                    notas.write(submissao.resultado + ";")
-                    notas.write(str(submissao.nota) + ";")
-
-                else:
-                    notas.write("-;-;-;")
-
-                notas.write("\n")
-            notas.close()
+            # send the file as http response
             arquivo = open(notas_path, "r")
-
             response = HttpResponse(arquivo)
             response['Content-Disposition'] = 'attachment; filename=notas.csv'
 
+            return response
+
+        if ('post_down_submissoes' in request.POST):
+
+            # generate the file
+            zipSubmissoes(atividade)
+
+            # send the file as http response
+            arquivo = open(atividade.zip_path(), "r")
+            response = HttpResponse(arquivo)
+            response['Content-Disposition'] = 'attachment; filename=' + \
+                atividade.nome + '.zip'
             return response
 
     status_aluno = []
@@ -321,7 +316,7 @@ def prof_ativ(request, id_ativ):
     for aluno in atividade.turma.alunos.all():
         submissao = Submissao.objects.filter(
             atividade=atividade, aluno=aluno
-            )
+        )
         if submissao:
             submissao = submissao[0]
 
@@ -356,7 +351,7 @@ def aluno(request):
     aluno = checar_login_aluno(request)
 
     if not aluno:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     aluno = aluno[0]
 
@@ -382,7 +377,7 @@ def aluno(request):
                          atividade.nome)
                     )
             if submissao:
-                submissao = submissao[len(submissao)-1]
+                submissao = submissao[len(submissao) - 1]
 
             tuple_ativ_subm.append([atividade, submissao])
 
@@ -424,13 +419,13 @@ def aluno_ativ(request, ativ_id):
     aluno = checar_login_aluno(request)
 
     if not aluno:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     aluno = aluno[0]
 
     atividade = Atividade.objects.filter(id=ativ_id)
     if not atividade:
-        return HttpResponseRedirect('/aluno')
+        return HttpResponseRedirect('/aluno/')
     atividade = atividade[0]
     resultado = ""
 
@@ -449,35 +444,75 @@ def aluno_ativ(request, ativ_id):
         entrada = atividade.arquivo_entrada.read()
         atividade.arquivo_entrada.close()
 
+        atividade.arquivo_entrada2.open()
+        entrada2 = atividade.arquivo_entrada2.read()
+        atividade.arquivo_entrada2.close()
+
         atividade.arquivo_saida.open()
         gabarito = atividade.arquivo_saida.read()
         atividade.arquivo_saida.close()
 
+        atividade.arquivo_saida2.open()
+        gabarito2 = atividade.arquivo_saida2.read()
+        atividade.arquivo_saida2.close()
+
         fonte = request.FILES['arquivo_codigo']
 
-        status, resultado = compare.mover(entrada, gabarito, fonte)
+        status, resultadoPrivado = \
+            compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
+        status, resultadoPublico = \
+            compare.mover(entrada, gabarito, fonte, atividade.restricoes)
         pprint(status)
-        nota = 0
-        if status == "WA":
+        pprint(resultadoPublico)
+        if status == "WA" or status == "AC":
             nums = []
-            for s in resultado.split():
+
+            for s in resultadoPublico.split():
                 if s.isdigit():
                     nums.append(int(s))
-            lines_gabarito = gabarito.count('\n') + 1
-            resultado = resultado.split('\n')
-            resultado.pop(0)
+            lines_gabarito = gabarito.count('\n')
+            resultadoPublico = resultadoPublico.split('\n')
+            resultadoPublico.pop(0)
             gabarito = gabarito.split('\n')
-            for linha in izip_longest(resultado, gabarito):
+            for linha in izip_longest(resultadoPublico, gabarito):
                 lista_saida.append(linha)
+            if (len(nums) > 0):
+                num_diffs = nums[0]
+            else:
+                num_diffs = 0
             pprint(lista_saida)
-            num_diffs = nums[0]
             pprint(lines_gabarito)
-            nota = (((lines_gabarito - num_diffs)*100.0)/lines_gabarito)
+
+            nums = []
+
+            for s in resultadoPrivado.split():
+                if s.isdigit():
+                    nums.append(int(s))
+            lines_gabarito2 = gabarito2.count('\n')
+            resultadoPrivado = resultadoPrivado.split('\n')
+            resultadoPrivado.pop(0)
+            gabarito2 = gabarito2.split('\n')
+            if (len(nums) > 0):
+                num_diffs2 = nums[0]
+            else:
+                num_diffs2 = 0
+
+            # arquivo privado obrigtorio
+            if num_diffs > 0:
+                nota = 0
+            else:
+                nota = (
+                    ((lines_gabarito - num_diffs) * atividade.peso1) /
+                    lines_gabarito +
+                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
+                    lines_gabarito2
+                )
+            nota = nota * 100 / (atividade.peso1 + atividade.peso2)
             nota = int(nota)
-        elif status == "AC":
-            nota = 100
-        elif status == "CE" or status == "RTE":
-            rte_ce_error = resultado
+
+        else:
+            rte_ce_error = resultadoPublico
+            nota = 0
 
         submissoes = Submissao.objects.filter(
             aluno=aluno,
@@ -537,12 +572,13 @@ def aluno_ativ(request, ativ_id):
         context_instance=RequestContext(request),
     )
 
+
 def aluno_turmas(request):
 
     aluno = checar_login_aluno(request)
 
     if not aluno:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('/login/')
 
     aluno = aluno[0]
 
@@ -556,6 +592,14 @@ def aluno_turmas(request):
             turma = Turma.objects.get(id=request.POST['post_entrar'])
             aluno.turma_set.add(turma)
             aluno.save()
+            atividades = Atividade.objects.filter(turma=turma)
+            for atividade in atividades:
+                relAlunoAtividade = RelAlunoAtividade(
+                    foiEntregue=False,
+                    aluno=aluno,
+                    atividade=atividade,
+                )
+                relAlunoAtividade.save()
 
     turmas_registradas = aluno.turma_set.all()
     todas_turmas = Turma.objects.all()
@@ -572,8 +616,9 @@ def aluno_turmas(request):
         context_instance=RequestContext(request),
     )
 
+
 def perfil(request):
     return render_to_response(
         'perfil.html',
         context_instance=RequestContext(request),
-    )	
+    )

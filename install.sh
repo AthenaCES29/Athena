@@ -1,10 +1,6 @@
 #!/bin/bash
 echo "Instalação Python + Django + Postgresql"
 
-# Arquivos instaladores 
-chmod 777 install2.sh
-chmod 777 init.sh
-
 # Python
 apt-get install python2.7
 
@@ -14,6 +10,7 @@ apt-get install git
 # Athena
 apt-get install zip unzip
 git clone https://github.com/ftuyama/Athena.git
+chmod -R 777 Athena.sh
 
 # pip
 python get-pip.py
