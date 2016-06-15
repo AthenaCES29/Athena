@@ -1,8 +1,10 @@
 #include <stdio.h>
+int queue;
 
 int main()
 {
-	printf("4 6 10 11\n");
-	printf("4 3 2 0\n");
+	printf("2 4");
+	goto end;
+	end:;
 	return 0;
 }
