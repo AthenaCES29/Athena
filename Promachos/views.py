@@ -24,8 +24,7 @@ from django.template import RequestContext
 from django.template.context_processors import csrf
 from django.utils import timezone
 
-from .forms import AtividadeCreationForm, AtividadeEditForm, \
-    TurmaCreationForm, UploadFileForm
+from .forms import AtividadeCreationForm, AtividadeEditForm, TurmaCreationForm, UploadFileForm
 
 
 def login(request):
@@ -184,6 +183,7 @@ def professor(request):
                 atividade.remove_entrada2()
                 atividade.remove_saida()
                 atividade.remove_saida2()
+
 
             atividades.delete()
             turma.delete()
@@ -462,6 +462,11 @@ def aluno_ativ(request, ativ_id):
             compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
         status, resultadoPublico = \
             compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+
+
+
+
+
         pprint(status)
         pprint(resultadoPublico)
         if status == "WA" or status == "AC":
@@ -497,17 +502,13 @@ def aluno_ativ(request, ativ_id):
             else:
                 num_diffs2 = 0
 
-            # arquivo privado obrigtorio
+            #arquivo privado obrigtorio
             if num_diffs > 0:
                 nota = 0
             else:
-                nota = (
-                    ((lines_gabarito - num_diffs) * atividade.peso1) /
-                    lines_gabarito +
-                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
-                    lines_gabarito2
-                )
-            nota = nota * 100 / (atividade.peso1 + atividade.peso2)
+                nota = (((lines_gabarito - num_diffs) * atividade.peso1) / lines_gabarito + \
+                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) / lines_gabarito2)
+            nota = nota*100/(atividade.peso1 + atividade.peso2)
             nota = int(nota)
 
         else:
@@ -557,6 +558,20 @@ def aluno_ativ(request, ativ_id):
     if timezone.now().date() > atividade.data_limite:
         prazo_valido = False
 
+
+    auxstatus=status;
+    if auxstatus=="CE":
+        auxstatus="Erro de compilacao"
+    if auxstatus=="WA":
+        auxstatus="Resposta errada"
+    if auxstatus=="INV":
+        auxstatus="Codigo invalido"
+    if auxstatus=="RTE":
+        auxstatus="Erro em tempo de execucao"
+    if auxstatus=="TLE":
+        auxstatus="Tempo limite excedido"
+    if auxstatus=="AC":
+        auxstatus="Resposta aceita"
     return render_to_response(
         'aluno_ativ.html',
         {
@@ -566,11 +581,12 @@ def aluno_ativ(request, ativ_id):
             "relAlunoAtividade": relAlunoAtividade,
             "lista_saida": lista_saida,
             "resultado": resultado,
-            "status": status,
+            "status": auxstatus,
             "compilation_error": rte_ce_error,
         },
         context_instance=RequestContext(request),
     )
+    status=auxstatus
 
 
 def aluno_turmas(request):
