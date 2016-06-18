@@ -5,11 +5,11 @@
               <div class="caption">
                 <h3>{{ tuple.0.nome }}</h3>
                   {% if tuple.1 %}
-                    <p><strong>Status:</strong> {{ tuple.1.resultado }}</p>
+                    <p><strong>Status:</strong> {{ tuple.2 }}</p>
                     <p><strong>Nota:</strong> {{ tuple.1.nota }}</p>
                     <p><strong>Data limite:</strong> {{ tuple.0.data_limite }}</p>
                   {% else %}
-                    <p><strong>Status:</strong> Não entregue.</p>
+                    <p><strong>Status:</strong> Não entregue</p>
                     <p><strong>Nota:</strong> -</p>
                     <p><strong>Data limite:</strong> {{ tuple.0.data_limite }}</p>
                   {% endif %}

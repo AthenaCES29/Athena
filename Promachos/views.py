@@ -24,8 +24,7 @@ from django.template import RequestContext
 from django.template.context_processors import csrf
 from django.utils import timezone
 
-from .forms import AtividadeCreationForm, AtividadeEditForm, \
-    TurmaCreationForm, UploadFileForm
+from .forms import AtividadeCreationForm, AtividadeEditForm, TurmaCreationForm, UploadFileForm
 
 
 def login(request):
@@ -80,9 +79,12 @@ def login(request):
     except KeyError:
         pass
 
-    return render_to_response('login.html',
-                              {"invalid_message": ""},
-                              context_instance=RequestContext(request))
+    return render_to_response(
+        'login.html',
+        {
+            "invalid_message": ""
+        },
+        context_instance=RequestContext(request))
 
 
 def register_user(request):
@@ -324,7 +326,7 @@ def prof_ativ(request, id_ativ):
                 (
                     aluno.nome,
                     submissao.data_envio,
-                    submissao.resultado,
+                    Submissao.statusDict[submissao.resultado],
                     submissao.arquivo_codigo.url,
                     submissao.nota,
                 )
@@ -332,7 +334,7 @@ def prof_ativ(request, id_ativ):
 
         else:
             status_aluno.append(
-                (aluno.nome, "Não enviado", "-")
+                (aluno.nome, "Não entregue", "-")
             )
 
     return render_to_response(
@@ -369,6 +371,7 @@ def aluno(request):
                 atividade=atividade,
                 aluno=aluno,
             )
+            status = "Não entregue"
             if not atividade.estaFechada():
                 if not submissao:
                     atividades_pendentes.append(
@@ -378,8 +381,12 @@ def aluno(request):
                     )
             if submissao:
                 submissao = submissao[len(submissao) - 1]
-
-            tuple_ativ_subm.append([atividade, submissao])
+                status = Submissao.statusDict[submissao.resultado]
+            tuple_ativ_subm.append([
+                atividade,
+                submissao,
+                status
+            ])
 
         panes.append(
             render_to_response(
@@ -387,7 +394,7 @@ def aluno(request):
                 {
                     "aluno": aluno,
                     "turma": turma,
-                    "tuple_ativ_subm": tuple_ativ_subm,
+                    "tuple_ativ_subm": tuple_ativ_subm
                 },
                 context_instance=RequestContext(request),
             ).content
@@ -462,6 +469,7 @@ def aluno_ativ(request, ativ_id):
             compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
         status, resultadoPublico = \
             compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+
         pprint(status)
         pprint(resultadoPublico)
         if status == "WA" or status == "AC":
@@ -525,7 +533,7 @@ def aluno_ativ(request, ativ_id):
         submissao = Submissao(
             data_envio=timezone.now().date(),
             arquivo_codigo=request.FILES['arquivo_codigo'],
-            resultado=status,
+            resultado=Submissao.statusDict[status],
             nota=nota,
             atividade=atividade,
             aluno=aluno,
@@ -546,7 +554,7 @@ def aluno_ativ(request, ativ_id):
         atividade=atividade,
         aluno=aluno
     )
-    status = "Nao entregue"
+    status = "Não entregue"
     if submissao:
         submissao = submissao[len(submissao) - 1]
         status = submissao.resultado
@@ -566,7 +574,7 @@ def aluno_ativ(request, ativ_id):
             "relAlunoAtividade": relAlunoAtividade,
             "lista_saida": lista_saida,
             "resultado": resultado,
-            "status": status,
+            "status": Submissao.statusDict[status],
             "compilation_error": rte_ce_error,
         },
         context_instance=RequestContext(request),
