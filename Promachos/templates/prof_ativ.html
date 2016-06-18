@@ -125,11 +125,11 @@
                 </tr>
               </thead>
               <tbody>
-                {% for nome, data, resultado, code_url, nota in status_aluno %}
+                {% for nome, data, status, code_url, nota in status_aluno %}
                 <tr>
                   <td><a href="{{code_url}}" target="_blank">{{nome}}</a></td>
                   <td>{{data}}</td>
-                  <td>{{resultado}}</td>
+                  <td>{{status}}</td>
                   <td>{{nota}}</td>
                 </tr>
                 {% endfor %}

@@ -79,9 +79,12 @@ def login(request):
     except KeyError:
         pass
 
-    return render_to_response('login.html',
-                              {"invalid_message": ""},
-                              context_instance=RequestContext(request))
+    return render_to_response(
+        'login.html',
+        {
+            "invalid_message": ""
+        },
+        context_instance=RequestContext(request))
 
 
 def register_user(request):
@@ -183,7 +186,6 @@ def professor(request):
                 atividade.remove_entrada2()
                 atividade.remove_saida()
                 atividade.remove_saida2()
-
 
             atividades.delete()
             turma.delete()
@@ -324,7 +326,7 @@ def prof_ativ(request, id_ativ):
                 (
                     aluno.nome,
                     submissao.data_envio,
-                    submissao.resultado,
+                    Submissao.statusDict[submissao.resultado],
                     submissao.arquivo_codigo.url,
                     submissao.nota,
                 )
@@ -332,7 +334,7 @@ def prof_ativ(request, id_ativ):
 
         else:
             status_aluno.append(
-                (aluno.nome, "Não enviado", "-")
+                (aluno.nome, "Não entregue", "-")
             )
 
     return render_to_response(
@@ -369,6 +371,7 @@ def aluno(request):
                 atividade=atividade,
                 aluno=aluno,
             )
+            status = "Não entregue"
             if not atividade.estaFechada():
                 if not submissao:
                     atividades_pendentes.append(
@@ -378,8 +381,12 @@ def aluno(request):
                     )
             if submissao:
                 submissao = submissao[len(submissao) - 1]
-
-            tuple_ativ_subm.append([atividade, submissao])
+                status = Submissao.statusDict[submissao.resultado]
+            tuple_ativ_subm.append([
+                atividade,
+                submissao,
+                status
+            ])
 
         panes.append(
             render_to_response(
@@ -387,7 +394,7 @@ def aluno(request):
                 {
                     "aluno": aluno,
                     "turma": turma,
-                    "tuple_ativ_subm": tuple_ativ_subm,
+                    "tuple_ativ_subm": tuple_ativ_subm
                 },
                 context_instance=RequestContext(request),
             ).content
@@ -463,10 +470,6 @@ def aluno_ativ(request, ativ_id):
         status, resultadoPublico = \
             compare.mover(entrada, gabarito, fonte, atividade.restricoes)
 
-
-
-
-
         pprint(status)
         pprint(resultadoPublico)
         if status == "WA" or status == "AC":
@@ -502,13 +505,17 @@ def aluno_ativ(request, ativ_id):
             else:
                 num_diffs2 = 0
 
-            #arquivo privado obrigtorio
+            # arquivo privado obrigtorio
             if num_diffs > 0:
                 nota = 0
             else:
-                nota = (((lines_gabarito - num_diffs) * atividade.peso1) / lines_gabarito + \
-                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) / lines_gabarito2)
-            nota = nota*100/(atividade.peso1 + atividade.peso2)
+                nota = (
+                    ((lines_gabarito - num_diffs) * atividade.peso1) /
+                    lines_gabarito +
+                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
+                    lines_gabarito2
+                )
+            nota = nota * 100 / (atividade.peso1 + atividade.peso2)
             nota = int(nota)
 
         else:
@@ -526,7 +533,7 @@ def aluno_ativ(request, ativ_id):
         submissao = Submissao(
             data_envio=timezone.now().date(),
             arquivo_codigo=request.FILES['arquivo_codigo'],
-            resultado=status,
+            resultado=Submissao.statusDict[status],
             nota=nota,
             atividade=atividade,
             aluno=aluno,
@@ -547,7 +554,7 @@ def aluno_ativ(request, ativ_id):
         atividade=atividade,
         aluno=aluno
     )
-    status = "Nao entregue"
+    status = "Não entregue"
     if submissao:
         submissao = submissao[len(submissao) - 1]
         status = submissao.resultado
@@ -558,20 +565,6 @@ def aluno_ativ(request, ativ_id):
     if timezone.now().date() > atividade.data_limite:
         prazo_valido = False
 
-
-    auxstatus=status;
-    if auxstatus=="CE":
-        auxstatus="Erro de compilacao"
-    if auxstatus=="WA":
-        auxstatus="Resposta errada"
-    if auxstatus=="INV":
-        auxstatus="Codigo invalido"
-    if auxstatus=="RTE":
-        auxstatus="Erro em tempo de execucao"
-    if auxstatus=="TLE":
-        auxstatus="Tempo limite excedido"
-    if auxstatus=="AC":
-        auxstatus="Resposta aceita"
     return render_to_response(
         'aluno_ativ.html',
         {
@@ -581,12 +574,11 @@ def aluno_ativ(request, ativ_id):
             "relAlunoAtividade": relAlunoAtividade,
             "lista_saida": lista_saida,
             "resultado": resultado,
-            "status": auxstatus,
+            "status": Submissao.statusDict[status],
             "compilation_error": rte_ce_error,
         },
         context_instance=RequestContext(request),
     )
-    status=auxstatus
 
 
 def aluno_turmas(request):

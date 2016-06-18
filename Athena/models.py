@@ -228,6 +228,17 @@ class Submissao(models.Model):
         ('WA', 'Resposta Errada'),
         ('INV', 'Código Inválido'),
     )
+
+    statusDict = {
+        "CE": "Erro de compilação",
+        "WA": "Resposta errada",
+        "INV": "Código inválido",
+        "RTE": "Erro em tempo de execução",
+        "TLE": "Tempo limite excedido",
+        "AC": "Resposta aceita",
+        "Não entregue": "Não entregue"
+    }
+
     data_envio = models.DateField(
         auto_now=True,
         help_text='Data de submissão do código',
