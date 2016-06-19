@@ -38,15 +38,10 @@ class AtividadeCreationForm(ModelForm):
     class Meta:
         model = Atividade
         fields = [
-<<<<<<< HEAD
             'nome', 'descricao', 'arquivo_testador', 'arquivo_roteiro',
             'arquivo_entrada', 'arquivo_entrada2',
             'arquivo_saida', 'arquivo_saida2',
             'peso1', 'peso2', 'data_limite'
-=======
-            'nome', 'descricao', 'arquivo_roteiro', 'arquivo_entrada', 'arquivo_entrada2',
-            'arquivo_saida', 'arquivo_saida2', 'peso1', 'peso2', 'data_limite'
->>>>>>> master
         ]
         labels = {
             'nome': u'Nome da atividade',
@@ -86,7 +81,7 @@ class AtividadeCreationForm(ModelForm):
             'arquivo_saida': forms.FileInput(attrs={
                 'required': 'True',
             }),
-             'arquivo_saida2': forms.FileInput(attrs={
+            'arquivo_saida2': forms.FileInput(attrs={
                 'required': 'True',
             }),
             'peso1': forms.TextInput(attrs={
@@ -108,14 +103,9 @@ class AtividadeEditForm(ModelForm):
     class Meta:
         model = Atividade
         fields = [
-<<<<<<< HEAD
             'nome', 'descricao', 'arquivo_testador', 'arquivo_roteiro',
             'arquivo_entrada', 'arquivo_entrada2',
             'arquivo_saida', 'arquivo_saida2', 'data_limite'
-=======
-            'nome', 'descricao', 'arquivo_roteiro', 'arquivo_entrada', 'arquivo_entrada2',
-            'arquivo_saida', 'arquivo_saida2', 'peso1', 'peso2', 'data_limite'
->>>>>>> master
         ]
         labels = {
             'nome': u'Nome da atividade',

@@ -452,7 +452,6 @@ def aluno_ativ(request, ativ_id):
     rte_ce_error = ""
     if request.method == 'POST':
 
-
         atividade.arquivo_testador.open()
         testador = atividade.arquivo_testador.read()
         atividade.arquivo_testador.close()
@@ -475,18 +474,16 @@ def aluno_ativ(request, ativ_id):
 
         fonte = request.FILES['arquivo_codigo']
 
-<<<<<<< HEAD
         status, ret = \
             compare.mover(testador, entrada, entrada2, fonte, atividade.restricoes)
         """status, resultadoPublico = \
             compare.mover(testador, entrada, entrada2, fonte, atividade.restricoes)"""
-=======
-        status, resultadoPrivado = \
-            compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
-        status, resultadoPublico = \
-            compare.mover(entrada, gabarito, fonte, atividade.restricoes)
 
->>>>>>> master
+        # status, resultadoPrivado = \
+        #     compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
+        # status, resultadoPublico = \
+        #     compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+
         pprint(status)
         """pprint(resultadoPublico)"""
         if status == "WA":
