@@ -4,8 +4,6 @@ import re
 
 from datetime import datetime
 
-from itertools import izip_longest
-
 from pprint import pprint
 
 from Aeacus import compare
@@ -24,7 +22,8 @@ from django.template import RequestContext
 from django.template.context_processors import csrf
 from django.utils import timezone
 
-from .forms import AtividadeCreationForm, AtividadeEditForm, TurmaCreationForm, UploadFileForm
+from .forms import AtividadeCreationForm, AtividadeEditForm, \
+    TurmaCreationForm, UploadFileForm
 
 
 def login(request):
