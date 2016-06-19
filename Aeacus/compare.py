@@ -51,25 +51,25 @@ def _deletar_codigo_antigo():
     return _execute("rm * -fv")
 
 
-def mover(entrada, resposta, codigo, restricoes):
+def mover(testador, entrada, entrada2, codigo, restricoes):
 
     out, err = _deletar_codigo_antigo()
     if not _is_blank(err):
         return ("CE", (
-            "Error ao deletar arquivos antigos:\n" + out).replace("\n", "<br>")
+            "Erro ao deletar arquivos antigos:\n" + out).replace("\n", "<br>")
         )
 
     # prepara arquivo de codigo e compila
     os.chdir(DIRETORIO_DO_ARQUIVO)
     os.chdir("compiler/code")
-    _bytes_to_text(codigo, 'codigo.cpp')
+    _bytes_to_text(codigo, 'codigo.c')
     ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
 
     out, err = compile.compile_cpp(ABS_PATH)
 
     if not _is_blank(err):
         return ("CE", (
-            "Error de compilacao!\n" + err).replace("\n", "<br>")
+            "Erro de compilacao!\n" + err).replace("\n", "<br>")
         )
 
     violations = compile.violations(ABS_PATH, restricoes.split(","))
@@ -79,9 +79,17 @@ def mover(entrada, resposta, codigo, restricoes):
         for violation in violations:
             strViolation = strViolation + violation + "\n"
         return ("INV", (
-            "Error: codigo viola restricao!\n" +
+            "Erro: codigo viola restricao!\n" +
             strViolation).replace("\n", "<br>")
         )
+
+    # prepara arquivo de codigo e compila
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    os.chdir("compiler/code")
+    _bytes_to_text(testador, 'testador.c')
+    ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
+
+    out, err = compile.compile_cpp(ABS_PATH)
 
     # mover programa.out de /compiler para /runner
     os.chdir(DIRETORIO_DO_ARQUIVO)
@@ -91,12 +99,18 @@ def mover(entrada, resposta, codigo, restricoes):
     os.chdir(DIRETORIO_DO_ARQUIVO)
     os.chdir("runner")
     _copy_file(entrada, 'entrada.txt')
-    _copy_file(resposta, 'resposta.txt')
+    _copy_file(entrada2, 'entrada2.txt')
 
-    out, err = _execute("python runner.py")
-    if not _is_blank(out):
-        return ("RTE", out.replace("\n", "<br>"))
+    out, err = _execute('./programa.out')
+    """if not _is_blank(err):
+        return ("RTE", err.replace("\n", "<br>"))"""
 
+    if out > 0:
+        return ("WA", err)
+    else:
+        return ("AC", err)
+
+    """
     # diff das saidas
     outdiff, err = _execute("cat saida.txt")
 
@@ -109,4 +123,5 @@ def mover(entrada, resposta, codigo, restricoes):
     if num_diffs != 0:
         return ("WA", cabecalho + outdiff)
     else:
-        return ("AC", cabecalho + outdiff)
+        return ("AC", cabecalho + outdiff)]
+    """

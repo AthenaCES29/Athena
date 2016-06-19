@@ -38,14 +38,20 @@ class AtividadeCreationForm(ModelForm):
     class Meta:
         model = Atividade
         fields = [
-            'nome', 'descricao', 'arquivo_roteiro',
+<<<<<<< HEAD
+            'nome', 'descricao', 'arquivo_testador', 'arquivo_roteiro',
             'arquivo_entrada', 'arquivo_entrada2',
             'arquivo_saida', 'arquivo_saida2',
             'peso1', 'peso2', 'data_limite'
+=======
+            'nome', 'descricao', 'arquivo_roteiro', 'arquivo_entrada', 'arquivo_entrada2',
+            'arquivo_saida', 'arquivo_saida2', 'peso1', 'peso2', 'data_limite'
+>>>>>>> master
         ]
         labels = {
             'nome': u'Nome da atividade',
             'descricao': u'Descricao da atividade',
+            'arquivo_testador': u'Código do testador',
             'arquivo_roteiro': u'Arquivo com roteiro',
             'arquivo_entrada': u'Arquivo de entrada',
             'arquivo_entrada2': u'Arquivo de entrada privado',
@@ -68,23 +74,26 @@ class AtividadeCreationForm(ModelForm):
             'arquivo_roteiro': forms.FileInput(attrs={
                 'required': 'True',
             }),
+            'arquivo_testador': forms.FileInput(attrs={
+                'required': 'True',
+            }),
             'arquivo_entrada': forms.FileInput(attrs={
                 'required': 'True',
             }),
             'arquivo_entrada2': forms.FileInput(attrs={
-                'required': 'False',
+                'required': 'True',
             }),
             'arquivo_saida': forms.FileInput(attrs={
                 'required': 'True',
             }),
-            'arquivo_saida2': forms.FileInput(attrs={
-                'required': 'False',
+             'arquivo_saida2': forms.FileInput(attrs={
+                'required': 'True',
             }),
             'peso1': forms.TextInput(attrs={
                 'required': 'True',
             }),
             'peso2': forms.TextInput(attrs={
-                'required': 'False',
+                'required': 'True',
             }),
             'data_limite': forms.TextInput(attrs={
                 'class': 'date_picker',
@@ -99,18 +108,24 @@ class AtividadeEditForm(ModelForm):
     class Meta:
         model = Atividade
         fields = [
-            'nome', 'descricao', 'arquivo_roteiro',
+<<<<<<< HEAD
+            'nome', 'descricao', 'arquivo_testador', 'arquivo_roteiro',
             'arquivo_entrada', 'arquivo_entrada2',
             'arquivo_saida', 'arquivo_saida2', 'data_limite'
+=======
+            'nome', 'descricao', 'arquivo_roteiro', 'arquivo_entrada', 'arquivo_entrada2',
+            'arquivo_saida', 'arquivo_saida2', 'peso1', 'peso2', 'data_limite'
+>>>>>>> master
         ]
         labels = {
             'nome': u'Nome da atividade',
             'descricao': u'Descricao da atividade',
+            'arquivo_testador': u'Código do testador',
             'arquivo_roteiro': u'Arquivo com roteiro',
             'arquivo_entrada': u'Arquivo de entrada',
-            'arquivo_entrada2': u'Arquivo de entrada privada',
+            'arquivo_entrada2': u'Arquivo de entrada privado',
             'arquivo_saida': u'Arquivo de saida',
-            'arquivo_saida2': u'Arquivo de saida privada',
+            'arquivo_saida2': u'Arquivo de saida privado',
             'peso1': u'Peso do arquivo publico',
             'peso2': u'Peso do arquivo privado',
             'data_limite': u'Data limite de entrega',
@@ -124,6 +139,8 @@ class AtividadeEditForm(ModelForm):
                 'rows': '5',
             }),
             'arquivo_roteiro': forms.FileInput(attrs={
+            }),
+            'arquivo_testador': forms.FileInput(attrs={
             }),
             'arquivo_entrada': forms.FileInput(attrs={
             }),

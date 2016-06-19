@@ -139,6 +139,7 @@ class Atividade(models.Model):
         max_length=1000,
     )
     arquivo_roteiro = models.FileField(upload_to=atividade_path)
+    arquivo_testador = models.FileField(upload_to=atividade_path)
     arquivo_entrada = models.FileField(upload_to=atividade_path)
     arquivo_entrada2 = models.FileField(upload_to=atividade_path)
     arquivo_saida = models.FileField(upload_to=atividade_path)
@@ -167,6 +168,9 @@ class Atividade(models.Model):
     def nome_roteiro(self):
         return os.path.basename(self.arquivo_roteiro.name)
 
+    def nome_testador(self):
+        return os.path.basename(self.arquivo_testador.name)
+
     def nome_entrada(self):
         return os.path.basename(self.arquivo_entrada.name)
 
@@ -186,6 +190,13 @@ class Atividade(models.Model):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_roteiro.name)
+        if os.path.exists(file):
+            os.remove(file)
+
+    def remove_testador(self, *args, **kwargs):
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_testador.name)
         if os.path.exists(file):
             os.remove(file)
 
@@ -228,6 +239,17 @@ class Submissao(models.Model):
         ('WA', 'Resposta Errada'),
         ('INV', 'Código Inválido'),
     )
+
+    statusDict = {
+        "CE": "Erro de compilação",
+        "WA": "Resposta errada",
+        "INV": "Código inválido",
+        "RTE": "Erro em tempo de execução",
+        "TLE": "Tempo limite excedido",
+        "AC": "Resposta aceita",
+        "Não entregue": "Não entregue"
+    }
+
     data_envio = models.DateField(
         auto_now=True,
         help_text='Data de submissão do código',

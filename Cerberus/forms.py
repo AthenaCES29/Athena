@@ -155,6 +155,7 @@ def AtividadeRegistration(request):
         descricao=request.POST[prefixo + 'descricao'],
         data_limite=request.POST[prefixo + 'data_limite'],
         arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+        arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
         arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
         arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
         arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
