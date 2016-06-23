@@ -3,6 +3,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from pprint import pprint
 from Athena.models import Professor, Aluno, Atividade, Turma
 from Athena.utils import checar_login_professor
 import uuid
@@ -149,21 +150,60 @@ def AtividadeRegistration(request):
     turma = Turma.objects.get(id=request.POST['id_turma'])
     turma_id = turma.id
     prefixo = str(turma_id) + '-'
-    atividade = Atividade(
-        Id=uuid.uuid4(),
-        nome=request.POST[prefixo + 'nome'],
-        descricao=request.POST[prefixo + 'descricao'],
-        data_limite=request.POST[prefixo + 'data_limite'],
-        arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
-        arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
-        arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
-        arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
-        arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
-        arquivo_saida2=request.FILES[prefixo + 'arquivo_saida2'],
-        peso1=request.POST[prefixo + 'peso1'],
-        peso2=request.POST[prefixo + 'peso2'],
-        restricoes=request.POST['restricoes'],
-        turma=turma,
-    )
+    pprint(request)
+    if (prefixo + 'arquivo_testador') in request.FILES:
+        atividade = Atividade(
+            Id=uuid.uuid4(),
+            nome=request.POST[prefixo + 'nome'],
+            descricao=request.POST[prefixo + 'descricao'],
+            data_limite=request.POST[prefixo + 'data_limite'],
+            arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+            arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+            arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
+            arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
+            arquivo_saida2=request.FILES[prefixo + 'arquivo_saida2'],
+            arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
+            teste_privado=request.POST[prefixo + 'teste_privado'],
+            teste_customizado=request.POST[prefixo + 'teste_customizado'],
+            peso1=request.POST[prefixo + 'peso1'],
+            peso2=request.POST[prefixo + 'peso2'],
+            restricoes=request.POST[prefixo + 'restricoes'],
+            turma=turma,
+        )
+    elif ((prefixo + 'arquivo_entrada2') in request.FILES) and (
+            (prefixo + 'arquivo_saida2') in request.FILES):
+            atividade = Atividade(
+                Id=uuid.uuid4(),
+                nome=request.POST[prefixo + 'nome'],
+                descricao=request.POST[prefixo + 'descricao'],
+                data_limite=request.POST[prefixo + 'data_limite'],
+                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+                arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+                arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
+                arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
+                arquivo_saida2=request.FILES[prefixo + 'arquivo_saida2'],
+                teste_privado=request.POST[prefixo + 'teste_privado'],
+                teste_customizado=False,
+                peso1=request.POST[prefixo + 'peso1'],
+                peso2=request.POST[prefixo + 'peso2'],
+                restricoes=request.POST[prefixo + 'restricoes'],
+                turma=turma,
+            )
+    else:
+        atividade = Atividade(
+            Id=uuid.uuid4(),
+            nome=request.POST[prefixo + 'nome'],
+            descricao=request.POST[prefixo + 'descricao'],
+            data_limite=request.POST[prefixo + 'data_limite'],
+            arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+            arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+            arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
+            restricoes=request.POST[prefixo + 'restricoes'],
+            teste_privado=False,
+            teste_customizado=False,
+            peso1=1,
+            peso2=0,
+            turma=turma,
+        )
     atividade.save()
     return atividade

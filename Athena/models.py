@@ -142,15 +142,18 @@ class Atividade(models.Model):
     restricoes = models.CharField(
         max_length=1000,
     )
-    arquivo_roteiro = models.FileField(upload_to=atividade_path)
-    arquivo_testador = models.FileField(upload_to=atividade_path)
+    arquivo_roteiro = models.FileField(upload_to=atividade_path, default=None)
+    arquivo_testador = models.FileField(upload_to=atividade_path, default=None)
     arquivo_entrada = models.FileField(upload_to=atividade_path)
-    arquivo_entrada2 = models.FileField(upload_to=atividade_path)
+    arquivo_entrada2 = models.FileField(upload_to=atividade_path, default=None)
     arquivo_saida = models.FileField(upload_to=atividade_path)
-    arquivo_saida2 = models.FileField(upload_to=atividade_path)
+    arquivo_saida2 = models.FileField(upload_to=atividade_path, default=None)
 
     peso1 = models.IntegerField(default=1)
     peso2 = models.IntegerField(default=1)
+
+    teste_privado = models.BooleanField(default=False)
+    teste_customizado = models.BooleanField(default=False)
 
     data_limite = models.DateField()
     turma = models.ForeignKey(
@@ -201,35 +204,35 @@ class Atividade(models.Model):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_testador.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_entrada(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_entrada.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_entrada2(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_entrada2.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_saida(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_saida.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_saida2(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_saida2.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
 

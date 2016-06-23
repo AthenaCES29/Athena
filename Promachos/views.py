@@ -477,7 +477,7 @@ def aluno_ativ(request, ativ_id):
         fonte = request.FILES['arquivo_codigo']
 
         # Logica com diff
-        if True:
+        if not atividade.teste_customizado:
             status, resultadoPrivado = \
                 compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
             statusPriv = status
