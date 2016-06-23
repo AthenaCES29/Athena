@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from itertools import izip_longest
 
 import re
 
@@ -337,8 +338,9 @@ def prof_ativ(request, id_ativ):
             )
 
         else:
+            status = "NE"
             status_aluno.append(
-                (aluno.nome, "Não entregue", "-")
+                (aluno.nome, Submissao.statusDict[status], "-")
             )
 
     return render_to_response(
@@ -375,7 +377,7 @@ def aluno(request):
                 atividade=atividade,
                 aluno=aluno,
             )
-            status = "Não entregue"
+            status = "NE"
             if not atividade.estaFechada():
                 if not submissao:
                     atividades_pendentes.append(
@@ -473,71 +475,75 @@ def aluno_ativ(request, ativ_id):
 
         fonte = request.FILES['arquivo_codigo']
 
-        status, ret = \
-            compare.mover(testador, entrada, entrada2, fonte, atividade.restricoes)
-        """status, resultadoPublico = \
-            compare.mover(testador, entrada, entrada2, fonte, atividade.restricoes)"""
+        #Logica com diff
+        if False:
+            status, resultadoPrivado = \
+                compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
+            statusPriv = status
+            status, resultadoPublico = \
+                compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+            statusPublic = status
+            if statusPublic == "AC" and statusPriv == "WA":
+                status = "WA2"
 
-        # status, resultadoPrivado = \
-        #     compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
-        # status, resultadoPublico = \
-        #     compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+            if status == "WA" or status == "AC" or status == "WA2":
+                nums = []
 
-        pprint(status)
-        """pprint(resultadoPublico)"""
-        if status == "WA":
-            nota = 0
-        elif status == "AC":
-            nota = ret
-            """
-            nums = []
+                for s in resultadoPublico.split():
+                    if s.isdigit():
+                        nums.append(int(s))
+                lines_gabarito = gabarito.count('\n')
+                resultadoPublico = resultadoPublico.split('\n')
+                resultadoPublico.pop(0)
+                gabarito = gabarito.split('\n')
+                for linha in izip_longest(resultadoPublico, gabarito):
+                    lista_saida.append(linha)
+                if (len(nums) > 0):
+                    num_diffs = nums[0]
+                else:
+                    num_diffs = 0
 
-            for s in resultadoPublico.split():
-                if s.isdigit():
-                    nums.append(int(s))
-            lines_gabarito = gabarito.count('\n')
-            resultadoPublico = resultadoPublico.split('\n')
-            resultadoPublico.pop(0)
-            gabarito = gabarito.split('\n')
-            for linha in izip_longest(resultadoPublico, gabarito):
-                lista_saida.append(linha)
-            if (len(nums) > 0):
-                num_diffs = nums[0]
+                nums = []
+
+                for s in resultadoPrivado.split():
+                    if s.isdigit():
+                        nums.append(int(s))
+                lines_gabarito2 = gabarito2.count('\n')
+                resultadoPrivado = resultadoPrivado.split('\n')
+                resultadoPrivado.pop(0)
+                gabarito2 = gabarito2.split('\n')
+                if (len(nums) > 0):
+                    num_diffs2 = nums[0]
+                else:
+                    num_diffs2 = 0
+
+                # arquivo privado obrigtorio
+                if num_diffs > 0:
+                    nota = 0
+                else:
+                    nota = (
+                        ((lines_gabarito - num_diffs) * atividade.peso1) /
+                        lines_gabarito +
+                        ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
+                        lines_gabarito2
+                    )
+                nota = nota * 100 / (atividade.peso1 + atividade.peso2)
+                nota = int(nota)
+
             else:
-                num_diffs = 0
-            pprint(lista_saida)
-            pprint(lines_gabarito)
-
-            nums = []
-
-            for s in resultadoPrivado.split():
-                if s.isdigit():
-                    nums.append(int(s))
-            lines_gabarito2 = gabarito2.count('\n')
-            resultadoPrivado = resultadoPrivado.split('\n')
-            resultadoPrivado.pop(0)
-            gabarito2 = gabarito2.split('\n')
-            if (len(nums) > 0):
-                num_diffs2 = nums[0]
-            else:
-                num_diffs2 = 0
-
-            # arquivo privado obrigtorio
-            if num_diffs > 0:
+                rte_ce_error = resultadoPublico
                 nota = 0
-            else:
-                nota = (
-                    ((lines_gabarito - num_diffs) * atividade.peso1) /
-                    lines_gabarito +
-                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
-                    lines_gabarito2
-                )
-            nota = nota * 100 / (atividade.peso1 + atividade.peso2)
-            nota = int(nota)
-"""
+
+        #Logica de teste com arquivo do professor
         else:
-            """rte_ce_error = resultadoPublico"""
-            nota = 0
+            lista_saida.append(("Teste com código do professor:"," não há saídas a serem exibidas"))
+            status, ret = \
+                compare.mover2(testador, entrada, entrada2, fonte, atividade.restricoes)
+
+            if status == "AC" or status == "AC2":
+                nota = ret
+            else:
+                nota = 0
 
         submissoes = Submissao.objects.filter(
             aluno=aluno,
@@ -550,7 +556,7 @@ def aluno_ativ(request, ativ_id):
         submissao = Submissao(
             data_envio=timezone.now().date(),
             arquivo_codigo=request.FILES['arquivo_codigo'],
-            resultado=Submissao.statusDict[status],
+            resultado=status,
             nota=nota,
             atividade=atividade,
             aluno=aluno,
@@ -571,7 +577,7 @@ def aluno_ativ(request, ativ_id):
         atividade=atividade,
         aluno=aluno
     )
-    status = "Não entregue"
+    status = "NE"
     if submissao:
         submissao = submissao[len(submissao) - 1]
         status = submissao.resultado

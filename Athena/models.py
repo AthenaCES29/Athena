@@ -232,22 +232,27 @@ class Atividade(models.Model):
 class Submissao(models.Model):
 
     RESULTADOS = (
-        ('AC', 'Aceito'),
+        ('AC', 'Resposta correta'),
+        ('AC2', 'Teste do professor executado com sucesso'),
         ('TLE', 'Tempo Limite Excedido'),
         ('RTE', 'Erro em tempo de execução'),
         ('CE', 'Erro de compilação'),
-        ('WA', 'Resposta Errada'),
+        ('WA', 'Erro no teste público'),
+        ('WA2', 'Erro no teste privado'),
         ('INV', 'Código Inválido'),
+        ('NE', 'Não entregue'),
     )
 
     statusDict = {
         "CE": "Erro de compilação",
-        "WA": "Resposta errada",
+        "WA": "Erro no teste público",
+        "WA2": "Erro no teste privado",
         "INV": "Código inválido",
         "RTE": "Erro em tempo de execução",
         "TLE": "Tempo limite excedido",
-        "AC": "Resposta aceita",
-        "Não entregue": "Não entregue"
+        "AC": "Resposta correta",
+        "AC2": "Teste do professor executado com sucesso",
+        "NE": "Não entregue"
     }
 
     data_envio = models.DateField(

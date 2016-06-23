@@ -50,8 +50,67 @@ def _deletar_codigo_antigo():
 
     return _execute("rm * -fv")
 
+def mover(entrada, resposta, codigo, restricoes):
 
-def mover(testador, entrada, entrada2, codigo, restricoes):
+    out, err = _deletar_codigo_antigo()
+    if not _is_blank(err):
+        return ("CE", (
+            "Error ao deletar arquivos antigos:\n" + out).replace("\n", "<br>")
+        )
+
+    # prepara arquivo de codigo e compila
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    os.chdir("compiler/code")
+    _bytes_to_text(codigo, 'codigo.cpp')
+    ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
+
+    out, err = compile.compile_cpp(ABS_PATH)
+
+    if not _is_blank(err):
+        return ("CE", (
+            "Error de compilacao!\n" + err).replace("\n", "<br>")
+        )
+
+    violations = compile.violations(ABS_PATH, restricoes.split(","))
+    pprint(violations)
+    if len(violations) > 0:
+        strViolation = ""
+        for violation in violations:
+            strViolation = strViolation + violation + "\n"
+        return ("INV", (
+            "Error: codigo viola restricao!\n" +
+            strViolation).replace("\n", "<br>")
+        )
+
+    # mover programa.out de /compiler para /runner
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    _execute("mv compiler/code/programa.out runner")
+
+    # prepara arquivos de entrada/saida e roda
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    os.chdir("runner")
+    _copy_file(entrada, 'entrada.txt')
+    _copy_file(resposta, 'resposta.txt')
+
+    out, err = _execute("python runner.py")
+    if not _is_blank(out):
+        return ("RTE", out.replace("\n", "<br>"))
+
+    # diff das saidas
+    outdiff, err = _execute("cat saida.txt")
+
+    num_diffs, err = _execute('diff -b saida.txt resposta.txt | grep -c "^>"')
+    num_diffs.replace("\n", "")
+    num_diffs = int(num_diffs)
+    cabecalho = str(num_diffs) + "\n"
+    pprint(num_diffs)
+
+    if num_diffs != 0:
+        return ("WA", cabecalho + outdiff)
+    else:
+        return ("AC", cabecalho + outdiff)
+
+def mover2(testador, entrada, entrada2, codigo, restricoes):
 
     out, err = _deletar_codigo_antigo()
     if not _is_blank(err):
@@ -64,13 +123,6 @@ def mover(testador, entrada, entrada2, codigo, restricoes):
     os.chdir("compiler/code")
     _bytes_to_text(codigo, 'codigo.c')
     ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
-
-    out, err = compile.compile_cpp(ABS_PATH)
-
-    if not _is_blank(err):
-        return ("CE", (
-            "Erro de compilacao!\n" + err).replace("\n", "<br>")
-        )
 
     violations = compile.violations(ABS_PATH, restricoes.split(","))
     pprint(violations)
@@ -86,10 +138,10 @@ def mover(testador, entrada, entrada2, codigo, restricoes):
     # prepara arquivo de codigo e compila
     os.chdir(DIRETORIO_DO_ARQUIVO)
     os.chdir("compiler/code")
-    _bytes_to_text(testador, 'testador.c')
+    _copy_file(testador, 'testador.c')
     ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
 
-    out, err = compile.compile_cpp(ABS_PATH)
+    out, err = compile.compile_prof_cpp(ABS_PATH)
 
     # mover programa.out de /compiler para /runner
     os.chdir(DIRETORIO_DO_ARQUIVO)
@@ -98,30 +150,13 @@ def mover(testador, entrada, entrada2, codigo, restricoes):
     # prepara arquivos de entrada/saida e roda
     os.chdir(DIRETORIO_DO_ARQUIVO)
     os.chdir("runner")
-    _copy_file(entrada, 'entrada.txt')
+    _copy_file(entrada, 'entrada1.txt')
     _copy_file(entrada2, 'entrada2.txt')
 
     out, err = _execute('./programa.out')
-    """if not _is_blank(err):
-        return ("RTE", err.replace("\n", "<br>"))"""
-
-    if out > 0:
-        return ("WA", err)
+    if not _is_blank(err):
+        return ("RTE", err.replace("\n", "<br>"))
+    if out == "100":
+        return ("AC", out)
     else:
-        return ("AC", err)
-
-    """
-    # diff das saidas
-    outdiff, err = _execute("cat saida.txt")
-
-    num_diffs, err = _execute('diff -b saida.txt resposta.txt | grep -c "^>"')
-    num_diffs.replace("\n", "")
-    num_diffs = int(num_diffs)
-    cabecalho = str(num_diffs) + "\n"
-    pprint(num_diffs)
-
-    if num_diffs != 0:
-        return ("WA", cabecalho + outdiff)
-    else:
-        return ("AC", cabecalho + outdiff)]
-    """
+        return ("AC2", out)
