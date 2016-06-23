@@ -15,6 +15,7 @@ chmod -R 777 Athena.sh
 # pip
 python get-pip.py
 pip install -U pip
+pip install -r requirements.txt
 
 # virtualenv
 apt-get install python-virtualenv

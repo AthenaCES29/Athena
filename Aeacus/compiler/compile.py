@@ -90,16 +90,14 @@ def compile_cpp(abs_path_to_folder):
     process.wait()
     out, err = process.communicate()
     return out, err
-    
+
 
 def compile_prof_cpp(abs_path_to_folder):
 
-    files = _code_files(abs_path_to_folder)
     command = "g++ "
     command += abs_path_to_folder + "/" + os.path.basename("testador.c")
     command += " -g -pthread -pg -std=c++0x -o programa.out"
 
-    print command
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,

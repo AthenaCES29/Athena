@@ -130,8 +130,12 @@ class Atividade(models.Model):
 
         return data
 
-    Id = models.CharField(max_length=50, help_text="Id da Submissao")
-    nome = models.CharField(max_length=50)
+    Id = models.CharField(
+        max_length=50, help_text="Id da Submissao"
+    )
+    nome = models.CharField(
+        max_length=50
+    )
     descricao = models.CharField(
         max_length=1000,
     )

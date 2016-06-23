@@ -50,6 +50,7 @@ def _deletar_codigo_antigo():
 
     return _execute("rm * -fv")
 
+
 def mover(entrada, resposta, codigo, restricoes):
 
     out, err = _deletar_codigo_antigo()
@@ -109,6 +110,7 @@ def mover(entrada, resposta, codigo, restricoes):
         return ("WA", cabecalho + outdiff)
     else:
         return ("AC", cabecalho + outdiff)
+
 
 def mover2(testador, entrada, entrada2, codigo, restricoes):
 

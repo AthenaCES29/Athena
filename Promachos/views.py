@@ -119,11 +119,11 @@ def home(request):
             testador = request.FILES.getlist('file')[0]
             entrada = request.FILES.getlist('file')[1]
             entrada2 = request.FILES.getlist('file')[2]
-            saida = request.FILES.getlist('file')[3]
-            saida2 = request.FILES.getlist('file')[4]
             fonte = request.FILES.getlist('file')[5]
 
-            resultado = compare.mover(testador, entrada, entrada2, fonte, atividade.restricoes)
+            resultado = compare.mover(
+                testador, entrada, entrada2, fonte, []
+            )
 
             return render(
                 request, 'teste_juiz.html',
@@ -256,6 +256,7 @@ def prof_ativ(request, id_ativ):
             atividade.data_limite = request.POST['data_limite']
             atividade.peso1 = request.POST['peso1']
             atividade.peso2 = request.POST['peso2']
+            atividade.restricoes = request.POST['restricoes']
             files = request.FILES
             for file in files:
                 print file
@@ -475,8 +476,8 @@ def aluno_ativ(request, ativ_id):
 
         fonte = request.FILES['arquivo_codigo']
 
-        #Logica com diff
-        if False:
+        # Logica com diff
+        if True:
             status, resultadoPrivado = \
                 compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
             statusPriv = status
@@ -534,11 +535,15 @@ def aluno_ativ(request, ativ_id):
                 rte_ce_error = resultadoPublico
                 nota = 0
 
-        #Logica de teste com arquivo do professor
+        # Logica de teste com arquivo do professor
         else:
-            lista_saida.append(("Teste com código do professor:"," não há saídas a serem exibidas"))
-            status, ret = \
-                compare.mover2(testador, entrada, entrada2, fonte, atividade.restricoes)
+            lista_saida.append(
+                ("Teste com código do professor:",
+                    " não há saídas a serem exibidas")
+            )
+            status, ret = compare.mover2(
+                testador, entrada, entrada2, fonte, atividade.restricoes
+            )
 
             if status == "AC" or status == "AC2":
                 nota = ret
