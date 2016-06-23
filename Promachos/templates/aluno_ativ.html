@@ -93,8 +93,17 @@
               {% if atividade.estaFechada %}
               <h4 style="color:red">Status: fechada (em {{atividade.data_limite}})</h4>
               {% else %}
-              <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h5>
+              <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h4>
               {% endif %}
+              <h5>
+              Testes: Públicos
+              {% if atividade.teste_privado %}
+              & Privados
+              {% endif %}
+              {% if atividade.teste_customizado %}
+              & Customizados
+              {% endif %}
+              </h5>
             </div>
             <div class="row">
               <div class="col-xs-12 col-sm-4">

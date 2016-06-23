@@ -476,8 +476,22 @@ def aluno_ativ(request, ativ_id):
 
         fonte = request.FILES['arquivo_codigo']
 
-        # Logica com diff
-        if not atividade.teste_customizado:
+        if atividade.teste_customizado:
+            # Logica de teste com arquivo do professor
+            lista_saida.append(
+                ("Teste com código do professor:",
+                    " não há saídas a serem exibidas")
+            )
+            status, ret = compare.mover2(
+                testador, entrada, entrada2, fonte, atividade.restricoes
+            )
+
+            if status == "AC" or status == "AC2":
+                nota = ret
+            else:
+                nota = 0
+        elif atividade.teste_privado:
+            # Lógica com diff e teste privado
             status, resultadoPrivado = \
                 compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
             statusPriv = status
@@ -534,20 +548,33 @@ def aluno_ativ(request, ativ_id):
             else:
                 rte_ce_error = resultadoPublico
                 nota = 0
-
-        # Logica de teste com arquivo do professor
         else:
-            lista_saida.append(
-                ("Teste com código do professor:",
-                    " não há saídas a serem exibidas")
-            )
-            status, ret = compare.mover2(
-                testador, entrada, entrada2, fonte, atividade.restricoes
-            )
+            # Lógica com diff e sem teste privado
+            # Lógica com diff e teste privado
+            status, resultadoPublico = \
+                compare.mover(entrada, gabarito, fonte, atividade.restricoes)
 
-            if status == "AC" or status == "AC2":
-                nota = ret
+            if status == "WA" or status == "AC":
+                nums = []
+
+                for s in resultadoPublico.split():
+                    if s.isdigit():
+                        nums.append(int(s))
+                lines_gabarito = gabarito.count('\n')
+                resultadoPublico = resultadoPublico.split('\n')
+                resultadoPublico.pop(0)
+                gabarito = gabarito.split('\n')
+                for linha in izip_longest(resultadoPublico, gabarito):
+                    lista_saida.append(linha)
+                if (len(nums) > 0):
+                    num_diffs = nums[0]
+                else:
+                    num_diffs = 0
+
+                nota = int(100 * (lines_gabarito - num_diffs)) / lines_gabarito
+
             else:
+                rte_ce_error = resultadoPublico
                 nota = 0
 
         submissoes = Submissao.objects.filter(
