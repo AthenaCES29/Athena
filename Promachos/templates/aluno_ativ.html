@@ -93,8 +93,17 @@
               {% if atividade.estaFechada %}
               <h4 style="color:red">Status: fechada (em {{atividade.data_limite}})</h4>
               {% else %}
-              <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h5>
+              <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h4>
               {% endif %}
+              <h5>
+              Testes: Públicos
+              {% if atividade.teste_privado %}
+              & Privados
+              {% endif %}
+              {% if atividade.teste_customizado %}
+              & Customizados
+              {% endif %}
+              </h5>
             </div>
             <div class="row">
               <div class="col-xs-12 col-sm-4">
@@ -106,7 +115,15 @@
                       <p><b>Descrição: </b>{{ atividade.descricao }}</p>
                       <p><b>Atividade:</b> <a href="{{ atividade.arquivo_roteiro.url }}" target="_blank">{{ atividade.nome_roteiro }}</a></p>
 
-                      <p><b>Teste público:</b> <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
+                      {% if atividade.teste_publico%}
+                      <p><b>Entrada pública:</b> 
+                        <a href="{{ atividade.arquivo_entrada.url }}" target="_blank">{{ atividade.nome_entrada }}</a></p>
+                      {% endif %}
+
+                      {% if not atividade.teste_customizado %}
+                      <p><b>Saída pública:</b> 
+                        <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
+                      {% endif %}
 
                       <p><b>Restrições: </b>{{atividade.restricoes}}</p>
                       </p>
@@ -149,7 +166,7 @@
                 <div class="thumbnail thumbnail_work">
                   <div class="caption">
                     <div class="form-group">
-                      <h4 align="center"><b>Erros:</b></h4>
+                      <h4 align="center"><b>Arquivos de saída:</b></h4>
                       <hr>
                       <p style="color:red"> {{ compilation_error|safe }} </p>
                       <!-- TABELA COMECA AQUI!!! -->

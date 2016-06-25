@@ -92,6 +92,23 @@ def compile_cpp(abs_path_to_folder):
     return out, err
 
 
+def compile_prof_cpp(abs_path_to_folder):
+
+    command = "g++ "
+    command += abs_path_to_folder + "/" + os.path.basename("testador.c")
+    command += " -g -pthread -pg -std=c++0x -o programa.out"
+
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+    )
+    process.wait()
+    out, err = process.communicate()
+    return out, err
+
+
 def _crop_abs_path(abs_path_to_folder):
     file = abs_path_to_folder
     index = file.rfind("/") + 1

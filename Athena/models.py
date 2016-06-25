@@ -130,22 +130,31 @@ class Atividade(models.Model):
 
         return data
 
-    Id = models.CharField(max_length=50, help_text="Id da Submissao")
-    nome = models.CharField(max_length=50)
+    Id = models.CharField(
+        max_length=50, help_text="Id da Submissao"
+    )
+    nome = models.CharField(
+        max_length=50
+    )
     descricao = models.CharField(
         max_length=1000,
     )
     restricoes = models.CharField(
         max_length=1000,
     )
-    arquivo_roteiro = models.FileField(upload_to=atividade_path)
+    arquivo_roteiro = models.FileField(upload_to=atividade_path, default=None)
+    arquivo_testador = models.FileField(upload_to=atividade_path, default=None)
     arquivo_entrada = models.FileField(upload_to=atividade_path)
-    arquivo_entrada2 = models.FileField(upload_to=atividade_path)
+    arquivo_entrada2 = models.FileField(upload_to=atividade_path, default=None)
     arquivo_saida = models.FileField(upload_to=atividade_path)
-    arquivo_saida2 = models.FileField(upload_to=atividade_path)
+    arquivo_saida2 = models.FileField(upload_to=atividade_path, default=None)
 
     peso1 = models.IntegerField(default=1)
     peso2 = models.IntegerField(default=1)
+
+    teste_publico = models.BooleanField(default=False)
+    teste_privado = models.BooleanField(default=False)
+    teste_customizado = models.BooleanField(default=False)
 
     data_limite = models.DateField()
     turma = models.ForeignKey(
@@ -166,6 +175,9 @@ class Atividade(models.Model):
 
     def nome_roteiro(self):
         return os.path.basename(self.arquivo_roteiro.name)
+
+    def nome_testador(self):
+        return os.path.basename(self.arquivo_testador.name)
 
     def nome_entrada(self):
         return os.path.basename(self.arquivo_entrada.name)
@@ -189,54 +201,66 @@ class Atividade(models.Model):
         if os.path.exists(file):
             os.remove(file)
 
+    def remove_testador(self, *args, **kwargs):
+        file = os.path.join(
+            settings.MEDIA_ROOT,
+            self.arquivo_testador.name)
+        if not os.path.isdir(file) and os.path.exists(file):
+            os.remove(file)
+
     def remove_entrada(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_entrada.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_entrada2(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_entrada2.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_saida(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_saida.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
     def remove_saida2(self, *args, **kwargs):
         file = os.path.join(
             settings.MEDIA_ROOT,
             self.arquivo_saida2.name)
-        if os.path.exists(file):
+        if not os.path.isdir(file) and os.path.exists(file):
             os.remove(file)
 
 
 class Submissao(models.Model):
 
     RESULTADOS = (
-        ('AC', 'Aceito'),
+        ('AC', 'Resposta correta'),
+        ('AC2', 'Teste do professor executado com sucesso'),
         ('TLE', 'Tempo Limite Excedido'),
         ('RTE', 'Erro em tempo de execução'),
         ('CE', 'Erro de compilação'),
-        ('WA', 'Resposta Errada'),
+        ('WA', 'Erro no teste público'),
+        ('WA2', 'Erro no teste privado'),
         ('INV', 'Código Inválido'),
+        ('NE', 'Não entregue'),
     )
 
     statusDict = {
         "CE": "Erro de compilação",
-        "WA": "Resposta errada",
+        "WA": "Erro no teste público",
+        "WA2": "Erro no teste privado",
         "INV": "Código inválido",
         "RTE": "Erro em tempo de execução",
         "TLE": "Tempo limite excedido",
-        "AC": "Resposta aceita",
-        "Não entregue": "Não entregue"
+        "AC": "Resposta correta",
+        "AC2": "Teste do professor executado com sucesso",
+        "NE": "Não entregue"
     }
 
     data_envio = models.DateField(

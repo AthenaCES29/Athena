@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+from itertools import izip_longest
 
 import re
 
 from datetime import datetime
-
-from itertools import izip_longest
 
 from pprint import pprint
 
@@ -24,7 +23,8 @@ from django.template import RequestContext
 from django.template.context_processors import csrf
 from django.utils import timezone
 
-from .forms import AtividadeCreationForm, AtividadeEditForm, TurmaCreationForm, UploadFileForm
+from .forms import AtividadeCreationForm, AtividadeEditForm, \
+    TurmaCreationForm, UploadFileForm
 
 
 def login(request):
@@ -116,13 +116,14 @@ def home(request):
     if request.user.is_authenticated():
         form = UploadFileForm()
         if request.method == 'POST':
-            entrada = request.FILES.getlist('file')[0]
-            entrada2 = request.FILES.getlist('file')[1]
-            saida = request.FILES.getlist('file')[2]
-            saida2 = request.FILES.getlist('file')[3]
-            fonte = request.FILES.getlist('file')[4]
+            testador = request.FILES.getlist('file')[0]
+            entrada = request.FILES.getlist('file')[1]
+            entrada2 = request.FILES.getlist('file')[2]
+            fonte = request.FILES.getlist('file')[5]
 
-            resultado = compare.mover(entrada, entrada2, saida, saida2, fonte)
+            resultado = compare.mover(
+                testador, entrada, entrada2, fonte, []
+            )
 
             return render(
                 request, 'teste_juiz.html',
@@ -182,6 +183,7 @@ def professor(request):
                 submissoes.delete()
 
                 atividade.remove_roteiro()
+                atividade.remove_testador()
                 atividade.remove_entrada()
                 atividade.remove_entrada2()
                 atividade.remove_saida()
@@ -254,11 +256,14 @@ def prof_ativ(request, id_ativ):
             atividade.data_limite = request.POST['data_limite']
             atividade.peso1 = request.POST['peso1']
             atividade.peso2 = request.POST['peso2']
+            atividade.restricoes = request.POST['restricoes']
             files = request.FILES
             for file in files:
                 print file
             if 'arquivo_roteiro' in files:
                 atividade.arquivo_roteiro = files['arquivo_roteiro']
+            if 'testador' in files:
+                atividade.testador = files['testador']
             if 'arquivo_entrada' in files:
                 atividade.arquivo_entrada = files['arquivo_entrada']
             if 'arquivo_entrada2' in files:
@@ -280,6 +285,7 @@ def prof_ativ(request, id_ativ):
             submissoes.delete()
 
             atividade.remove_roteiro()
+            atividade.remove_testador()
             atividade.remove_entrada()
             atividade.remove_entrada2()
             atividade.remove_saida()
@@ -333,8 +339,9 @@ def prof_ativ(request, id_ativ):
             )
 
         else:
+            status = "NE"
             status_aluno.append(
-                (aluno.nome, "Não entregue", "-")
+                (aluno.nome, Submissao.statusDict[status], "-")
             )
 
     return render_to_response(
@@ -371,7 +378,7 @@ def aluno(request):
                 atividade=atividade,
                 aluno=aluno,
             )
-            status = "Não entregue"
+            status = "NE"
             if not atividade.estaFechada():
                 if not submissao:
                     atividades_pendentes.append(
@@ -447,80 +454,138 @@ def aluno_ativ(request, ativ_id):
     rte_ce_error = ""
     if request.method == 'POST':
 
-        atividade.arquivo_entrada.open()
-        entrada = atividade.arquivo_entrada.read()
-        atividade.arquivo_entrada.close()
+        entrada = None
+        entrada2 = None
+        gabarito = None
+        gabarito2 = None
+        testador = None
 
-        atividade.arquivo_entrada2.open()
-        entrada2 = atividade.arquivo_entrada2.read()
-        atividade.arquivo_entrada2.close()
+        if atividade.teste_customizado:
+            atividade.arquivo_testador.open()
+            testador = atividade.arquivo_testador.read()
+            atividade.arquivo_testador.close()
 
-        atividade.arquivo_saida.open()
-        gabarito = atividade.arquivo_saida.read()
-        atividade.arquivo_saida.close()
+        if atividade.teste_publico:
+            atividade.arquivo_entrada.open()
+            entrada = atividade.arquivo_entrada.read()
+            atividade.arquivo_entrada.close()
 
-        atividade.arquivo_saida2.open()
-        gabarito2 = atividade.arquivo_saida2.read()
-        atividade.arquivo_saida2.close()
+        if atividade.teste_privado:
+            atividade.arquivo_entrada2.open()
+            entrada2 = atividade.arquivo_entrada2.read()
+            atividade.arquivo_entrada2.close()
+
+        if atividade.teste_publico and not atividade.teste_customizado:
+            atividade.arquivo_saida.open()
+            gabarito = atividade.arquivo_saida.read()
+            atividade.arquivo_saida.close()
+
+        if atividade.teste_privado and not atividade.teste_customizado:
+            atividade.arquivo_saida2.open()
+            gabarito2 = atividade.arquivo_saida2.read()
+            atividade.arquivo_saida2.close()
 
         fonte = request.FILES['arquivo_codigo']
 
-        status, resultadoPrivado = \
-            compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
-        status, resultadoPublico = \
-            compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+        if atividade.teste_customizado:
+            # Logica de teste com arquivo do professor
+            lista_saida.append(
+                ("Teste com código do professor:",
+                    " não há saídas a serem exibidas")
+            )
+            status, ret = compare.mover2(
+                testador, entrada, entrada2, fonte, atividade.restricoes, atividade.teste_publico, atividade.teste_privado
+            )
 
-        pprint(status)
-        pprint(resultadoPublico)
-        if status == "WA" or status == "AC":
-            nums = []
-
-            for s in resultadoPublico.split():
-                if s.isdigit():
-                    nums.append(int(s))
-            lines_gabarito = gabarito.count('\n')
-            resultadoPublico = resultadoPublico.split('\n')
-            resultadoPublico.pop(0)
-            gabarito = gabarito.split('\n')
-            for linha in izip_longest(resultadoPublico, gabarito):
-                lista_saida.append(linha)
-            if (len(nums) > 0):
-                num_diffs = nums[0]
+            if status == "AC" or status == "AC2":
+                nota = ret
             else:
-                num_diffs = 0
-            pprint(lista_saida)
-            pprint(lines_gabarito)
-
-            nums = []
-
-            for s in resultadoPrivado.split():
-                if s.isdigit():
-                    nums.append(int(s))
-            lines_gabarito2 = gabarito2.count('\n')
-            resultadoPrivado = resultadoPrivado.split('\n')
-            resultadoPrivado.pop(0)
-            gabarito2 = gabarito2.split('\n')
-            if (len(nums) > 0):
-                num_diffs2 = nums[0]
-            else:
-                num_diffs2 = 0
-
-            # arquivo privado obrigtorio
-            if num_diffs > 0:
                 nota = 0
-            else:
-                nota = (
-                    ((lines_gabarito - num_diffs) * atividade.peso1) /
-                    lines_gabarito +
-                    ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
-                    lines_gabarito2
-                )
-            nota = nota * 100 / (atividade.peso1 + atividade.peso2)
-            nota = int(nota)
+        elif atividade.teste_privado:
+            # Lógica com diff e teste privado
+            status, resultadoPrivado = \
+                compare.mover(entrada2, gabarito2, fonte, atividade.restricoes)
+            statusPriv = status
+            status, resultadoPublico = \
+                compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+            statusPublic = status
+            if statusPublic == "AC" and statusPriv == "WA":
+                status = "WA2"
 
+            if status == "WA" or status == "AC" or status == "WA2":
+                nums = []
+
+                for s in resultadoPublico.split():
+                    if s.isdigit():
+                        nums.append(int(s))
+                lines_gabarito = gabarito.count('\n')
+                resultadoPublico = resultadoPublico.split('\n')
+                resultadoPublico.pop(0)
+                gabarito = gabarito.split('\n')
+                for linha in izip_longest(resultadoPublico, gabarito):
+                    lista_saida.append(linha)
+                if (len(nums) > 0):
+                    num_diffs = nums[0]
+                else:
+                    num_diffs = 0
+
+                nums = []
+
+                for s in resultadoPrivado.split():
+                    if s.isdigit():
+                        nums.append(int(s))
+                lines_gabarito2 = gabarito2.count('\n')
+                resultadoPrivado = resultadoPrivado.split('\n')
+                resultadoPrivado.pop(0)
+                gabarito2 = gabarito2.split('\n')
+                if (len(nums) > 0):
+                    num_diffs2 = nums[0]
+                else:
+                    num_diffs2 = 0
+
+                # arquivo privado obrigtorio
+                if num_diffs > 0:
+                    nota = 0
+                else:
+                    nota = (
+                        ((lines_gabarito - num_diffs) * atividade.peso1) /
+                        lines_gabarito +
+                        ((lines_gabarito2 - num_diffs2) * atividade.peso2) /
+                        lines_gabarito2
+                    )
+                nota = nota * 100 / (atividade.peso1 + atividade.peso2)
+                nota = int(nota)
+
+            else:
+                rte_ce_error = resultadoPublico
+                nota = 0
         else:
-            rte_ce_error = resultadoPublico
-            nota = 0
+            # Lógica com diff e sem teste privado
+            status, resultadoPublico = \
+                compare.mover(entrada, gabarito, fonte, atividade.restricoes)
+
+            if status == "WA" or status == "AC":
+                nums = []
+
+                for s in resultadoPublico.split():
+                    if s.isdigit():
+                        nums.append(int(s))
+                lines_gabarito = gabarito.count('\n')
+                resultadoPublico = resultadoPublico.split('\n')
+                resultadoPublico.pop(0)
+                gabarito = gabarito.split('\n')
+                for linha in izip_longest(resultadoPublico, gabarito):
+                    lista_saida.append(linha)
+                if (len(nums) > 0):
+                    num_diffs = nums[0]
+                else:
+                    num_diffs = 0
+
+                nota = int(100 * (lines_gabarito - num_diffs)) / lines_gabarito
+
+            else:
+                rte_ce_error = resultadoPublico
+                nota = 0
 
         submissoes = Submissao.objects.filter(
             aluno=aluno,
@@ -533,7 +598,7 @@ def aluno_ativ(request, ativ_id):
         submissao = Submissao(
             data_envio=timezone.now().date(),
             arquivo_codigo=request.FILES['arquivo_codigo'],
-            resultado=Submissao.statusDict[status],
+            resultado=status,
             nota=nota,
             atividade=atividade,
             aluno=aluno,
@@ -554,7 +619,7 @@ def aluno_ativ(request, ativ_id):
         atividade=atividade,
         aluno=aluno
     )
-    status = "Não entregue"
+    status = "NE"
     if submissao:
         submissao = submissao[len(submissao) - 1]
         status = submissao.resultado

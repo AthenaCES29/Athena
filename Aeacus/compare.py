@@ -110,3 +110,57 @@ def mover(entrada, resposta, codigo, restricoes):
         return ("WA", cabecalho + outdiff)
     else:
         return ("AC", cabecalho + outdiff)
+
+
+def mover2(testador, entrada, entrada2, codigo, restricoes, ent, ent2):
+
+    out, err = _deletar_codigo_antigo()
+    if not _is_blank(err):
+        return ("CE", (
+            "Erro ao deletar arquivos antigos:\n" + out).replace("\n", "<br>")
+        )
+
+    # prepara arquivo de codigo e compila
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    os.chdir("compiler/code")
+    _bytes_to_text(codigo, 'codigo.c')
+    ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
+
+    violations = compile.violations(ABS_PATH, restricoes.split(","))
+    pprint(violations)
+    if len(violations) > 0:
+        strViolation = ""
+        for violation in violations:
+            strViolation = strViolation + violation + "\n"
+        return ("INV", (
+            "Erro: codigo viola restricao!\n" +
+            strViolation).replace("\n", "<br>")
+        )
+
+    # prepara arquivo de codigo e compila
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    os.chdir("compiler/code")
+    _copy_file(testador, 'testador.c')
+    ABS_PATH = os.path.join(DIRETORIO_DO_ARQUIVO, "compiler/code")
+
+    out, err = compile.compile_prof_cpp(ABS_PATH)
+
+    # mover programa.out de /compiler para /runner
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    _execute("mv compiler/code/programa.out runner")
+
+    # prepara arquivos de entrada/saida e roda
+    os.chdir(DIRETORIO_DO_ARQUIVO)
+    os.chdir("runner")
+    if ent:
+        _copy_file(entrada, 'entrada1.txt')
+    if ent2:
+        _copy_file(entrada2, 'entrada2.txt')
+
+    out, err = _execute('./programa.out')
+    if not _is_blank(err):
+        return ("RTE", err.replace("\n", "<br>"))
+    if out == "100":
+        return ("AC", out)
+    else:
+        return ("AC2", out)
