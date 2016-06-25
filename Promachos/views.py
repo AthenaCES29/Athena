@@ -228,9 +228,12 @@ def professor(request):
 
     return render_to_response(
         'professor.html',
-        {"turmas": turmas,
-         "panes": panes,
-         "form": form},
+        {
+            "professor": professor,
+            "turmas": turmas,
+            "panes": panes,
+            "form": form
+        },
         context_instance=RequestContext(request),
     )
 
@@ -246,6 +249,7 @@ def prof_ativ(request, id_ativ):
     if not atividade:
         return HttpResponseRedirect('/professor/')
 
+    professor = professor[0]
     atividade = atividade[0]
 
     if request.method == 'POST':
@@ -347,6 +351,7 @@ def prof_ativ(request, id_ativ):
     return render_to_response(
         'prof_ativ.html',
         {
+            "professor": professor,
             "atividade": atividade,
             "status_aluno": status_aluno,
             "form": AtividadeEditForm(instance=atividade),
@@ -420,10 +425,13 @@ def aluno(request):
 
     return render_to_response(
         'aluno.html',
-        {"turmas": turmas,
-         "panes": panes,
-         "ultimas_submissoes": ultimas_submissoes,
-         "atividades_pendentes": atividades_pendentes, },
+        {
+            "aluno": aluno,
+            "turmas": turmas,
+            "panes": panes,
+            "ultimas_submissoes": ultimas_submissoes,
+            "atividades_pendentes": atividades_pendentes,
+        },
         context_instance=RequestContext(request),
     )
 
@@ -494,7 +502,8 @@ def aluno_ativ(request, ativ_id):
                     " não há saídas a serem exibidas")
             )
             status, ret = compare.mover2(
-                testador, entrada, entrada2, fonte, atividade.restricoes, atividade.teste_publico, atividade.teste_privado
+                testador, entrada, entrada2, fonte, atividade.restricoes,
+                atividade.teste_publico, atividade.teste_privado
             )
 
             if status == "AC" or status == "AC2":
@@ -633,6 +642,7 @@ def aluno_ativ(request, ativ_id):
     return render_to_response(
         'aluno_ativ.html',
         {
+            "aluno": aluno,
             "atividade": atividade,
             "submissao": submissao,
             "prazo_valido": prazo_valido,

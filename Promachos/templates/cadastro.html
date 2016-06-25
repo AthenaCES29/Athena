@@ -17,23 +17,29 @@
     <div class="col-xs-12">
       <h2 class="form-signin-heading" align="center">Cadastro de Aluno/Professor</h2>
       <form class="form-signin" action="/cadastro/" method="post"> {% csrf_token %}
-	<div align="center" style="padding-top: 15px;">
-                <label for="{{ form.fullname.label }}" class="sr-only"></label>
+	<div align="left" style="padding-top: 15px;">
+        
+        <label>Nome completo:</label>        
+        <label for="{{ form.fullname.label }}" class="sr-only"></label>
         	<input type="fullname" name="fullname" id="fullname" class="form-control" value="{{ form.fullname.value|default_if_none:"" }}" placeholder="Nome completo" autofocus>
-		<font color="red">{{ form.fullname.errors.as_text }}</font><br><br>
+		<font color="red">{{ form.fullname.errors.as_text }}</font><br>
 
+		<label>Username:</label>
 		<label for="{{ form.username.label }}" class="sr-only"></label>
         	<input type="username" name="username" id="username" class="form-control" value="{{ form.username.value|default_if_none:"" }}" placeholder="Nome de usuário" autofocus>
-		<font color="red">{{ form.username.errors.as_text }}</font><br><br>
+		<font color="red">{{ form.username.errors.as_text }}</font><br>
 
+		<label>Email (domínio @ita.br ou @aluno.ita.br):</label>   
 		<label for="{{ form.email.label }}" class="sr-only"></label>
         	<input type="username" name="email" id="email" class="form-control" value="{{ form.email.value|default_if_none:"" }}" placeholder="Email (@ita.br ou @aluno.ita.br)" autofocus>
-		<font color="red">{{ form.email.errors.as_text }}</font><br><br>
+		<font color="red">{{ form.email.errors.as_text }}</font><br>
 
+		<label>Senha:</label>   
 		<label for="{{ form.password1.label }}" class="sr-only"></label>
         	<input type="password" name="password1" id="password1" class="form-control" value="{{ form.password1.value|default_if_none:"" }}" placeholder="Senha" autofocus>
-		<font color="red">{{ form.password1.errors.as_text }}</font><br><br>
+		<font color="red">{{ form.password1.errors.as_text }}</font><br>
 
+		<label>Digite a senha novamente:</label>   
 		<label for="{{ form.password2.label }}" class="sr-only"></label>
         	<input type="password" name="password2" id="password2" class="form-control" placeholder="Confirme a sua senha" autofocus>
 		<font color="red">{{ form.password2.errors.as_text }}</font>
@@ -54,9 +60,9 @@
 			{{ form.password2.label_tag }}
 			{{ form.password2 }} <br><font color="red">{{ form.password2.errors.as_text }}</font>
 		<!-->
-
-           <input type="submit" value="Efetuar cadastro">
-	   <button onclick="location.href='/login/'; return false;">Voltar ao login</button>
+		<br>
+	      <button class="btn btn-lg btn-primary btn-block" type="submit">Efetuar cadastro</button>
+	      <button class="btn btn-lg btn-default btn-block" onclick="location.href='/login/'; return false;">Voltar ao login</button>
         </div>
       </form>
     </div>

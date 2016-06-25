@@ -75,10 +75,14 @@
 <body>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-xs-6">
-      <img src="/static/img/ita_logo.jpg" style="height: 50px;">
+    <div class="col-sm-3">
+      <img src="/static/img/ita_logo.jpg" style="height: 75px;">
     </div>
-    <div class="col-xs-6" style="text-align: right;">
+    <div class="col-sm-6">
+      <h2 align="center">Olá {{aluno.user}}</h2>
+      <h4 align="center">{{aluno.user.email}}</h4>
+    </div>
+    <div class="col-sm-3" style="text-align: right;">
       <p style="line-height: 40px;"><a href="/logout/" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
     </div>
   </div>
