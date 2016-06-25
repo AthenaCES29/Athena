@@ -100,15 +100,15 @@
               <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h4>
               {% endif %}
               <h5>
-              Testes  
-              {% if atividade.test_publico %}
-              - Públicos
+              Testes Incluídos:
+              {% if atividade.teste_publico %}
+               - Públicos
               {% endif %}
               {% if atividade.teste_privado %}
-              - Privados
+               - Privados
               {% endif %}
               {% if atividade.teste_customizado %}
-              - Customizados
+               - Customizados
               {% endif %}
               </h5>
             </div>
