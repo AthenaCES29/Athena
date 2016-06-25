@@ -44,7 +44,7 @@ class AtividadeCreationForm(ModelForm):
             'nome': u'Nome da atividade*',
             'descricao': u'Descricao da atividade*',
             'data_limite': u'Data limite de entrega*',
-            'arquivo_roteiro': u'Arquivo com roteiro',
+            'arquivo_roteiro': u'Arquivo com roteiro*',
         }
         widgets = {
             'nome': forms.TextInput(attrs={
@@ -57,7 +57,7 @@ class AtividadeCreationForm(ModelForm):
             }),
             'descricao': forms.Textarea(attrs={
                 'placeholder': 'Ex.: Lab que ensina a fazer printf',
-                'required': 'False',
+                'required': 'True',
                 'rows': '5',
             }),
             'arquivo_roteiro': forms.FileInput(attrs={

@@ -57,10 +57,14 @@
     <script src="/static/js/bootstrap-tagsinput.min.js"></script>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-xs-6">
-          <img src="/static/img/ita_logo.jpg" style="height: 50px;">
+        <div class="col-sm-3">
+          <img src="/static/img/ita_logo.jpg" style="height: 75px;">
         </div>
-        <div class="col-xs-6" style="text-align: right;">
+        <div class="col-sm-6">
+          <h2 align="center">Olá {{professor.user}}</h2>
+          <h4 align="center">{{professor.user.email}}</h4>
+        </div>
+        <div class="col-xs-3" style="text-align: right;">
           <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
         </div>
       </div>
@@ -240,12 +244,14 @@
           <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h4>
           {% endif %}
           <h5>
-          Testes: Públicos
+          {% if atividade.test_publico %}
+           Testes Públicos
+          {% endif %}
           {% if atividade.teste_privado %}
-          & Privados
+           Testes Públicos
           {% endif %}
           {% if atividade.teste_customizado %}
-          & Customizados
+           Testes Públicos
           {% endif %}
           </h5>
           <section class="tabela">

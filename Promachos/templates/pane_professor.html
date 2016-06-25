@@ -65,30 +65,30 @@
                       <script>
                         $("#id_{{turma.id}}-teste_publico").click(function() { 
                           if ($("#id_{{turma.id}}-teste_publico").is(":checked")) {
-                            $("#fieldPublic1").fadeIn("slow");
+                            $("#{{turma.id}}-fieldPublic1").fadeIn("slow");
                             if (!$("#id_{{turma.id}}-teste_customizado").is(":checked")) {
-                              $("#fieldPublic2").fadeIn("slow");
-                              $("#fieldPublic3").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPublic2").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPublic3").fadeIn("slow");
                             }
                           } else {
-                            $("#fieldPublic1").fadeOut("slow");
-                            $("#fieldPublic2").fadeOut("slow");
-                            $("#fieldPublic3").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPublic1").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPublic2").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPublic3").fadeOut("slow");
                           } 
                         });
                       </script>
                     </label>
                   </div>
-                  <div class="form-group" id="fieldPublic1" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldPublic1" hidden>
                     <p>Essa opção é obrigatória para a lógica convencional, pois o teste público tem caráter obrigatório.</p>
                     <label>Arquivo de entrada público:</label>
                     <input type="file" id="id_{{turma.id}}-arquivo_entrada" name={{turma.id}}-arquivo_entrada>
                   </div>
-                  <div class="form-group" id="fieldPublic2" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldPublic2" hidden>
                     <div align="left"><label>Arquivo de saida público:</label></div>
                     <input type="file" id="id_{{turma.id}}-arquivo_saida" name={{turma.id}}-arquivo_saida>
                   </div>
-                  <div class="form-group" id="fieldPublic3" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldPublic3" hidden>
                     <div align="left"><label>Peso do arquivo público:</label></div>
                     <input type="text" id="id_{{turma.id}}-peso1" value="1" name={{turma.id}}-peso1>
                   </div>
@@ -105,30 +105,30 @@
                       <script>
                         $("#id_{{turma.id}}-teste_privado").click(function() { 
                           if ($("#id_{{turma.id}}-teste_privado").is(":checked")) {
-                            $("#fieldPriv1").fadeIn("slow");
+                            $("#{{turma.id}}-fieldPriv1").fadeIn("slow");
                             if (!$("#id_{{turma.id}}-teste_customizado").is(":checked")) {
-                              $("#fieldPriv2").fadeIn("slow");
-                              $("#fieldPriv3").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPriv2").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPriv3").fadeIn("slow");
                             }
                           } else {
-                            $("#fieldPriv1").fadeOut("slow");
-                            $("#fieldPriv2").fadeOut("slow");
-                            $("#fieldPriv3").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPriv1").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPriv2").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPriv3").fadeOut("slow");
                           } 
                         });
                       </script>
                     </label>
                   </div>
-                  <div class="form-group" id="fieldPriv1" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldPriv1" hidden>
                     <p>Opcional. Selecionar essa opção fornece um arquivo de teste a mais para a correção. Esse arquivo não pode ser visto pelo aluno.</p>
                     <div align="left"><label>Arquivo de entrada privado:</label></div>
                     <input type="file" id="id_{{turma.id}}-arquivo_entrada2" name={{turma.id}}-arquivo_entrada2>
                   </div>
-                  <div class="form-group" id="fieldPriv2" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldPriv2" hidden>
                     <div align="left"><label>Arquivo de saida privado:</label></div>
                     <input type="file" id="id_{{turma.id}}-arquivo_saida2" name={{turma.id}}-arquivo_saida2>
                   </div>
-                  <div class="form-group" id="fieldPriv3" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldPriv3" hidden>
                     <div align="left"><label>Peso do arquivo privado:</label></div>
                     <input type="text" id="id_{{turma.id}}-peso2" value="0" name={{turma.id}}-peso2>
                   </div>
@@ -145,27 +145,27 @@
                       <script>
                         $("#id_{{turma.id}}-teste_customizado").click(function() { 
                           if ($("#id_{{turma.id}}-teste_customizado").is(":checked")) {
-                            $("#fieldCustom1").fadeIn("slow");
-                            $("#fieldPublic2").fadeOut("slow");
-                            $("#fieldPublic3").fadeOut("slow");
-                            $("#fieldPriv2").fadeOut("slow");
-                            $("#fieldPriv3").fadeOut("slow");
+                            $("#{{turma.id}}-fieldCustom1").fadeIn("slow");
+                            $("#{{turma.id}}-fieldPublic2").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPublic3").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPriv2").fadeOut("slow");
+                            $("#{{turma.id}}-fieldPriv3").fadeOut("slow");
                           } else {
-                            $("#fieldCustom1").fadeOut("slow");
+                            $("#{{turma.id}}-fieldCustom1").fadeOut("slow");
                             if ($("#id_{{turma.id}}-teste_publico").is(":checked")) {
-                              $("#fieldPublic2").fadeIn("slow");
-                              $("#fieldPublic3").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPublic2").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPublic3").fadeIn("slow");
                             }
                             if ($("#id_{{turma.id}}-teste_privado").is(":checked")) {
-                              $("#fieldPriv2").fadeIn("slow");
-                              $("#fieldPriv3").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPriv2").fadeIn("slow");
+                              $("#{{turma.id}}-fieldPriv3").fadeIn("slow");
                             }
                           }
                         });
                       </script>
                     </label>
                   </div>
-                  <div class="form-group" id="fieldCustom1" hidden>
+                  <div class="form-group" id="{{turma.id}}-fieldCustom1" hidden>
                     <p>Opcional. Essa opção sobrescreve testes convencionais. Para utilizar essa opção em conjunto com arquivos de entrada, fornece as entradas nas opções acima.</p>
                     <div align="left"><label>Código do testador:</label></div>
                     <input type="file" id="id_{{turma.id}}-arquivo_testador" name={{turma.id}}-arquivo_testador>

@@ -43,10 +43,14 @@
   <body>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-xs-6">
-          <img src="/static/img/ita_logo.jpg" style="height: 50px;">
+        <div class="col-sm-3">
+          <img src="/static/img/ita_logo.jpg" style="height: 75px;">
         </div>
-        <div class="col-xs-6" style="text-align: right;">
+        <div class="col-sm-6">
+          <h2 align="center">Olá {{professor.user}}</h2>
+          <h4 align="center">{{professor.user.email}}</h4>
+        </div>
+        <div class="col-xs-3" style="text-align: right;">
           <p style="line-height: 40px;"><a href="/logout/" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
         </div>
       </div>
@@ -65,7 +69,7 @@
               </li>
               {% for turma in turmas %}
               <li role="presentation">
-                <a href=#{{turma.id}} aria-controls={{turma.id}}  role="tab" data-toggle="tab">{{turma.nome}}</a>
+                <a href=#{{turma.id}} aria-controls="{{turma.id}}"  role="tab" data-toggle="tab">{{turma.nome}}</a>
               </li>
               {% endfor %}
             </ul>
