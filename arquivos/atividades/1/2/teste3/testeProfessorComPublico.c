@@ -6,11 +6,9 @@ int main () {
 	int par1, par2, resultado;
 
 	entrada1 = fopen("entrada1.txt", "r");
-	entrada2 = fopen("entrada2.txt", "r");
+	par2 = 3;
 
 	fscanf(entrada1, "%d", &par1);
-	fscanf(entrada2, "%d", &par2);
-
 	resultado = 0;
 
 	if (funcao1(par1) == par1*par1)
@@ -19,9 +17,9 @@ int main () {
 		resultado = resultado + 2;
 
 	fclose(entrada1);
-	fclose(entrada2);
 
-	printf("%d\n", resultado);
+	// Printar a nota do aluno
+	printf("%d", (resultado*33 +1));
 
-	return resultado;
+	return 0;
 }

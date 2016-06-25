@@ -152,24 +152,71 @@ def AtividadeRegistration(request):
     prefixo = str(turma_id) + '-'
     pprint(request)
     if (prefixo + 'arquivo_testador') in request.FILES:
-        atividade = Atividade(
-            Id=uuid.uuid4(),
-            nome=request.POST[prefixo + 'nome'],
-            descricao=request.POST[prefixo + 'descricao'],
-            data_limite=request.POST[prefixo + 'data_limite'],
-            arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
-            arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
-            arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
-            arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
-            arquivo_saida2=request.FILES[prefixo + 'arquivo_saida2'],
-            arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
-            teste_privado=request.POST[prefixo + 'teste_privado'],
-            teste_customizado=request.POST[prefixo + 'teste_customizado'],
-            peso1=request.POST[prefixo + 'peso1'],
-            peso2=request.POST[prefixo + 'peso2'],
-            restricoes=request.POST[prefixo + 'restricoes'],
-            turma=turma,
-        )
+        if ((prefixo + 'arquivo_entrada') in request.FILES) and (
+            (prefixo + "arquivo_entrada2") in request.FILES):
+            atividade = Atividade(
+                Id=uuid.uuid4(),
+                nome=request.POST[prefixo + 'nome'],
+                descricao=request.POST[prefixo + 'descricao'],
+                data_limite=request.POST[prefixo + 'data_limite'],
+                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+                arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+                arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
+                arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
+                teste_publico=True,
+                teste_privado=True,
+                teste_customizado=True,
+                restricoes=request.POST[prefixo + 'restricoes'],
+                turma=turma,
+            )
+
+        elif (prefixo + 'arquivo_entrada') in request.FILES:
+            atividade = Atividade(
+                Id=uuid.uuid4(),
+                nome=request.POST[prefixo + 'nome'],
+                descricao=request.POST[prefixo + 'descricao'],
+                data_limite=request.POST[prefixo + 'data_limite'],
+                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+                arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
+                arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
+                teste_publico=True,
+                teste_privado=False,
+                teste_customizado=True,
+                restricoes=request.POST[prefixo + 'restricoes'],
+                turma=turma,
+            )
+
+        elif (prefixo + "arquivo_entrada2") in request.FILES:
+            atividade = Atividade(
+                Id=uuid.uuid4(),
+                nome=request.POST[prefixo + 'nome'],
+                descricao=request.POST[prefixo + 'descricao'],
+                data_limite=request.POST[prefixo + 'data_limite'],
+                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+                arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
+                arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
+                teste_publico=False,
+                teste_privado=True,
+                teste_customizado=True,
+                restricoes=request.POST[prefixo + 'restricoes'],
+                turma=turma,
+            )
+
+        else:
+            atividade = Atividade(
+                Id=uuid.uuid4(),
+                nome=request.POST[prefixo + 'nome'],
+                descricao=request.POST[prefixo + 'descricao'],
+                data_limite=request.POST[prefixo + 'data_limite'],
+                arquivo_roteiro=request.FILES[prefixo + 'arquivo_roteiro'],
+                arquivo_testador=request.FILES[prefixo + 'arquivo_testador'],
+                teste_publico=False,
+                teste_privado=False,
+                teste_customizado=True,
+                restricoes=request.POST[prefixo + 'restricoes'],
+                turma=turma,
+            )
+
     elif ((prefixo + 'arquivo_entrada2') in request.FILES) and (
             (prefixo + 'arquivo_saida2') in request.FILES):
             atividade = Atividade(
@@ -182,7 +229,8 @@ def AtividadeRegistration(request):
                 arquivo_entrada2=request.FILES[prefixo + 'arquivo_entrada2'],
                 arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
                 arquivo_saida2=request.FILES[prefixo + 'arquivo_saida2'],
-                teste_privado=request.POST[prefixo + 'teste_privado'],
+                teste_publico=True,
+                teste_privado=True,
                 teste_customizado=False,
                 peso1=request.POST[prefixo + 'peso1'],
                 peso2=request.POST[prefixo + 'peso2'],
@@ -199,6 +247,7 @@ def AtividadeRegistration(request):
             arquivo_entrada=request.FILES[prefixo + 'arquivo_entrada'],
             arquivo_saida=request.FILES[prefixo + 'arquivo_saida'],
             restricoes=request.POST[prefixo + 'restricoes'],
+            teste_publico=True,
             teste_privado=False,
             teste_customizado=False,
             peso1=1,

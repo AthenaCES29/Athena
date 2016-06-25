@@ -112,7 +112,7 @@ def mover(entrada, resposta, codigo, restricoes):
         return ("AC", cabecalho + outdiff)
 
 
-def mover2(testador, entrada, entrada2, codigo, restricoes):
+def mover2(testador, entrada, entrada2, codigo, restricoes, ent, ent2):
 
     out, err = _deletar_codigo_antigo()
     if not _is_blank(err):
@@ -152,8 +152,10 @@ def mover2(testador, entrada, entrada2, codigo, restricoes):
     # prepara arquivos de entrada/saida e roda
     os.chdir(DIRETORIO_DO_ARQUIVO)
     os.chdir("runner")
-    _copy_file(entrada, 'entrada1.txt')
-    _copy_file(entrada2, 'entrada2.txt')
+    if ent:
+        _copy_file(entrada, 'entrada1.txt')
+    if ent2:
+        _copy_file(entrada2, 'entrada2.txt')
 
     out, err = _execute('./programa.out')
     if not _is_blank(err):

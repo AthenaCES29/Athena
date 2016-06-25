@@ -2,13 +2,12 @@
 #include "codigo.c"
 
 int main () {
-	FILE *entrada1, *entrada2;
+	FILE *entrada1;
 	int par1, par2, resultado;
 
-	entrada1 = fopen("entrada1.txt", "r");
 	entrada2 = fopen("entrada2.txt", "r");
 
-	fscanf(entrada1, "%d", &par1);
+	par1 = 2;
 	fscanf(entrada2, "%d", &par2);
 
 	resultado = 0;
@@ -18,10 +17,10 @@ int main () {
 	if (funcao1(par2) == par2*par2)
 		resultado = resultado + 2;
 
-	fclose(entrada1);
 	fclose(entrada2);
 
-	printf("%d\n", resultado);
+	// Printar a nota do aluno
+	printf("%d", (resultado*33 +1));
 
-	return resultado;
+	return 0;
 }

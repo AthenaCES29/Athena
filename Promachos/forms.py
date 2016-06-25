@@ -59,6 +59,9 @@ class AtividadeCreationForm(ModelForm):
                 'placeholder': 'Ex.: Lab que ensina a fazer printf',
                 'required': 'False',
                 'rows': '5',
+            }),
+            'arquivo_roteiro': forms.FileInput(attrs={
+                'required': 'True',
             })
         }
 

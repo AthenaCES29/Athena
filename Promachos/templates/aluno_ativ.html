@@ -115,7 +115,15 @@
                       <p><b>Descrição: </b>{{ atividade.descricao }}</p>
                       <p><b>Atividade:</b> <a href="{{ atividade.arquivo_roteiro.url }}" target="_blank">{{ atividade.nome_roteiro }}</a></p>
 
-                      <p><b>Teste público:</b> <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
+                      {% if atividade.teste_publico%}
+                      <p><b>Entrada pública:</b> 
+                        <a href="{{ atividade.arquivo_entrada.url }}" target="_blank">{{ atividade.nome_entrada }}</a></p>
+                      {% endif %}
+
+                      {% if not atividade.teste_customizado %}
+                      <p><b>Saída pública:</b> 
+                        <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
+                      {% endif %}
 
                       <p><b>Restrições: </b>{{atividade.restricoes}}</p>
                       </p>

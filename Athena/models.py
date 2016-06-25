@@ -152,6 +152,7 @@ class Atividade(models.Model):
     peso1 = models.IntegerField(default=1)
     peso2 = models.IntegerField(default=1)
 
+    teste_publico = models.BooleanField(default=False)
     teste_privado = models.BooleanField(default=False)
     teste_customizado = models.BooleanField(default=False)
 

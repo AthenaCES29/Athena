@@ -58,16 +58,18 @@
                 <div class="thumbnail">
                   <!-- Rounded switch -->
                   <div align="left">
-                    <h4>Testes Públicos*:</h4>
+                    <h4>Testes Públicos:</h4>
                     <label class="switch">
-                      <input type="checkbox" id="switchPublic" unchecked>
+                      <input type="checkbox" unchecked id="id_{{turma.id}}-teste_publico" name={{turma.id}}-teste_publico>
                       <div class="slider round"></div>
                       <script>
-                        $("#switchPublic").click(function() { 
-                          if ($("#switchPublic").is(":checked")) {
+                        $("#id_{{turma.id}}-teste_publico").click(function() { 
+                          if ($("#id_{{turma.id}}-teste_publico").is(":checked")) {
                             $("#fieldPublic1").fadeIn("slow");
-                            $("#fieldPublic2").fadeIn("slow");
-                            $("#fieldPublic3").fadeIn("slow");
+                            if (!$("#id_{{turma.id}}-teste_customizado").is(":checked")) {
+                              $("#fieldPublic2").fadeIn("slow");
+                              $("#fieldPublic3").fadeIn("slow");
+                            }
                           } else {
                             $("#fieldPublic1").fadeOut("slow");
                             $("#fieldPublic2").fadeOut("slow");
@@ -78,12 +80,13 @@
                     </label>
                   </div>
                   <div class="form-group" id="fieldPublic1" hidden>
-                    <label>Arquivo de entrada público*:</label>
-                    <input type="file" id="id_{{turma.id}}-arquivo_entrada" name={{turma.id}}-arquivo_entrada required="True">
+                    <p>Essa opção é obrigatória para a lógica convencional, pois o teste público tem caráter obrigatório.</p>
+                    <label>Arquivo de entrada público:</label>
+                    <input type="file" id="id_{{turma.id}}-arquivo_entrada" name={{turma.id}}-arquivo_entrada>
                   </div>
                   <div class="form-group" id="fieldPublic2" hidden>
-                    <div align="left"><label>Arquivo de saida público*:</label></div>
-                    <input type="file" id="id_{{turma.id}}-arquivo_saida" name={{turma.id}}-arquivo_saida required="True">
+                    <div align="left"><label>Arquivo de saida público:</label></div>
+                    <input type="file" id="id_{{turma.id}}-arquivo_saida" name={{turma.id}}-arquivo_saida>
                   </div>
                   <div class="form-group" id="fieldPublic3" hidden>
                     <div align="left"><label>Peso do arquivo público:</label></div>
@@ -95,7 +98,7 @@
                 <div class="thumbnail">
                   <!-- Rounded switch -->
                   <div class="form-group" align="left">
-                    <h4>Testes Privados*:</h4>
+                    <h4>Testes Privados:</h4>
                     <label class="switch">
                       <input type="checkbox" unchecked id="id_{{turma.id}}-teste_privado" name={{turma.id}}-teste_privado>
                       <div class="slider round"></div>
@@ -103,8 +106,10 @@
                         $("#id_{{turma.id}}-teste_privado").click(function() { 
                           if ($("#id_{{turma.id}}-teste_privado").is(":checked")) {
                             $("#fieldPriv1").fadeIn("slow");
-                            $("#fieldPriv2").fadeIn("slow");
-                            $("#fieldPriv3").fadeIn("slow");
+                            if (!$("#id_{{turma.id}}-teste_customizado").is(":checked")) {
+                              $("#fieldPriv2").fadeIn("slow");
+                              $("#fieldPriv3").fadeIn("slow");
+                            }
                           } else {
                             $("#fieldPriv1").fadeOut("slow");
                             $("#fieldPriv2").fadeOut("slow");
@@ -115,6 +120,7 @@
                     </label>
                   </div>
                   <div class="form-group" id="fieldPriv1" hidden>
+                    <p>Opcional. Selecionar essa opção fornece um arquivo de teste a mais para a correção. Esse arquivo não pode ser visto pelo aluno.</p>
                     <div align="left"><label>Arquivo de entrada privado:</label></div>
                     <input type="file" id="id_{{turma.id}}-arquivo_entrada2" name={{turma.id}}-arquivo_entrada2>
                   </div>
@@ -140,15 +146,27 @@
                         $("#id_{{turma.id}}-teste_customizado").click(function() { 
                           if ($("#id_{{turma.id}}-teste_customizado").is(":checked")) {
                             $("#fieldCustom1").fadeIn("slow");
+                            $("#fieldPublic2").fadeOut("slow");
+                            $("#fieldPublic3").fadeOut("slow");
+                            $("#fieldPriv2").fadeOut("slow");
+                            $("#fieldPriv3").fadeOut("slow");
                           } else {
                             $("#fieldCustom1").fadeOut("slow");
+                            if ($("#id_{{turma.id}}-teste_publico").is(":checked")) {
+                              $("#fieldPublic2").fadeIn("slow");
+                              $("#fieldPublic3").fadeIn("slow");
+                            }
+                            if ($("#id_{{turma.id}}-teste_privado").is(":checked")) {
+                              $("#fieldPriv2").fadeIn("slow");
+                              $("#fieldPriv3").fadeIn("slow");
+                            }
                           }
                         });
                       </script>
                     </label>
                   </div>
                   <div class="form-group" id="fieldCustom1" hidden>
-                    <p>Opcional. Essa opção sobrescreve testes convencionais</p>
+                    <p>Opcional. Essa opção sobrescreve testes convencionais. Para utilizar essa opção em conjunto com arquivos de entrada, fornece as entradas nas opções acima.</p>
                     <div align="left"><label>Código do testador:</label></div>
                     <input type="file" id="id_{{turma.id}}-arquivo_testador" name={{turma.id}}-arquivo_testador>
                   </div>

@@ -454,25 +454,41 @@ def aluno_ativ(request, ativ_id):
     rte_ce_error = ""
     if request.method == 'POST':
 
-        atividade.arquivo_testador.open()
-        testador = atividade.arquivo_testador.read()
-        atividade.arquivo_testador.close()
+        pprint("*****************************")
+        pprint(atividade.teste_publico)
+        pprint(atividade.teste_privado)
+        pprint(atividade.teste_customizado)
 
-        atividade.arquivo_entrada.open()
-        entrada = atividade.arquivo_entrada.read()
-        atividade.arquivo_entrada.close()
+        entrada = None
+        entrada2 = None
+        gabarito = None
+        gabarito2 = None
+        testador = None
 
-        atividade.arquivo_entrada2.open()
-        entrada2 = atividade.arquivo_entrada2.read()
-        atividade.arquivo_entrada2.close()
+        if atividade.teste_customizado:
+            atividade.arquivo_testador.open()
+            testador = atividade.arquivo_testador.read()
+            atividade.arquivo_testador.close()
 
-        atividade.arquivo_saida.open()
-        gabarito = atividade.arquivo_saida.read()
-        atividade.arquivo_saida.close()
+        if atividade.teste_publico:
+            atividade.arquivo_entrada.open()
+            entrada = atividade.arquivo_entrada.read()
+            atividade.arquivo_entrada.close()
 
-        atividade.arquivo_saida2.open()
-        gabarito2 = atividade.arquivo_saida2.read()
-        atividade.arquivo_saida2.close()
+        if atividade.teste_privado:
+            atividade.arquivo_entrada2.open()
+            entrada2 = atividade.arquivo_entrada2.read()
+            atividade.arquivo_entrada2.close()
+
+        if atividade.teste_publico and not atividade.teste_customizado:
+            atividade.arquivo_saida.open()
+            gabarito = atividade.arquivo_saida.read()
+            atividade.arquivo_saida.close()
+
+        if atividade.teste_privado and not atividade.teste_customizado:
+            atividade.arquivo_saida2.open()
+            gabarito2 = atividade.arquivo_saida2.read()
+            atividade.arquivo_saida2.close()
 
         fonte = request.FILES['arquivo_codigo']
 
@@ -483,7 +499,7 @@ def aluno_ativ(request, ativ_id):
                     " não há saídas a serem exibidas")
             )
             status, ret = compare.mover2(
-                testador, entrada, entrada2, fonte, atividade.restricoes
+                testador, entrada, entrada2, fonte, atividade.restricoes, atividade.teste_publico, atividade.teste_privado
             )
 
             if status == "AC" or status == "AC2":
@@ -550,7 +566,6 @@ def aluno_ativ(request, ativ_id):
                 nota = 0
         else:
             # Lógica com diff e sem teste privado
-            # Lógica com diff e teste privado
             status, resultadoPublico = \
                 compare.mover(entrada, gabarito, fonte, atividade.restricoes)
 
