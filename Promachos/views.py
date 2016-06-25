@@ -454,11 +454,6 @@ def aluno_ativ(request, ativ_id):
     rte_ce_error = ""
     if request.method == 'POST':
 
-        pprint("*****************************")
-        pprint(atividade.teste_publico)
-        pprint(atividade.teste_privado)
-        pprint(atividade.teste_customizado)
-
         entrada = None
         entrada2 = None
         gabarito = None

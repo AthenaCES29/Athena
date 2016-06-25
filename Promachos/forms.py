@@ -77,7 +77,7 @@ class AtividadeEditForm(ModelForm):
             'nome': u'Nome da atividade',
             'descricao': u'Descricao da atividade',
             'data_limite': u'Data limite de entrega',
-            'arquivo_roteiro': u'Arquivo com roteiro (editar)',
+            'arquivo_roteiro': u'Novo arquivo com o roteiro (opcional)',
         }
         widgets = {
             'nome': forms.TextInput(attrs={

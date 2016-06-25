@@ -82,116 +82,141 @@
                   </div>
                   {% endfor %}
                    <div class="form-group">
-                      <!-- Testes com Restrições -->
-                      <label>Restrições na Submissão:</label>
-                          <input type="text" name=restricoes class="form-control" value="goto" data-role="tagsinput" id="id_restricoes"/>
-                                  <script>
-                                    $("#restricoes").tagsinput({
-                                      maxChars: 36,
-                                      trimValue: true,
-                                      tagClass: 'label label-danger label-important'
-                                    });
-                                  </script>
-                      <br>
-                    </div>
-                      <!-- Testes Públicos -->
-                      <div class="thumbnail">
-                        <!-- Rounded switch -->
-                        <div align="left">
-                          <h4>Testes Públicos (editar):</h4>
-                          <label class="switch">
-                            <input type="checkbox" unchecked id="id_teste_publico" name=teste_publico>
-                            <div class="slider round"></div>
+                <!-- Testes com Restrições -->
+                <label>Restrições na Submissão:</label>
+                    <input type="text" name=restricoes class="form-control" value="goto" data-role="tagsinput" id="restricoes"/>
                             <script>
-                              $("#id_teste_publico").click(function() { 
-                                if ($("#id_teste_publico").is(":checked")) {
-                                  $("#fieldPublic1").fadeIn("slow");
-                                  $("#fieldPublic2").fadeIn("slow");
-                                  $("#fieldPublic3").fadeIn("slow");
-                                } else {
-                                  $("#fieldPublic1").fadeOut("slow");
-                                  $("#fieldPublic2").fadeOut("slow");
-                                  $("#fieldPublic3").fadeOut("slow");
-                                } 
+                              $("#restricoes").tagsinput({
+                                maxChars: 36,
+                                trimValue: true,
+                                tagClass: 'label label-danger label-important'
                               });
                             </script>
-                          </label>
-                        </div>
-                        <div class="form-group" id="fieldPublic1" hidden>
-                          <label>Arquivo de entrada público (editar):</label>
-                          <input type="file" id="id_arquivo_entrada" name=arquivo_entrada required="True">
-                        </div>
-                        <div class="form-group" id="fieldPublic2" hidden>
-                          <div align="left"><label>Arquivo de saida público (editar):</label></div>
-                          <input type="file" id="id_arquivo_saida" name=arquivo_saida required="True">
-                        </div>
-                        <div class="form-group" id="fieldPublic3" hidden>
-                          <div align="left"><label>Peso do arquivo público:</label></div>
-                          <input type="text" id="id_peso1" value="1" name=peso1>
-                        </div>
-                      </div>
+                <br>
+              </div>
+                {% if atividade.teste_publico %}
+                <!-- Testes Públicos -->
+                <div class="thumbnail">
+                  <!-- Rounded switch -->
+                  <div align="left">
+                    <h4>Testes Públicos:</h4>
+                    <label class="switch">
+                      <input type="checkbox" unchecked id="teste_publico" name=teste_publico>
+                      <div class="slider round"></div>
+                      <script>
+                        $("#teste_publico").click(function() { 
+                          if ($("#teste_publico").is(":checked")) {
+                            $("#fieldPublic1").fadeIn("slow");
+                            if (!$("#teste_customizado").is(":checked")) {
+                              $("#fieldPublic2").fadeIn("slow");
+                              $("#fieldPublic3").fadeIn("slow");
+                            }
+                          } else {
+                            $("#fieldPublic1").fadeOut("slow");
+                            $("#fieldPublic2").fadeOut("slow");
+                            $("#fieldPublic3").fadeOut("slow");
+                          } 
+                        });
+                      </script>
+                    </label>
+                  </div>
+                  <div class="form-group" id="fieldPublic1" hidden>
+                    <p>Essa opção é obrigatória para a lógica convencional, pois o teste público tem caráter obrigatório.</p>
+                    <label>Novo arquivo de entrada público (opcional):</label>
+                    <input type="file" id="arquivo_entrada" name=arquivo_entrada>
+                  </div>
+                  <div class="form-group" id="fieldPublic2" hidden>
+                    <div align="left"><label>Novo arquivo de saida público (opcional):</label></div>
+                    <input type="file" id="arquivo_saida" name=arquivo_saida>
+                  </div>
+                  <div class="form-group" id="fieldPublic3" hidden>
+                    <div align="left"><label>Peso do arquivo público:</label></div>
+                    <input type="text" id="peso1" value="1" name=peso1>
+                  </div>
+                </div>
+                {% endif %}
 
-                      <!-- Testes Privados -->
-                      <div class="thumbnail">
-                        <!-- Rounded switch -->
-                        <div class="form-group" align="left">
-                          <h4>Testes Privados (editar):</h4>
-                          <label class="switch">
-                            <input type="checkbox" unchecked id="id_teste_privado" name=teste_privado>
-                            <div class="slider round"></div>
-                            <script>
-                              $("#id_teste_privado").click(function() { 
-                                if ($("#id_teste_privado").is(":checked")) {
-                                  $("#fieldPriv1").fadeIn("slow");
-                                  $("#fieldPriv2").fadeIn("slow");
-                                  $("#fieldPriv3").fadeIn("slow");
-                                } else {
-                                  $("#fieldPriv1").fadeOut("slow");
-                                  $("#fieldPriv2").fadeOut("slow");
-                                  $("#fieldPriv3").fadeOut("slow");
-                                } 
-                              });
-                            </script>
-                          </label>
-                        </div>
-                        <div class="form-group" id="fieldPriv1" hidden>
-                          <div align="left"><label>Arquivo de entrada privado (editar):</label></div>
-                          <input type="file" id="id_arquivo_entrada2" name=arquivo_entrada2>
-                        </div>
-                        <div class="form-group" id="fieldPriv2" hidden>
-                          <div align="left"><label>Arquivo de saida privado (editar):</label></div>
-                          <input type="file" id="id_arquivo_saida2" name=arquivo_saida2>
-                        </div>
-                        <div class="form-group" id="fieldPriv3" hidden>
-                          <div align="left"><label>Peso do arquivo privado:</label></div>
-                          <input type="text" id="id_peso2" value="0" name=peso2>
-                        </div>
-                      </div>
+                {% if atividade.teste_privado %}
+                <!-- Testes Privados -->
+                <div class="thumbnail">
+                  <!-- Rounded switch -->
+                  <div class="form-group" align="left">
+                    <h4>Testes Privados:</h4>
+                    <label class="switch">
+                      <input type="checkbox" unchecked id="teste_privado" name=teste_privado>
+                      <div class="slider round"></div>
+                      <script>
+                        $("#teste_privado").click(function() { 
+                          if ($("#teste_privado").is(":checked")) {
+                            $("#fieldPriv1").fadeIn("slow");
+                            if (!$("#teste_customizado").is(":checked")) {
+                              $("#fieldPriv2").fadeIn("slow");
+                              $("#fieldPriv3").fadeIn("slow");
+                            }
+                          } else {
+                            $("#fieldPriv1").fadeOut("slow");
+                            $("#fieldPriv2").fadeOut("slow");
+                            $("#fieldPriv3").fadeOut("slow");
+                          } 
+                        });
+                      </script>
+                    </label>
+                  </div>
+                  <div class="form-group" id="fieldPriv1" hidden>
+                    <p>Opcional. Selecionar essa opção fornece um arquivo de teste a mais para a correção. Esse arquivo não pode ser visto pelo aluno.</p>
+                    <div align="left"><label>Novo rquivo de entrada privado (opcional):</label></div>
+                    <input type="file" id="arquivo_entrada2" name=arquivo_entrada2>
+                  </div>
+                  <div class="form-group" id="fieldPriv2" hidden>
+                    <div align="left"><label>Novo arquivo de saida privado (opcional):</label></div>
+                    <input type="file" id="arquivo_saida2" name=arquivo_saida2>
+                  </div>
+                  <div class="form-group" id="fieldPriv3" hidden>
+                    <div align="left"><label>Peso do arquivo privado:</label></div>
+                    <input type="text" id="peso2" value="0" name=peso2>
+                  </div>
+                </div>
+                {% endif %}
 
-                      <!-- Testes Personalizados -->
-                      <div class="thumbnail">
-                        <!-- Rounded switch -->
-                        <div class="form-group" align="left">
-                          <h4>Testes Personalizados (editar):</h4>
-                          <label class="switch">
-                            <input type="checkbox" unchecked id="id_teste_customizado" name=teste_customizado>
-                            <div class="slider round"></div>
-                            <script>
-                              $("#id_teste_customizado").click(function() { 
-                                if ($("#id_teste_customizado").is(":checked")) {
-                                  $("#fieldCustom1").fadeIn("slow");
-                                } else {
-                                  $("#fieldCustom1").fadeOut("slow");
-                                }
-                              });
-                            </script>
-                          </label>
-                        </div>
-                        <div class="form-group" id="fieldCustom1" hidden>
-                          <div align="left"><label>Código do testador (editar):</label></div>
-                          <input type="file" id="id_arquivo_testador" name=arquivo_testador>
-                        </div>
-                      </div>
+                {% if atividade.teste_customizado %}
+                <!-- Testes Personalizados -->
+                <div class="thumbnail">
+                  <!-- Rounded switch -->
+                  <div class="form-group" align="left">
+                    <h4>Testes Personalizados:</h4>
+                    <label class="switch">
+                      <input type="checkbox" unchecked id="teste_customizado" name=teste_customizado>
+                      <div class="slider round"></div>
+                      <script>
+                        $("#teste_customizado").click(function() { 
+                          if ($("#teste_customizado").is(":checked")) {
+                            $("#fieldCustom1").fadeIn("slow");
+                            $("#fieldPublic2").fadeOut("slow");
+                            $("#fieldPublic3").fadeOut("slow");
+                            $("#fieldPriv2").fadeOut("slow");
+                            $("#fieldPriv3").fadeOut("slow");
+                          } else {
+                            $("#fieldCustom1").fadeOut("slow");
+                            if ($("#teste_publico").is(":checked")) {
+                              $("#fieldPublic2").fadeIn("slow");
+                              $("#fieldPublic3").fadeIn("slow");
+                            }
+                            if ($("#teste_privado").is(":checked")) {
+                              $("#fieldPriv2").fadeIn("slow");
+                              $("#fieldPriv3").fadeIn("slow");
+                            }
+                          }
+                        });
+                      </script>
+                    </label>
+                  </div>
+                  <div class="form-group" id="fieldCustom1" hidden>
+                    <p>Opcional. Essa opção sobrescreve testes convencionais. Para utilizar essa opção em conjunto com arquivos de entrada, fornece as entradas nas opções acima.</p>
+                    <div align="left"><label>Novo código do testador (opcional):</label></div>
+                    <input type="file" id="arquivo_testador" name=arquivo_testador>
+                  </div>
+                </div>
+                {% endif %}
 
                   <p><button class="btn btn-lg btn-success btn-block" type="submit">Concluir</button></p>
                 </form>
