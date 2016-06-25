@@ -244,14 +244,15 @@
           <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h4>
           {% endif %}
           <h5>
-          {% if atividade.test_publico %}
-           Testes Públicos
+          Testes Incluídos:
+          {% if atividade.teste_publico %}
+           - Públicos
           {% endif %}
           {% if atividade.teste_privado %}
-           Testes Públicos
+           - Privados
           {% endif %}
           {% if atividade.teste_customizado %}
-           Testes Públicos
+           - Customizados
           {% endif %}
           </h5>
           <section class="tabela">

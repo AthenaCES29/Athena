@@ -151,9 +151,10 @@ def AtividadeRegistration(request):
     turma_id = turma.id
     prefixo = str(turma_id) + '-'
     pprint(request)
+    pprint(request.FILES)
     if (prefixo + 'arquivo_testador') in request.FILES:
         if ((prefixo + 'arquivo_entrada') in request.FILES) and (
-            (prefixo + "arquivo_entrada2") in request.FILES):
+                (prefixo + "arquivo_entrada2") in request.FILES):
             atividade = Atividade(
                 Id=uuid.uuid4(),
                 nome=request.POST[prefixo + 'nome'],
