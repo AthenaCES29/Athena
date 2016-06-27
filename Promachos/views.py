@@ -258,8 +258,6 @@ def prof_ativ(request, id_ativ):
             atividade.nome = request.POST['nome']
             atividade.descricao = request.POST['descricao']
             atividade.data_limite = request.POST['data_limite']
-            atividade.peso1 = request.POST['peso1']
-            atividade.peso2 = request.POST['peso2']
             atividade.restricoes = request.POST['restricoes']
             files = request.FILES
             for file in files:
@@ -270,8 +268,10 @@ def prof_ativ(request, id_ativ):
                 atividade.testador = files['testador']
             if 'arquivo_entrada' in files:
                 atividade.arquivo_entrada = files['arquivo_entrada']
+                atividade.peso1 = request.POST['peso1']
             if 'arquivo_entrada2' in files:
                 atividade.arquivo_entrada2 = files['arquivo_entrada2']
+                atividade.peso2 = request.POST['peso2']
             if 'arquivo_saida' in files:
                 atividade.arquivo_saida = files['arquivo_saida']
             if 'arquivo_saida2' in files:
