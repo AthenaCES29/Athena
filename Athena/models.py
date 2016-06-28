@@ -120,6 +120,10 @@ class Atividade(models.Model):
                 counterSubmissoes = counterSubmissoes + 1
         return counterSubmissoes
 
+    @property
+    def submissoes(self):
+        return self.countSubmissoes()
+
     def prof_json_data(self):
         data = {}
         data['id'] = self.Id

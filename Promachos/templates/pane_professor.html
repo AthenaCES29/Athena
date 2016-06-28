@@ -11,7 +11,7 @@
           <form method="GET" enctype="multipart/form-data">
             <input type="hidden" name="load_atividade" value="True">
             <input type="hidden" name="id_ativ" value={{atividade.id}}>
-            <p>{{atividade.data_limite}} - <a href="../prof_ativ/{{atividade.id}}/" type="submit"> {{atividade.nome}} </a></p>
+            <p>{{atividade.data_limite}} - <a href="../prof_ativ/{{atividade.id}}/" type="submit"> {{atividade.nome}}</a> (Submissões: {{atividade.submissoes}})</p>
           </form>
           {% endfor %}
           <br>
