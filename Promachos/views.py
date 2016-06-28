@@ -687,6 +687,8 @@ def aluno_turmas(request):
                 )
                 relAlunoAtividade.save()
 
+        return HttpResponseRedirect('/aluno')
+
     turmas_registradas = aluno.turma_set.all()
     todas_turmas = Turma.objects.all()
     turmas_nao_registradas = todas_turmas.exclude(
