@@ -6,6 +6,10 @@ from Athena import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+from django_dropbox.storage import DropboxStorage
+
+
+STORAGE = DropboxStorage()
 
 
 def atividade_path(instance, filename):
@@ -146,12 +150,24 @@ class Atividade(models.Model):
     restricoes = models.CharField(
         max_length=1000,
     )
-    arquivo_roteiro = models.FileField(upload_to=atividade_path, default=None)
-    arquivo_testador = models.FileField(upload_to=atividade_path, default=None)
-    arquivo_entrada = models.FileField(upload_to=atividade_path)
-    arquivo_entrada2 = models.FileField(upload_to=atividade_path, default=None)
-    arquivo_saida = models.FileField(upload_to=atividade_path)
-    arquivo_saida2 = models.FileField(upload_to=atividade_path, default=None)
+    arquivo_roteiro = models.FileField(
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+    )
+    arquivo_testador = models.FileField(
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+    )
+    arquivo_entrada = models.FileField(
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+    )
+    arquivo_entrada2 = models.FileField(
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+    )
+    arquivo_saida = models.FileField(
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+    )
+    arquivo_saida2 = models.FileField(
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+    )
 
     peso1 = models.IntegerField(default=1)
     peso2 = models.IntegerField(default=1)
