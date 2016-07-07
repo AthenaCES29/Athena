@@ -334,13 +334,15 @@ def prof_ativ(request, id_ativ):
         )
         if submissao:
             submissao = submissao[0]
-
+            submissao_url = ''
+            if submissao.arquivo_codigo:
+                submissao_url = submissao.arquivo_codigo.url
             status_aluno.append(
                 (
                     aluno.nome,
                     submissao.data_envio,
                     Submissao.statusDict[submissao.resultado],
-                    submissao.arquivo_codigo.url,
+                    submissao_url,
                     submissao.nota,
                 )
             )
@@ -594,7 +596,6 @@ def aluno_ativ(request, ativ_id):
                     num_diffs = 0
 
                 nota = int(100 * (lines_gabarito - num_diffs)) / lines_gabarito
-
             else:
                 rte_ce_error = resultadoPublico
                 nota = 0
@@ -616,7 +617,6 @@ def aluno_ativ(request, ativ_id):
             aluno=aluno,
         )
         submissao.save()
-
         if relAlunoAtividade:
             relAlunoAtividade.foiEntregue = True
         else:

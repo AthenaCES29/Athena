@@ -116,7 +116,8 @@ class Atividade(models.Model):
     def path(self, name):
         return atividade_path(self, name)
 
-    def countSubmissoes(self):
+    @property
+    def submissoes(self):
         counterSubmissoes = 0
         for relAlunoAtividade in RelAlunoAtividade.objects.filter(
                 atividade=self):
@@ -124,17 +125,13 @@ class Atividade(models.Model):
                 counterSubmissoes = counterSubmissoes + 1
         return counterSubmissoes
 
-    @property
-    def submissoes(self):
-        return self.countSubmissoes()
-
     def prof_json_data(self):
         data = {}
         data['id'] = self.Id
         data['nome'] = self.nome
         data['professor'] = self.turma.professor.nome
         data['prazo'] = self.data_limite
-        data['submissoes'] = self.countSubmissoes()
+        data['submissoes'] = self.submissoes
 
         return data
 
@@ -168,6 +165,67 @@ class Atividade(models.Model):
     arquivo_saida2 = models.FileField(
         upload_to=atividade_path, storage=STORAGE, null=True, default=None
     )
+
+    # Armazenamento local de arquivos
+    # arquivo_roteiro = models.FileField(
+    #     upload_to=atividade_path, default=None
+    # )
+    # arquivo_testador = models.FileField(
+    #     upload_to=atividade_path, default=None
+    # )
+    # arquivo_entrada = models.FileField(
+    #     upload_to=atividade_path
+    # )
+    # arquivo_entrada2 = models.FileField(
+    #     upload_to=atividade_path, default=None
+    # )
+    # arquivo_saida = models.FileField(
+    #     upload_to=atividade_path
+    # )
+    # arquivo_saida2 = models.FileField(
+    #     upload_to=atividade_path, default=None
+    # )
+    # def remove_roteiro(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_roteiro.name)
+    #     if os.path.exists(file):
+    #         os.remove(file)
+
+    # def remove_testador(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_testador.name)
+    #     if not os.path.isdir(file) and os.path.exists(file):
+    #         os.remove(file)
+
+    # def remove_entrada(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_entrada.name)
+    #     if not os.path.isdir(file) and os.path.exists(file):
+    #         os.remove(file)
+
+    # def remove_entrada2(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_entrada2.name)
+    #     if not os.path.isdir(file) and os.path.exists(file):
+    #         os.remove(file)
+
+    # def remove_saida(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_saida.name)
+    #     if not os.path.isdir(file) and os.path.exists(file):
+    #         os.remove(file)
+
+    # def remove_saida2(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_saida2.name)
+    #     if not os.path.isdir(file) and os.path.exists(file):
+    #         os.remove(file)
 
     peso1 = models.IntegerField(default=1)
     peso2 = models.IntegerField(default=1)
@@ -215,46 +273,34 @@ class Atividade(models.Model):
         return zip_path(self)
 
     def remove_roteiro(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_roteiro.name)
-        if os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_roteiro.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
     def remove_testador(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_testador.name)
-        if not os.path.isdir(file) and os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_testador.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
     def remove_entrada(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_entrada.name)
-        if not os.path.isdir(file) and os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_entrada.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
     def remove_entrada2(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_entrada2.name)
-        if not os.path.isdir(file) and os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_entrada2.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
     def remove_saida(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_saida.name)
-        if not os.path.isdir(file) and os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_saida.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
     def remove_saida2(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_saida2.name)
-        if not os.path.isdir(file) and os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_saida2.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
 
 class Submissao(models.Model):
@@ -283,11 +329,25 @@ class Submissao(models.Model):
         "NE": "Não entregue"
     }
 
+    def path(self, name):
+        return submissao_path(self, name)
+
     data_envio = models.DateField(
         auto_now=True,
         help_text='Data de submissão do código',
     )
-    arquivo_codigo = models.FileField(upload_to=submissao_path)
+    arquivo_codigo = models.FileField(
+        upload_to=submissao_path, storage=STORAGE, null=True, default=None
+    )
+
+    # arquivo_codigo = models.FileField(upload_to=submissao_path)
+    # def remove_file(self, *args, **kwargs):
+    #     file = os.path.join(
+    #         settings.MEDIA_ROOT,
+    #         self.arquivo_codigo.name)
+    #     if os.path.exists(file):
+    #         os.remove(file)
+
     resultado = models.CharField(
         max_length=3,
         choices=RESULTADOS,
@@ -308,11 +368,9 @@ class Submissao(models.Model):
         return os.path.basename(self.arquivo_codigo.name)
 
     def remove_file(self, *args, **kwargs):
-        file = os.path.join(
-            settings.MEDIA_ROOT,
-            self.arquivo_codigo.name)
-        if os.path.exists(file):
-            os.remove(file)
+        file = self.arquivo_codigo.name
+        if STORAGE.exists(file):
+            STORAGE.delete(file)
 
     def __str__(self):
         return '%s %s' % (

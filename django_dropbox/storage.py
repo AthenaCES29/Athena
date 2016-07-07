@@ -22,6 +22,7 @@ from .settings import (CONSUMER_KEY,
                        ACCESS_TOKEN_SECRET,
                        CACHE_TIMEOUT)
 
+
 @deconstructible
 class DropboxStorage(Storage):
     """
@@ -111,6 +112,7 @@ class DropboxStorage(Storage):
             cache.set(cache_key, url, CACHE_TIMEOUT)
 
         return url
+
 
     def get_available_name(self, name):
         """

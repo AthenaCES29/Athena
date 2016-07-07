@@ -234,7 +234,7 @@ def calendario(request):
                     atividade_json['turma'] = atividade.turma.nome
                     atividade_json['atividade'] = atividade.nome
                     atividade_json['prazo'] = atividade.data_limite
-                    atividade_json['submissoes'] = atividade.countSubmissoes()
+                    atividade_json['submissoes'] = atividade.submissoes
                     calendarioAtividade_buf.append(atividade_json)
 
             calendario_json['valido'] = True
