@@ -1,5 +1,5 @@
 import errno
-import os.path
+import os
 import re
 import itertools
 import platform
@@ -25,12 +25,12 @@ from .settings import (CONSUMER_KEY,
 
 @deconstructible
 class DropboxStorage(Storage):
-    """
-    A storage class providing access to resources in a Dropbox Public folder.
-    """
+    """A storage class providing access to resources in a Dropbox Public folder."""
 
     def __init__(self, location='/Public'):
-        session = DropboxSession(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TYPE, locale=None)
+        session = DropboxSession(
+            CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TYPE, locale=None
+        )
         session.set_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         self.client = DropboxClient(session)
         self.account_info = self.client.account_info()
@@ -57,12 +57,17 @@ class DropboxStorage(Storage):
         if not response['is_dir']:
             raise IOError("%s exists and is not a directory." % directory)
         abs_name = name
+        print "putting"
         self.client.put_file(abs_name, content)
+        print "put"
         return name
 
     def delete(self, name):
+        if name == '' or os.path.isdir(name):
+            return
         name = self._get_abs_path(name)
-        self.client.file_delete(name)
+        if self.exists(name):
+            self.client.file_delete(name)
 
     def exists(self, name):
         name = self._get_abs_path(name)
@@ -104,31 +109,34 @@ class DropboxStorage(Storage):
         url = cache.get(cache_key)
 
         if not url:
-            url = self.client.share(filepath_to_uri(name), short_url=False)['url']
-            # this replace is for force to dropbox url to send the url like a content and don't
-            # like a link to donwload
+            url = self.client.share(
+                filepath_to_uri(name), short_url=False
+            )['url']
+            # this replace is for force to dropbox url to send the url like
+            # a content and don't like a link to download
             url = url.replace("www", "photos-4")
 
             cache.set(cache_key, url, CACHE_TIMEOUT)
 
         return url
 
-
     def get_available_name(self, name):
         """
-        Returns a filename that's free on the target storage system, and
+        Return a filename that's free on the target storage system.
         available for new content to be written to.
         """
         name = self._get_abs_path(name)
         dir_name, file_name = os.path.split(name)
         file_root, file_ext = os.path.splitext(file_name)
-        # If the filename already exists, add an underscore and a number (before
-        # the file extension, if one exists) to the filename until the generated
+        # If the filename already exists add an underscore and a number (before
+        # the file extension, if exists) to the filename until the generated
         # filename doesn't exist.
         count = itertools.count(1)
         while self.exists(name):
             # file_ext includes the dot.
-            name = os.path.join(dir_name, "%s_%s%s" % (file_root, next(count), file_ext))
+            name = os.path.join(
+                dir_name, "%s_%s%s" % (file_root, next(count), file_ext)
+            )
 
         return name
 

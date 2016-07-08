@@ -273,34 +273,22 @@ class Atividade(models.Model):
         return zip_path(self)
 
     def remove_roteiro(self, *args, **kwargs):
-        file = self.arquivo_roteiro.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_roteiro.name)
 
     def remove_testador(self, *args, **kwargs):
-        file = self.arquivo_testador.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_testador.name)
 
     def remove_entrada(self, *args, **kwargs):
-        file = self.arquivo_entrada.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_entrada.name)
 
     def remove_entrada2(self, *args, **kwargs):
-        file = self.arquivo_entrada2.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_entrada2.name)
 
     def remove_saida(self, *args, **kwargs):
-        file = self.arquivo_saida.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_saida.name)
 
     def remove_saida2(self, *args, **kwargs):
-        file = self.arquivo_saida2.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_saida2.name)
 
 
 class Submissao(models.Model):
@@ -337,7 +325,7 @@ class Submissao(models.Model):
         help_text='Data de submissão do código',
     )
     arquivo_codigo = models.FileField(
-        upload_to=atividade_path, storage=STORAGE, null=True, default=None
+        upload_to=submissao_path, storage=STORAGE, null=True, default=None
     )
 
     # arquivo_codigo = models.FileField(upload_to=submissao_path)
@@ -368,9 +356,7 @@ class Submissao(models.Model):
         return os.path.basename(self.arquivo_codigo.name)
 
     def remove_file(self, *args, **kwargs):
-        file = self.arquivo_codigo.name
-        if STORAGE.exists(file):
-            STORAGE.delete(file)
+        STORAGE.delete(self.arquivo_codigo.name)
 
     def __str__(self):
         return '%s %s' % (

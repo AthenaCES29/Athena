@@ -616,14 +616,9 @@ def aluno_ativ(request, ativ_id):
             atividade=atividade,
             aluno=aluno,
         )
-        pprint(submissao.data_envio)
-        pprint(submissao.arquivo_codigo)
-        pprint(submissao.resultado)
-        pprint(submissao.nota)
-        pprint(submissao.atividade)
-        pprint(submissao.aluno)
+        print "saving"
         submissao.save()
-        pprint("salva!")
+        print "saved"
         if relAlunoAtividade:
             relAlunoAtividade.foiEntregue = True
         else:
