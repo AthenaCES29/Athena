@@ -44,12 +44,22 @@
               <div class="form-group">
                 <!-- Testes com Restrições -->
                 <label>Restrições na Submissão:</label>
+                    <div id="id_{{turma.id}}-restricoes-popover" data-toggle="popover" data-placement="top" title="Restrição inválida." data-content="A palavra de restrição deve possuir ao menos 4 caracteres."></div>
                     <input type="text" name={{turma.id}}-restricoes class="form-control" value="goto" data-role="tagsinput" id="id_{{turma.id}}-restricoes"/>
                             <script>
-                              $("#restricoes").tagsinput({
+                              $("#id_{{turma.id}}-restricoes").tagsinput({
                                 maxChars: 36,
                                 trimValue: true,
-                                tagClass: 'label label-danger label-important'
+                                tagClass: 'label label-danger label-important',
+                              });
+                              $('#id_{{turma.id}}-restricoes').on('itemAdded', function(event) {
+                                if (event.item.length < 4) {
+                                  $('#id_{{turma.id}}-restricoes').tagsinput('remove', event.item, {preventPost: true});
+                                  $('#id_{{turma.id}}-restricoes-popover').popover('show');
+                                  setTimeout(function() {
+                                      $('#id_{{turma.id}}-restricoes-popover').popover('hide');
+                                  }, 2000);
+                                }
                               });
                             </script>
                 <br>
@@ -64,12 +74,18 @@
                       <div class="slider round"></div>
                       <script>
                         $("#id_{{turma.id}}-teste_publico").click(function() { 
+
                           if ($("#id_{{turma.id}}-teste_publico").is(":checked")) {
+                            // Exibe os campos do teste píblico
                             $("#{{turma.id}}-fieldPublic1").fadeIn("slow");
+
+                            // Exibe arquivo de saída e peso (teste default)
                             if (!$("#id_{{turma.id}}-teste_customizado").is(":checked")) {
                               $("#{{turma.id}}-fieldPublic2").fadeIn("slow");
                               $("#{{turma.id}}-fieldPublic3").fadeIn("slow");
                             }
+
+                          // Esconde os campos do teste privado
                           } else {
                             $("#{{turma.id}}-fieldPublic1").fadeOut("slow");
                             $("#{{turma.id}}-fieldPublic2").fadeOut("slow");
@@ -82,11 +98,11 @@
                   <div class="form-group" id="{{turma.id}}-fieldPublic1" hidden>
                     <p>Essa opção é obrigatória para a lógica convencional, pois o teste público tem caráter obrigatório.</p>
                     <label>Arquivo de entrada público:</label>
-                    <input type="file" id="id_{{turma.id}}-arquivo_entrada" name={{turma.id}}-arquivo_entrada>
+                    <input type="file" id="id_{{turma.id}}-arquivo_entrada" name={{turma.id}}-arquivo_entrada required=''>
                   </div>
                   <div class="form-group" id="{{turma.id}}-fieldPublic2" hidden>
                     <div align="left"><label>Arquivo de saida público:</label></div>
-                    <input type="file" id="id_{{turma.id}}-arquivo_saida" name={{turma.id}}-arquivo_saida>
+                    <input type="file" id="id_{{turma.id}}-arquivo_saida" name={{turma.id}}-arquivo_saida required=''>
                   </div>
                   <div class="form-group" id="{{turma.id}}-fieldPublic3" hidden>
                     <div align="left"><label>Peso do arquivo público:</label></div>
@@ -104,12 +120,18 @@
                       <div class="slider round"></div>
                       <script>
                         $("#id_{{turma.id}}-teste_privado").click(function() { 
+
                           if ($("#id_{{turma.id}}-teste_privado").is(":checked")) {
+                            // Exibe arquivo de entrada do teste privado
                             $("#{{turma.id}}-fieldPriv1").fadeIn("slow");
+
+                            // Exibe arquivo de saída e peso (teste default)
                             if (!$("#id_{{turma.id}}-teste_customizado").is(":checked")) {
                               $("#{{turma.id}}-fieldPriv2").fadeIn("slow");
                               $("#{{turma.id}}-fieldPriv3").fadeIn("slow");
                             }
+
+                          // Esconde os campos do teste privado
                           } else {
                             $("#{{turma.id}}-fieldPriv1").fadeOut("slow");
                             $("#{{turma.id}}-fieldPriv2").fadeOut("slow");
@@ -144,18 +166,34 @@
                       <div class="slider round"></div>
                       <script>
                         $("#id_{{turma.id}}-teste_customizado").click(function() { 
+
                           if ($("#id_{{turma.id}}-teste_customizado").is(":checked")) {
+                            // Testes públicos não são requeridos
+                            $("#id_{{turma.id}}-arquivo_entrada").removeAttr('required');
+                            $("#id_{{turma.id}}-arquivo_saida").removeAttr('required');
+
+                            // Exibe os campos do teste customizado
                             $("#{{turma.id}}-fieldCustom1").fadeIn("slow");
+
+                            // Escondendo arquivos de saída e pesos dos testes
                             $("#{{turma.id}}-fieldPublic2").fadeOut("slow");
                             $("#{{turma.id}}-fieldPublic3").fadeOut("slow");
                             $("#{{turma.id}}-fieldPriv2").fadeOut("slow");
                             $("#{{turma.id}}-fieldPriv3").fadeOut("slow");
                           } else {
+                            // Testes públicos são requeridos
+                            $("#id_{{turma.id}}-arquivo_entrada").attr('required', ''); 
+                            $("#id_{{turma.id}}-arquivo_saida").attr('required', ''); 
+                            
+                            // Esconde os campos do teste customizado
                             $("#{{turma.id}}-fieldCustom1").fadeOut("slow");
+
+                            // Exibindo arquivo de saída e peso para o teste público
                             if ($("#id_{{turma.id}}-teste_publico").is(":checked")) {
                               $("#{{turma.id}}-fieldPublic2").fadeIn("slow");
                               $("#{{turma.id}}-fieldPublic3").fadeIn("slow");
                             }
+                            // Exibindo arquivo de saída e peso para o teste privado
                             if ($("#id_{{turma.id}}-teste_privado").is(":checked")) {
                               $("#{{turma.id}}-fieldPriv2").fadeIn("slow");
                               $("#{{turma.id}}-fieldPriv3").fadeIn("slow");

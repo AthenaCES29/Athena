@@ -88,14 +88,24 @@
                    <div class="form-group">
                 <!-- Testes com Restrições -->
                 <label>Restrições na Submissão:</label>
+                    <div id="restricoes-popover" data-toggle="popover" data-placement="top" title="Restrição inválida." data-content="A palavra de restrição deve possuir ao menos 4 caracteres."></div>
                     <input type="text" name=restricoes class="form-control" value={{atividade.restricoes}} data-role="tagsinput" id="restricoes"/>
-                            <script>
-                              $("#restricoes").tagsinput({
-                                maxChars: 36,
-                                trimValue: true,
-                                tagClass: 'label label-danger label-important'
-                              });
-                            </script>
+                      <script>
+                        $("#restricoes").tagsinput({
+                          maxChars: 36,
+                          trimValue: true,
+                          tagClass: 'label label-danger label-important'
+                        });
+                        $('#restricoes').on('itemAdded', function(event) {
+                          if (event.item.length < 4) {
+                            $('#restricoes').tagsinput('remove', event.item, {preventPost: true});
+                            $('#restricoes-popover').popover('show');
+                            setTimeout(function() {
+                                $('#restricoes-popover').popover('hide');
+                            }, 2000);
+                          }
+                        });
+                      </script>
                 <br>
               </div>
                 {% if atividade.teste_publico %}
