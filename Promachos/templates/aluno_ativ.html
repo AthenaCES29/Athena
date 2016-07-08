@@ -121,7 +121,7 @@
                       <hr>
                       <p><b>Descrição: </b>{{ atividade.descricao }}</p>
                       <p><b>Atividade:</b> 
-                        {% if atividade.arquivo_roteiro %}
+                        {% if atividade.arquivo_roteiro and atividade.arquivo_roteiro.url %}
                           <a href="{{ atividade.arquivo_roteiro.url }}" target="_blank">{{ atividade.nome_roteiro }}</a>
                         {% else %}
                         Não há
@@ -130,7 +130,7 @@
 
                       {% if atividade.teste_publico%}
                       <p><b>Entrada pública:</b> 
-                        {% if atividade.arquivo_entrada %}
+                        {% if atividade.arquivo_entrada and atividade.arquivo_entrada.url%}
                           <a href="{{ atividade.arquivo_entrada.url }}" target="_blank">{{ atividade.nome_entrada }}</a>
                         {% else %}
                         Não há
@@ -138,7 +138,7 @@
                       </p>
                       {% endif %}
 
-                      {% if not atividade.teste_customizado %}
+                      {% if not atividade.teste_customizado and atividade.arquivo_saida.url%}
                       <p><b>Saída pública:</b> 
                         {% if atividade.arquivo_saida %}
                           <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a>
@@ -177,7 +177,7 @@
                     {% if relAlunoAtividade.foiEntregue %}
                     <div class="form-group">
                       <p><b>Última submissão:</b> 
-                        {% if submissao.arquivo_codigo %}
+                        {% if submissao.arquivo_codigo and submissao.arquivo_codigo.url%}
                         <a href="{{ submissao.arquivo_codigo.url }}" target="_blank">{{ submissao.nome_codigo }}</a>
                         {% else %}
                         Não há

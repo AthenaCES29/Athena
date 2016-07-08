@@ -337,7 +337,7 @@ class Submissao(models.Model):
         help_text='Data de submissão do código',
     )
     arquivo_codigo = models.FileField(
-        upload_to=submissao_path, storage=STORAGE, null=True, default=None
+        upload_to=atividade_path, storage=STORAGE, null=True, default=None
     )
 
     # arquivo_codigo = models.FileField(upload_to=submissao_path)
