@@ -4,6 +4,7 @@ from django.test import TestCase
 from django_dropbox.storage import DropboxStorage
 from django.utils import six
 
+
 class DropboxStorageTest(TestCase):
 
     def setUp(self):
@@ -21,17 +22,14 @@ class DropboxStorageTest(TestCase):
         self.storage.delete('storage_test_1')
         self.assertFalse(self.storage.exists('storage_test_1'))
 
-
     def test_file_delete(self):
-        """
-        File storage should delete dir.
-        """
+        """File storage should delete dir."""
+        self.storage.delete('storage_dir_1')
         self.assertFalse(self.storage.exists('storage_dir_1'))
         self.storage.client.file_create_folder(self.location + '/storage_dir_1')
         self.assertTrue(self.storage.exists('storage_dir_1'))
         self.storage.delete('storage_dir_1')
         self.assertFalse(self.storage.exists('storage_dir_1'))
-
 
     def test_file_access_options(self):
         """
@@ -51,6 +49,7 @@ class DropboxStorageTest(TestCase):
         self.assertFalse(self.storage.exists('storage_test'))
 
     def test_exists_folder(self):
+        self.storage.delete('storage_test_exists')
         self.assertFalse(self.storage.exists('storage_test_exists'))
         self.storage.client.file_create_folder(self.location + '/storage_test_exists')
         self.assertTrue(self.storage.exists('storage_test_exists'))
@@ -61,6 +60,9 @@ class DropboxStorageTest(TestCase):
         """
         File storage returns a tuple containing directories and files.
         """
+        self.storage.delete('storage_test_1')
+        self.storage.delete('storage_test_2')
+        self.storage.delete('storage_dir_1')
         self.assertFalse(self.storage.exists('storage_test_1'))
         self.assertFalse(self.storage.exists('storage_test_2'))
         self.assertFalse(self.storage.exists('storage_dir_1'))
@@ -94,4 +96,3 @@ class DropboxStorageTest(TestCase):
 
         self.storage.delete('storage_test_size')
         self.assertFalse(self.storage.exists('storage_test_size'))
-
