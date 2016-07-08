@@ -463,6 +463,11 @@ def aluno_ativ(request, ativ_id):
     if relAlunoAtividade:
         relAlunoAtividade = relAlunoAtividade[0]
 
+    submissoes = Submissao.objects.filter(
+        aluno=aluno,
+        atividade=atividade,
+    )
+
     lista_saida = []
     rte_ce_error = ""
     if request.method == 'POST':
@@ -499,6 +504,20 @@ def aluno_ativ(request, ativ_id):
             atividade.arquivo_saida2.close()
 
         fonte = request.FILES['arquivo_codigo']
+
+        for submissao in submissoes:
+            submissao.remove_file()
+        submissoes.delete()
+
+        submissao = Submissao(
+            data_envio=timezone.now().date(),
+            arquivo_codigo=fonte,
+            resultado="NE",
+            nota=0,
+            atividade=atividade,
+            aluno=aluno,
+        )
+        submissao.save()
 
         if atividade.teste_customizado:
             # Logica de teste com arquivo do professor
@@ -600,25 +619,10 @@ def aluno_ativ(request, ativ_id):
                 rte_ce_error = resultadoPublico
                 nota = 0
 
-        submissoes = Submissao.objects.filter(
-            aluno=aluno,
-            atividade=atividade,
-        )
-        for submissao in submissoes:
-            submissao.remove_file()
-        submissoes.delete()
-
-        submissao = Submissao(
-            data_envio=timezone.now().date(),
-            arquivo_codigo=request.FILES['arquivo_codigo'],
-            resultado=status,
-            nota=nota,
-            atividade=atividade,
-            aluno=aluno,
-        )
-        print "saving"
+        submissao.resultado = status
+        submissao.nota = nota
         submissao.save()
-        print "saved"
+
         if relAlunoAtividade:
             relAlunoAtividade.foiEntregue = True
         else:

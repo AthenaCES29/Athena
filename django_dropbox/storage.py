@@ -1,8 +1,5 @@
-import errno
 import os
-import re
 import itertools
-import platform
 
 from dropbox.client import DropboxClient
 from dropbox.session import DropboxSession
@@ -13,7 +10,7 @@ from django.core.files import File
 from django.core.files.storage import Storage
 from django.utils.encoding import filepath_to_uri, force_text
 
-from .compat import urlparse, getFile, deconstructible
+from .compat import getFile, deconstructible
 
 from .settings import (CONSUMER_KEY,
                        CONSUMER_SECRET,
@@ -56,10 +53,7 @@ class DropboxStorage(Storage):
         response = self.client.metadata(directory)
         if not response['is_dir']:
             raise IOError("%s exists and is not a directory." % directory)
-        abs_name = name
-        print "putting"
-        self.client.put_file(abs_name, content)
-        print "put"
+        self.client.put_file(name, content)
         return name
 
     def delete(self, name):
@@ -121,10 +115,8 @@ class DropboxStorage(Storage):
         return url
 
     def get_available_name(self, name):
-        """
-        Return a filename that's free on the target storage system.
-        available for new content to be written to.
-        """
+        """Return a filename that's free on the target storage system.
+        available for new content to be written to."""
         name = self._get_abs_path(name)
         dir_name, file_name = os.path.split(name)
         file_root, file_ext = os.path.splitext(file_name)

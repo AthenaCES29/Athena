@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-from Athena import settings
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
@@ -185,47 +183,28 @@ class Atividade(models.Model):
     # arquivo_saida2 = models.FileField(
     #     upload_to=atividade_path, default=None
     # )
-    # def remove_roteiro(self, *args, **kwargs):
-    #     file = os.path.join(
-    #         settings.MEDIA_ROOT,
-    #         self.arquivo_roteiro.name)
+    # def remove_file(self, filename):
+    #     file = os.path.join(settings.MEDIA_ROOT,filename)
     #     if os.path.exists(file):
     #         os.remove(file)
 
+    # def remove_roteiro(self, *args, **kwargs):
+    #     self.remove_file(self.arquivo_roteiro.name)
+
     # def remove_testador(self, *args, **kwargs):
-    #     file = os.path.join(
-    #         settings.MEDIA_ROOT,
-    #         self.arquivo_testador.name)
-    #     if not os.path.isdir(file) and os.path.exists(file):
-    #         os.remove(file)
+    #     self.remove_file(self.arquivo_testador.name)
 
     # def remove_entrada(self, *args, **kwargs):
-    #     file = os.path.join(
-    #         settings.MEDIA_ROOT,
-    #         self.arquivo_entrada.name)
-    #     if not os.path.isdir(file) and os.path.exists(file):
-    #         os.remove(file)
+    #     self.remove_file(self.arquivo_entrada.name)
 
     # def remove_entrada2(self, *args, **kwargs):
-    #     file = os.path.join(
-    #         settings.MEDIA_ROOT,
-    #         self.arquivo_entrada2.name)
-    #     if not os.path.isdir(file) and os.path.exists(file):
-    #         os.remove(file)
+    #     self.remove_file(self.arquivo_entrada2.name)
 
     # def remove_saida(self, *args, **kwargs):
-    #     file = os.path.join(
-    #         settings.MEDIA_ROOT,
-    #         self.arquivo_saida.name)
-    #     if not os.path.isdir(file) and os.path.exists(file):
-    #         os.remove(file)
+    #     self.remove_file(self.arquivo_saida.name)
 
     # def remove_saida2(self, *args, **kwargs):
-    #     file = os.path.join(
-    #         settings.MEDIA_ROOT,
-    #         self.arquivo_saida2.name)
-    #     if not os.path.isdir(file) and os.path.exists(file):
-    #         os.remove(file)
+    #     self.remove_file(self.arquivo_saida2.name)
 
     peso1 = models.IntegerField(default=1)
     peso2 = models.IntegerField(default=1)
@@ -251,6 +230,9 @@ class Atividade(models.Model):
         return '%s %s' % (
             self.nome.encode('utf-8'), self.turma.nome.encode('utf-8'))
 
+    def zip_path(self):
+        return zip_path(self)
+
     def nome_roteiro(self):
         return os.path.basename(self.arquivo_roteiro.name)
 
@@ -268,9 +250,6 @@ class Atividade(models.Model):
 
     def nome_saida2(self):
         return os.path.basename(self.arquivo_saida2.name)
-
-    def zip_path(self):
-        return zip_path(self)
 
     def remove_roteiro(self, *args, **kwargs):
         STORAGE.delete(self.arquivo_roteiro.name)
