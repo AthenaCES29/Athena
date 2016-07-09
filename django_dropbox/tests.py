@@ -11,6 +11,7 @@ class DropboxStorageTest(TestCase):
         self.location = '/Public/testing'
         self.storage = DropboxStorage(location=self.location)
         self.storage.base_url = '/test_media_url/'
+        self.storage.delete('/Public/testing')
 
     def teardown_module(self):
         """Teardown any state that was previously setup with a setup."""
