@@ -57,7 +57,7 @@ class DropboxStorage(Storage):
         return name
 
     def delete(self, name):
-        if name == '' or os.path.isdir(name):
+        if name == '':
             return
         name = self._get_abs_path(name)
         if self.exists(name):
