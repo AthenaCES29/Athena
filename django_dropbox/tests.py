@@ -13,9 +13,18 @@ class DropboxStorageTest(TestCase):
         self.storage.base_url = '/test_media_url/'
         self.storage.delete('/Public/testing')
 
-    def teardown_module(self):
+    def tearDown(self):
         """Teardown any state that was previously setup with a setup."""
         self.storage.delete('/Public/testing')
+
+    def test_file_create(self):
+        """File storage should delete file."""
+        self.assertFalse(self.storage.exists('storage_test_1'))
+        self.storage.save('storage_test_1', ContentFile('custom content'))
+        self.assertTrue(self.storage.exists('storage_test_1'))
+        self.assertFalse(self.storage.exists('storage_test_2'))
+        self.storage.save('storage_test_2', ContentFile('custom content'))
+        self.assertTrue(self.storage.exists('storage_test_2'))
 
     def test_file_delete(self):
         """File storage should delete file."""
