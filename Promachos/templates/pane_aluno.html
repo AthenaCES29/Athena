@@ -1,5 +1,9 @@
 <div role="tabpanel" class="tab-pane fade" id={{turma.id}}>
-  <h3 align="center">{{turma.nome}} - Prof. {{turma.professor.nome}}</h3>
+  <h3 align="center">{{turma.nome}} - Prof. {{turma.professor.nome}}</h3> 
+    {% if not tuple_ativ_subm %}
+      <br>
+      <h4 align="center">Não há atividades nesta turma</h4>
+    {% endif %}
 	  {% for tuple in tuple_ativ_subm %}
           <div class="col-xs-6 col-sm-3">
             <div class="thumbnail">
