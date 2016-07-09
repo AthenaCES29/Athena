@@ -10,11 +10,20 @@
   <title>Athena | Login</title>
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
   <link href="/static/css/signin.css" rel="stylesheet">
+  <style>
+  body {
+    background-image:     url(/static/img/background.jpg);
+    background-size:      cover;                      
+    background-repeat:    no-repeat;
+    background-position:  center center; 
+  }
+  </style>
 </head>
 <body>
   <div class="container">
-    <div align="center"><img src="/static/img/logo.png"/></div>
+    <div align="center"><img src="/static/img/logo.png" width="30%" height="30%"/></div>
     <form class="form-signin" action="/login/" method="post"> {% csrf_token %}
+      <div align="center"><img src="/static/img/title.png"/></div>
       <h1 align="center">Bem-vindo</h1>
       <h2 class="form-signin-heading" align="center">Login</h2>
       <label for="username" class="sr-only">Usuário</label>
