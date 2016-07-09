@@ -1,4 +1,3 @@
-#import os
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from django_dropbox.storage import DropboxStorage
@@ -8,21 +7,24 @@ from django.utils import six
 class DropboxStorageTest(TestCase):
 
     def setUp(self):
+        """Setup any state specific to the execution of the given module."""
         self.location = '/Public/testing'
         self.storage = DropboxStorage(location=self.location)
         self.storage.base_url = '/test_media_url/'
 
+    def teardown_module(self):
+        """Teardown any state that was previously setup with a setup."""
+        self.storage.delete('/Public/testing')
+
     def test_file_delete(self):
-        """
-        File storage should delete file.
-        """
+        """File storage should delete file."""
         self.assertFalse(self.storage.exists('storage_test_1'))
-        f = self.storage.save('storage_test_1', ContentFile('custom content'))
+        self.storage.save('storage_test_1', ContentFile('custom content'))
         self.assertTrue(self.storage.exists('storage_test_1'))
         self.storage.delete('storage_test_1')
         self.assertFalse(self.storage.exists('storage_test_1'))
 
-    def test_file_delete(self):
+    def test_file_delete2(self):
         """File storage should delete dir."""
         self.storage.delete('storage_dir_1')
         self.assertFalse(self.storage.exists('storage_dir_1'))
@@ -32,9 +34,7 @@ class DropboxStorageTest(TestCase):
         self.assertFalse(self.storage.exists('storage_dir_1'))
 
     def test_file_access_options(self):
-        """
-        Standard file access options are available, and work as expected.
-        """
+        """Standard file access options are available, and work as expected."""
         self.assertFalse(self.storage.exists('storage_test'))
         f = self.storage.open('storage_test', 'w')
         f.write('storage contents')
@@ -57,18 +57,13 @@ class DropboxStorageTest(TestCase):
         self.assertFalse(self.storage.exists('storage_test_exists'))
 
     def test_listdir(self):
-        """
-        File storage returns a tuple containing directories and files.
-        """
-        self.storage.delete('storage_test_1')
-        self.storage.delete('storage_test_2')
-        self.storage.delete('storage_dir_1')
+        """File storage returns a tuple containing directories and files."""
         self.assertFalse(self.storage.exists('storage_test_1'))
         self.assertFalse(self.storage.exists('storage_test_2'))
         self.assertFalse(self.storage.exists('storage_dir_1'))
 
-        f = self.storage.save('storage_test_1', ContentFile(six.b('custom content')))
-        f = self.storage.save('storage_test_2', ContentFile(six.b('custom content')))
+        self.storage.save('storage_test_1', ContentFile(six.b('custom content')))
+        self.storage.save('storage_test_2', ContentFile(six.b('custom content')))
         self.storage.client.file_create_folder(self.location + '/storage_dir_1')
 
         dirs, files = self.storage.listdir(self.location)
@@ -76,14 +71,8 @@ class DropboxStorageTest(TestCase):
         self.assertEqual(set(files),
                          set([u'storage_test_1', u'storage_test_2']))
 
-        self.storage.delete('storage_test_1')
-        self.storage.delete('storage_test_2')
-        self.storage.delete('storage_dir_1')
-
     def test_file_size(self):
-        """
-        File storage returns a url to access a given file from the Web.
-        """
+        """File storage returns a url to access a given file from the Web."""
         self.assertFalse(self.storage.exists('storage_test_size'))
         f = self.storage.open('storage_test_size', 'w')
         f.write('these are 18 bytes')
