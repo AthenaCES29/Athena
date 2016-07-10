@@ -26,6 +26,9 @@ from django.utils import timezone
 from .forms import AtividadeCreationForm, AtividadeEditForm, \
     TurmaCreationForm, UploadFileForm
 
+# Variáveis globais
+new_turma = None
+
 
 def login(request):
 
@@ -366,7 +369,6 @@ def prof_ativ(request, id_ativ):
 
 
 def aluno(request):
-
     aluno = checar_login_aluno(request)
 
     if not aluno:
@@ -428,10 +430,14 @@ def aluno(request):
 
         ultimas_submissoes.append((atividade.nome, data_envio, turma.nome))
 
+    global new_turma
+    nova_turma = new_turma
+    new_turma = None
     return render_to_response(
         'aluno.html',
         {
             "aluno": aluno,
+            "nova_turma": nova_turma,
             "turmas": turmas,
             "panes": panes,
             "ultimas_submissoes": ultimas_submissoes,
@@ -692,8 +698,9 @@ def aluno_turmas(request):
                     atividade=atividade,
                 )
                 relAlunoAtividade.save()
-
-        return HttpResponseRedirect('/aluno')
+            global new_turma
+            new_turma = turma
+        return HttpResponseRedirect('/aluno/')
 
     turmas_registradas = aluno.turma_set.all()
     todas_turmas = Turma.objects.all()
