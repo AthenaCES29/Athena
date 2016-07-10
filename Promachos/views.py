@@ -271,19 +271,27 @@ def prof_ativ(request, id_ativ):
             for file in files:
                 print file
             if 'arquivo_roteiro' in files:
+                atividade.remove_roteiro()
                 atividade.arquivo_roteiro = files['arquivo_roteiro']
             if 'testador' in files:
+                atividade.remove_testador()
                 atividade.testador = files['testador']
             if 'arquivo_entrada' in files:
+                atividade.remove_entrada()
                 atividade.arquivo_entrada = files['arquivo_entrada']
             if 'arquivo_entrada2' in files:
+                atividade.remove_entrada2()
                 atividade.arquivo_entrada2 = files['arquivo_entrada2']
             if 'arquivo_saida' in files:
+                atividade.remove_saida()
                 atividade.arquivo_saida = files['arquivo_saida']
             if 'arquivo_saida2' in files:
+                atividade.remove_saida2()
                 atividade.arquivo_saida2 = files['arquivo_saida2']
             atividade.save()
             atividade = Atividade.objects.get(id=id_ativ)
+
+            return HttpResponseRedirect('/professor/')
 
         if('post_del_ativ' in request.POST):
             submissoes = Submissao.objects.filter(
