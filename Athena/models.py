@@ -243,7 +243,7 @@ class Atividade(models.Model):
         return os.path.basename(self.arquivo_entrada.name)
 
     def nome_entrada2(self):
-        return os.path.basename(self.arquivo_entrada.name)
+        return os.path.basename(self.arquivo_entrada2.name)
 
     def nome_saida(self):
         return os.path.basename(self.arquivo_saida.name)

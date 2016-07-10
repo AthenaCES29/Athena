@@ -45,6 +45,7 @@
         <div class="col-xs-12 col-sm-4">
           <div class="thumbnail">
             <div class="caption">
+              <h3>Gerenciar Atividade</h3>
               <a href="#" id="edit_ativ" class="btn btn-lg btn-block btn-default" role="button">Editar atividade</a>
               <script>
                 $("#edit_ativ").click(function(){
@@ -96,7 +97,7 @@
                 <div class="thumbnail">
                   <!-- Rounded switch -->
                   <div align="left">
-                    <h4>Testes Públicos:</h4>
+                    <h4>Editar Testes Públicos:</h4>
                     <label class="switch">
                       <input type="checkbox" unchecked id="teste_publico" name=teste_publico>
                       <div class="slider round"></div>
@@ -119,17 +120,27 @@
                   </div>
                   <div class="form-group" id="fieldPublic1" hidden>
                     <p>Essa opção é obrigatória para a lógica convencional, pois o teste público tem caráter obrigatório.</p>
-                    <label>Novo arquivo de entrada público (opcional):</label>
+                    {% if atividade.arquivo_entrada %}
+                      <p><b>Arquivo entrada público antigo: </b>
+                      <a href="{{ atividade.arquivo_entrada.url }}" target="_blank">{{ atividade.nome_entrada }}</a></p>
+                    {% endif %}
+                    <p><b>Novo arquivo de entrada público (opcional):</b></p>
                     <input type="file" id="arquivo_entrada" name=arquivo_entrada>
                   </div>
+                  {% if not atividade.teste_customizado %}
                   <div class="form-group" id="fieldPublic2" hidden>
-                    <div align="left"><label>Novo arquivo de saida público (opcional):</label></div>
+                    {% if atividade.arquivo_saida %}
+                      <p><b>Arquivo saída público antigo: </b>
+                      <a href="{{ atividade.arquivo_saida.url }}" target="_blank">{{ atividade.nome_saida }}</a></p>
+                    {% endif %}
+                    <p><b>Novo arquivo de saida público (opcional):</b></p>
                     <input type="file" id="arquivo_saida" name=arquivo_saida>
                   </div>
                   <div class="form-group" id="fieldPublic3" hidden>
                     <div align="left"><label>Peso do arquivo público:</label></div>
                     <input type="text" id="peso1" value={{atividade.peso1}} name=peso1>
                   </div>
+                  {% endif %}
                 </div>
                 {% endif %}
 
@@ -138,7 +149,7 @@
                 <div class="thumbnail">
                   <!-- Rounded switch -->
                   <div class="form-group" align="left">
-                    <h4>Testes Privados:</h4>
+                    <h4>Editar Testes Privados:</h4>
                     <label class="switch">
                       <input type="checkbox" unchecked id="teste_privado" name=teste_privado>
                       <div class="slider round"></div>
@@ -161,17 +172,27 @@
                   </div>
                   <div class="form-group" id="fieldPriv1" hidden>
                     <p>Opcional. Selecionar essa opção fornece um arquivo de teste a mais para a correção. Esse arquivo não pode ser visto pelo aluno.</p>
-                    <div align="left"><label>Novo rquivo de entrada privado (opcional):</label></div>
+                    {% if atividade.arquivo_entrada2 %}
+                      <p><b>Arquivo entrada privado antigo: </b>
+                      <a href="{{ atividade.arquivo_entrada2.url }}" target="_blank">{{ atividade.nome_entrada2 }}</a></p>
+                    {% endif %}
+                    <p><b>Novo arquivo de entrada privado (opcional):</b></p>
                     <input type="file" id="arquivo_entrada2" name=arquivo_entrada2>
                   </div>
+                  {% if not atividade.teste_customizado %}
                   <div class="form-group" id="fieldPriv2" hidden>
-                    <div align="left"><label>Novo arquivo de saida privado (opcional):</label></div>
+                    {% if atividade.arquivo_saida2 and not atividade.teste_customizado %}
+                      <p><b>Arquivo saída privado antigo: </b>
+                      <a href="{{ atividade.arquivo_saida2.url }}" target="_blank">{{ atividade.nome_saida2 }}</a></p>
+                    {% endif %}
+                    <p><b>Novo arquivo de saida privado (opcional):</b></p>
                     <input type="file" id="arquivo_saida2" name=arquivo_saida2>
                   </div>
                   <div class="form-group" id="fieldPriv3" hidden>
                     <div align="left"><label>Peso do arquivo privado:</label></div>
                     <input type="text" id="peso2" value={{atividade.peso2}} name=peso2>
                   </div>
+                  {% endif %}
                 </div>
                 {% endif %}
 
@@ -180,7 +201,7 @@
                 <div class="thumbnail">
                   <!-- Rounded switch -->
                   <div class="form-group" align="left">
-                    <h4>Testes Personalizados:</h4>
+                    <h4>Editar Testes Personalizados:</h4>
                     <label class="switch">
                       <input type="checkbox" unchecked id="teste_customizado" name=teste_customizado>
                       <div class="slider round"></div>
@@ -209,7 +230,11 @@
                   </div>
                   <div class="form-group" id="fieldCustom1" hidden>
                     <p>Opcional. Essa opção sobrescreve testes convencionais. Para utilizar essa opção em conjunto com arquivos de entrada, fornece as entradas nas opções acima.</p>
-                    <div align="left"><label>Novo código do testador (opcional):</label></div>
+                    {% if atividade.arquivo_testador %}
+                      <p><b>Código do testador antigo: </b>
+                      <a href="{{ atividade.arquivo_testador.url }}" target="_blank">{{ atividade.nome_testador }}</a></p>
+                    {% endif %}
+                    <p><b>Novo código do testador (opcional):</b></p>
                     <input type="file" id="arquivo_testador" name=arquivo_testador>
                   </div>
                 </div>
@@ -222,14 +247,13 @@
                     });
                   </script>
                 </form>
-                <br>
-                <form method="POST" enctype="multiplart/form-data">
-                  <input type="hidden" name="post_del_ativ" value="True">
-                  {% csrf_token %}
-                  <p><button class="btn btn-lg btn-block btn-danger" type="submit" href="/professor">Deletar atividade</button></p>
-                </form>
-                <br>
-              </div>
+              </div>              
+              <br>
+              <form method="POST" enctype="multiplart/form-data">
+                <input type="hidden" name="post_del_ativ" value="True">
+                {% csrf_token %}
+                <p><button class="btn btn-lg btn-block btn-danger" type="submit" href="/professor">Deletar atividade</button></p>
+              </form>
             </div>
           </div>
         </div>
