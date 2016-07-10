@@ -73,6 +73,14 @@
 </head>
 
 <body>
+<!-- Redireciona aluno para Tab da nova turma -->
+{% if nova_turma %}
+  <script>
+  $( document ).ready(function() {
+    $("[href=\"#" + {{nova_turma.id}} + "\"]").tab('show');
+  });
+  </script>
+{% endif %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-3">
