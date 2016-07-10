@@ -77,7 +77,7 @@
 {% if nova_turma %}
   <script>
   $( document ).ready(function() {
-    $("[href=\"#" + {{nova_turma.id}} + "\"]").tab('show');
+    $("[href=\"#{{nova_turma.id}}\"]").tab('show');
   });
   </script>
 {% endif %}
