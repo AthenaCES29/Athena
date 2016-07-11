@@ -670,6 +670,25 @@ def aluno_turmas(request):
         pprint(request.POST)
         if('post_sair' in request.POST):
             turma = Turma.objects.get(id=request.POST['post_sair'])
+
+            atividades = Atividade.objects.filter(turma=turma)
+
+            for atividade in atividades:
+                submissoes = Submissao.objects.filter(
+                    atividade=atividade,
+                    aluno=aluno
+                )
+                for submissao in submissoes:
+                    submissao.remove_file()
+                    submissao.delete()
+
+                relAlunoAtividades = RelAlunoAtividade.objects.filter(
+                    atividade=atividade,
+                    aluno=aluno
+                )
+                for relAlunoAtividade in relAlunoAtividades:
+                    relAlunoAtividade.delete()
+
             aluno.turma_set.remove(turma)
             aluno.save()
         if('post_entrar' in request.POST):
