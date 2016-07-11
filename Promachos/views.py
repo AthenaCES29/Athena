@@ -342,10 +342,12 @@ def prof_ativ(request, id_ativ):
                 (aluno.nome, Submissao.statusDict[status], "-")
             )
 
+    turmas = Turma.objects.filter(professor=professor)
     return render_to_response(
         'prof_ativ.html',
         {
             "professor": professor,
+            "turmas": turmas,
             "atividade": atividade,
             "status_aluno": status_aluno,
             "form": AtividadeEditForm(instance=atividade),
@@ -640,10 +642,12 @@ def aluno_ativ(request, ativ_id):
     if timezone.now().date() > atividade.data_limite:
         prazo_valido = False
 
+    turmas = aluno.turma_set.all()
     return render_to_response(
         'aluno_ativ.html',
         {
             "aluno": aluno,
+            "turmas": turmas,
             "atividade": atividade,
             "submissao": submissao,
             "prazo_valido": prazo_valido,
