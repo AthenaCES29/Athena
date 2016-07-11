@@ -26,7 +26,7 @@
         <h4 align="center">{{aluno.user.email}}</h4>
       </div>
       <div class="col-xs-3" style="text-align: right;">
-        <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
+        <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Sair</a></p>
       </div>
     </div>
     <div class="row" style="padding-top: 15px;">
@@ -53,22 +53,24 @@
         <p><h2> {{ atividade.nome }} </h2></p>
               <p><h4>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}} </h4></p>
               {% if atividade.estaFechada %}
-              <h4 style="color:red">Status: fechada (em {{atividade.data_limite}})</h4>
+              <h4 style="color:red">Atividade fechada (em {{atividade.data_limite}})</h4>
               {% else %}
-              <h4 style="color:green">Status: aberta (até {{atividade.data_limite}})</h4>
+              <h4 style="color:green">Atividade aberta (até {{atividade.data_limite}})</h4>
               {% endif %}
-              <h5>
-              Testes Incluídos:
-              {% if atividade.teste_publico %}
-               - Públicos
+              {% if atividade.teste_publico or atividade.teste_privado or atividade.teste_customizado %}
+                <h5>
+                Incluindo testes
+                {% if atividade.teste_publico %}
+                  Públicos
+                {% endif %}
+                {% if atividade.teste_privado %}
+                  Privados
+                {% endif %}
+                {% if atividade.teste_customizado %}
+                  Customizados
+                {% endif %}
+                </h5>
               {% endif %}
-              {% if atividade.teste_privado %}
-               - Privados
-              {% endif %}
-              {% if atividade.teste_customizado %}
-               - Customizados
-              {% endif %}
-              </h5>
             </div>
             <div class="row">
               <div class="col-xs-12 col-sm-4">
@@ -112,8 +114,11 @@
                     {% if prazo_valido %}
                     <form method="POST" enctype="multipart/form-data" id="post_submissao">
                       {% csrf_token %}
-                      <div class="form-group">
-                        <p><b>Código da solução (.c ou .cpp):</b></p>
+                      <div class="form-group" align="center">
+                        <a id="compilador" data-content="Comando de compilação usado: g++ programa.c -g -pthread -pg -std=c++0x -o programa.out" rel="popover" data-placement="top" data-original-title="Compilador usado: g++" data-trigger="hover"><b>Código da solução (.c ou .cpp):</b></a>
+                        <script>
+                          $("#compilador").popover();
+                        </script>
                         <input id="id_arquivo_codigo" name="arquivo_codigo" required="True" type="file">
                       </div>
                       <div class="form-group" align="center">

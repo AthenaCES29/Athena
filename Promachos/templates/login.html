@@ -25,7 +25,7 @@
     <form class="form-signin" action="/login/" method="post"> {% csrf_token %}
       <div align="center"><img src="/static/img/title.png"/></div>
       <h1 align="center">Bem-vindo</h1>
-      <h2 class="form-signin-heading" align="center">Login</h2>
+      <h2 class="form-signin-heading" align="center">Entrar:</h2>
       <label for="username" class="sr-only">Usuário</label>
       <input type="username" name="username" id="username" class="form-control" placeholder="Nome de usuário" autofocus>
       <label for="password" class="sr-only">Senha</label>
@@ -33,7 +33,7 @@
       <div align="center" style="padding-top: 15px;">
       <font color="red"><b>{{ invalid_message }}</b></font>
       <font color="green"><b>{{ success_message }}</b></font>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Login
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar
       <span class="glyphicon glyphicon-log-in"></span></button>
       <button class="btn btn-lg btn-default btn-block" onclick="location.href='/cadastro/'; return false;">Cadastre-se
       <span class="glyphicon glyphicon-pencil"></span></button>
