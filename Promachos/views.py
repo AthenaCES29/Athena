@@ -159,11 +159,13 @@ def professor(request):
     form = TurmaCreationForm()
     if request.method == 'POST':
         pprint(request.POST)
+        if not ('post_turma' in request.POST):
+            turma = Turma.objects.get(id=request.POST['id_turma'])
+
         if('post_turma' in request.POST):
             turma = TurmaRegistration(request)
         elif ('post_atividade' in request.POST):
             atividade = AtividadeRegistration(request)
-            turma = Turma.objects.get(id=request.POST['id_turma'])
             for aluno in turma.alunos.all():
                 relAlunoAtividade = RelAlunoAtividade(
                     foiEntregue=False,
@@ -172,8 +174,6 @@ def professor(request):
                 )
                 relAlunoAtividade.save()
         elif ('post_deletar' in request.POST):
-            turma = Turma.objects.get(id=request.POST['id_turma'])
-
             atividades = Atividade.objects.filter(turma=turma)
 
             for atividade in atividades:
@@ -196,21 +196,10 @@ def professor(request):
             turma.delete()
 
         elif ('post_down_all_notas' in request.POST):
-
-            # model for notes
-            turma = Turma.objects.get(id=request.POST['id_turma'])
-            atividades = Atividade.objects.filter(turma=turma)
-
-            # generate .csv file
-            notas_path = "arquivos/" + turma.path("notas_curso.csv")
-            notasTurma(turma)
-
             # send the file as http response
-            arquivo = open(notas_path, "r")
-            response = HttpResponse(arquivo)
-            response[
-                'Content-Disposition'] = 'attachment; filename=notas_curso.csv'
-
+            response = HttpResponse(notasTurma(turma))
+            response['Content-Disposition'] =\
+                'attachment; filename=notas_curso.csv'
             return response
 
     turmas = Turma.objects.filter(professor=professor)
@@ -313,28 +302,17 @@ def prof_ativ(request, id_ativ):
             return HttpResponseRedirect('/professor/')
 
         if('post_down_notas' in request.POST):
-
-            # generate .csv file
-            notas_path = "arquivos/" + atividade.path("notas.csv")
-            notasAtividade(atividade)
-
             # send the file as http response
-            arquivo = open(notas_path, "r")
-            response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename=notas.csv'
-
+            response = HttpResponse(notasAtividade(atividade))
+            response['Content-Disposition'] =\
+                'attachment; filename=notas.csv'
             return response
 
         if ('post_down_submissoes' in request.POST):
-
-            # generate the file
-            zipSubmissoes(atividade)
-
             # send the file as http response
-            arquivo = open(atividade.zip_path(), "r")
-            response = HttpResponse(arquivo)
-            response['Content-Disposition'] = 'attachment; filename=' + \
-                atividade.nome + '.zip'
+            response = HttpResponse(zipSubmissoes(atividade))
+            response['Content-Disposition'] =\
+                'attachment; filename=' + atividade.nome + '.zip'
             return response
 
     status_aluno = []
