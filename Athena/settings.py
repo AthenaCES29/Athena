@@ -56,7 +56,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-AUTO_LOGOUT_DELAY = 60
+AUTO_LOGOUT_DELAY = 360
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ROOT_URLCONF = 'Athena.urls'

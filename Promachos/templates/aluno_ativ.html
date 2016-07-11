@@ -35,11 +35,14 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist" style="width: 100%;">
           <li role="presentation" class="active">
-            <a href="#workspace" aria-controls="workspace" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-home"></span> Workspace</a>
+            <a href="#atividade" aria-controls="atividade" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-file"></span> Atividade</a>
+          </li>
+          <li role="presentation">
+            <a href="#workspace" aria-controls="workspace" role="tab" data-toggle="tab" onclick="location.href='/aluno/';"><span class="glyphicon glyphicon-home"></span> Workspace</a>
           </li>
           {% for turma in turmas %}
           <li role="presentation">
-            <a href=#{{turma.id}} aria-controls={{turma.id}}  role="tab" data-toggle="tab">{{turma.nome}}</a>
+            <a href=#{{turma.id}} aria-controls={{turma.id}}  role="tab" data-toggle="tab" onclick="location.href='/aluno/';">{{turma.nome}}</a>
           </li>
           {% endfor %}
         </ul>

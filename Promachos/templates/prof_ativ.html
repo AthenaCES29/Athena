@@ -41,6 +41,21 @@
           <p style="line-height: 40px;"><a href="/aluno/" class="btn btn-default" role="button"><span class="glyphicon glyphicon-home"></span> Workspace</a> | <a href="/logout" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-off"></span> Log Out</a></p>
         </div>
       </div>
+      <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist" style="width: 100%;">
+          <li role="presentation" class="active">
+            <a href="#atividade" aria-controls="atividade" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-file"></span> Atividade</a>
+          </li>
+          <li role="presentation">
+            <a href="#workspace" aria-controls="workspace" role="tab" data-toggle="tab" onclick="location.href='/aluno/';"><span class="glyphicon glyphicon-home"></span> Workspace</a>
+          </li>
+          {% for turma in turmas %}
+          <li role="presentation">
+            <a href=#{{turma.id}} aria-controls={{turma.id}}  role="tab" data-toggle="tab" onclick="location.href='/aluno/';">{{turma.nome}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      <!-- Tab panes -->
       <div class="row content">
         <div class="col-xs-12 col-sm-4">
           <div class="thumbnail">
@@ -257,7 +272,8 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-offset-1 col-xs-12 col-sm-4">
+        <div class="col-sm col-xs-12 col-sm-6">
+      <div class="thumbnail">
           <h2>{{atividade.nome}}</h2>
           <h3>{{atividade.turma.nome}} - Prof. {{atividade.turma.professor.nome}}</h3>
           {% if atividade.estaFechada %}
@@ -312,6 +328,7 @@
         <span class="glyphicon glyphicon-save"></span> Download de tabela de notas</button></p>
           </form>
         </div>
+      </div>
       </div>
     </div>
   </body>
