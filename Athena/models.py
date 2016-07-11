@@ -90,9 +90,7 @@ class Turma(models.Model):
     descricao = models.CharField(max_length=2000)
     professor = models.ForeignKey(Professor, help_text="Professor da Turma")
     alunos = models.ManyToManyField(
-        Aluno,
-        help_text="Alunos inscritos na turma",
-        blank=True,
+        Aluno, help_text="Alunos inscritos na turma", blank=True,
     )
 
     def path(self, name):

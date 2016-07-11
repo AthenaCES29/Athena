@@ -61,7 +61,7 @@
           <div class="thumbnail">
             <div class="caption">
               <h3>Gerenciar Atividade</h3>
-              <a href="#" id="edit_ativ" class="btn btn-lg btn-block btn-default" role="button">Editar atividade</a>
+              <a href="#" id="edit_ativ" class="btn btn-lg btn-block btn-default" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar atividade</a>
               <script>
                 $("#edit_ativ").click(function(){
                   if ($("div.editar_atividade").is(':visible')) {
@@ -267,7 +267,7 @@
               <form method="POST" enctype="multiplart/form-data">
                 <input type="hidden" name="post_del_ativ" value="True">
                 {% csrf_token %}
-                <p><button class="btn btn-lg btn-block btn-danger" type="submit" href="/professor">Deletar atividade</button></p>
+                <p><button class="btn btn-lg btn-block btn-danger" type="submit"><span class="glyphicon glyphicon-remove"></span> Deletar atividade</button></p>
               </form>
             </div>
           </div>
