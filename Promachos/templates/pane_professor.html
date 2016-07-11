@@ -12,6 +12,9 @@
         <div class="caption">
           <h3 align="center">Atividades</h3>
           <br>
+          {% if not atividades %}
+            <h5 align="center">Não há atividades nesta turma</h5>
+          {% endif %}
           {% for atividade in atividades %}
           <form method="GET" enctype="multipart/form-data">
             <input type="hidden" name="load_atividade" value="True">
@@ -231,12 +234,35 @@
         <div class="caption">
           <h3 align="center">Outras operações</h3>  
           <br>
+          <label>Ver alunos cadastrados:</label>
+          <p><button id="ver_alunos_alunos_{{turma.id}}" class="btn btn-lg btn-block btn-default" type="submit"><span class="glyphicon glyphicon-eye-open"></span> Ver alunos</button></p>
+          <script>
+            $("#ver_alunos_alunos_{{turma.id}}").click(function(){
+              if ($("#alunos_{{turma.id}}").is(':visible')) {
+                $("#alunos_{{turma.id}}").hide();
+              }
+              else {
+                $("#alunos_{{turma.id}}").show();
+              }
+            });
+          </script>
+          <div id="alunos_{{turma.id}}" class="thumbnail" style="display: none;">
+            <p><b>Alunos cadastrados:</b></p>
+            {% if not turma.alunos.all %}
+              <h5 align="center">Não há alunos nesta turma</h5>
+            {% endif %}
+            <ol>
+            {% for aluno in turma.alunos.all %}
+              <li>{{aluno.nome}} - {{aluno.user}}</li>
+            {% endfor %}
+            </ol>
+          </div>
           <form method="POST" enctype="multipart/form-data">
             <label for="close_class">Deletar turma:</label>
             <input type="hidden" name="post_deletar" value="True">
             <input type="hidden" name="id_turma" value={{turma.id}}>
             {% csrf_token %}
-            <input class="btn btn-lg btn-block btn-danger" type="submit" value="Deletar">
+            <p><button class="btn btn-lg btn-block btn-danger" type="submit"><span class="glyphicon glyphicon-remove"></span> Deletar turma</button></p>
           </form>
         </div>
       </div>
