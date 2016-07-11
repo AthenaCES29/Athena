@@ -36,8 +36,7 @@ def submissao_path(instance, filename):
 
 
 def zip_path(instance):
-    return 'arquivos/codigos/{name}.zip'.format(
-        atividade=instance.id,
+    return 'temp/{name}.zip'.format(
         name=instance.nome
     )
 
